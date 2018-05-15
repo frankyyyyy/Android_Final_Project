@@ -7,6 +7,8 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context=".Activity.LoginActivity">
 
     <ProgressBar
@@ -32,7 +34,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/login_page_email"
+                    android:id="@+id/login_page_email_Et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_page_email_et"
@@ -47,7 +49,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/login_page_password"
+                    android:id="@+id/login_page_password_Et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_page_password_et"
@@ -80,6 +82,7 @@
                     android:layout_weight="1"
                     android:text="@string/login_page_cancel_button"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>

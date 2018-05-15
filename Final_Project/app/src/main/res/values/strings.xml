@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Final_Project</string>
 
+    <string name="connection_issue_warning">Woooops! Connection issue happens. Please try again later.</string>
+
     //MainPage
     <string name="main_page_tittle">Chef Legend</string>
     <string name="main_page_sub_tittle">Sweeten your dream here</string>
@@ -16,6 +18,8 @@
     <string name="login_page_password_et">Password (optional)</string>
     <string name="login_page_login_button">Login</string>
     <string name="login_page_cancel_button">Cancel</string>
+
+    <string name="login_page_warning_login_fail">Authentication failed.</string>
 
     //Dashboard
     <string name="dashboard_page_tittle">Dashboard</string>
