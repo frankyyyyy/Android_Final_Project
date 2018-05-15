@@ -21,14 +21,5 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
 
-
-        String idString = "sfsdfsdf";
-        try {
-            Thread.sleep(5000);
-            idString = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        id.setText(idString);
     }
 }

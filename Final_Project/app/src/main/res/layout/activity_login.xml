@@ -37,7 +37,7 @@
                     android:id="@+id/login_page_email_Et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_page_email_et"
+                    android:hint="@string/login_page_email_Et"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -52,7 +52,7 @@
                     android:id="@+id/login_page_password_Et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_page_password_et"
+                    android:hint="@string/login_page_password_Et"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -71,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/login_page_login_button"
+                    android:text="@string/login_page_login_Btn"
                     android:textStyle="bold" />
 
                 <Button
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/login_page_cancel_button"
+                    android:text="@string/login_page_cancel_Btn"
                     android:textStyle="bold" />
 
             </LinearLayout>

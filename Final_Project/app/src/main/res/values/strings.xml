@@ -11,13 +11,45 @@
 
     //RegisterPage
     <string name="register_page_tittle">Register</string>
+    <string name="register_page_email_Et">Email</string>
+    <string name="register_page_email_error">Invalid emailInput address</string>
+    <string name="register_page_password_Et">Password</string>
+    <string name="register_page_password_error">6-16 characters required</string>
+    <string name="register_page_name_Et">Name (optional)</string>
+    <string name="register_page_name_error">Only alphabets, numbers and _ allowed here </string>
+    <string name="register_page_phoneNum_Et">Phone (optional)</string>
+    <string name="register_page_phoneNum_error">10 characters required</string>
+
+    <string name="register_page_role_selection">Register as a: </string>
+    <string name="register_page_chef_Rb">Chef</string>
+    <string name="register_page_customer_Rb">Customer</string>
+
+    <string name="register_page_business_selection">Business Style: </string>
+    <string name="register_page_retail_Rb">Retail</string>
+    <string name="register_page_individual_Rb">Individual</string>
+
+    <string name="register_page_retail_address">Retail Address</string>
+
+    <string name="register_page_certificate">Certificate: </string>
+    <string name="register_page_certificate_Btn">Add certificate file here</string>
+
+    <string name="register_page_postal_address">Postal Address</string>
+
+    <string name="register_page_agreement">I promise that all information provided above is true.</string>
+    <string name="register_page_agreement_error">Please check on the box to concert agreement.</string>
+    <string name="register_page_register_Btn">Register</string>
+    <string name="register_page_cancel_Btn">Cancel</string>
+
+    <string name="register_page_warning_register_fail">New account creation failed. Please try again!</string>
 
     //LoginPage
     <string name="login_page_tittle">Login</string>
-    <string name="login_page_email_et">Email</string>
-    <string name="login_page_password_et">Password (optional)</string>
-    <string name="login_page_login_button">Login</string>
-    <string name="login_page_cancel_button">Cancel</string>
+    <string name="login_page_email_Et">Email</string>
+    <string name="login_page_email_error">Invalid emailInput address</string>
+    <string name="login_page_password_Et">Password</string>
+    <string name="login_page_password_error">6-16 characters required</string>
+    <string name="login_page_login_Btn">Login</string>
+    <string name="login_page_cancel_Btn">Cancel</string>
 
     <string name="login_page_warning_login_fail">Authentication failed.</string>
 

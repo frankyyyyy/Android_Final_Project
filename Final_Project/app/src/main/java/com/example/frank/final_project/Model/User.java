@@ -10,18 +10,16 @@ import java.util.List;
 public abstract class User implements Serializable {
 
     private String Id;
-    private
+    private String name;
+    private String phone;
 
-    public User(int Id, String name, String password, String phone, String email, String security_question, String security_answer){
-        this.Id = Id;
-        this.name = name;
-        this.password = password;
-        this.phone = phone;
-        this.email = email;
-        this.security_question = security_question;
-        this.security_answer = security_answer;
-//        this.messages = messages;
+    public User(){
+
     }
 
-
+    public User(String Id, String name, String phone){
+        this.Id = Id;
+        this.name = name;
+        this.phone = phone;
+    }
 }
