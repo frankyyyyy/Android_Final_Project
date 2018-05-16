@@ -284,38 +284,28 @@ public class RegisterActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            if(createVerifyAccountSuccessful){
-                userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            // Create a corresponding snapshot to hold data of user in database
+            try {
+                // Loading for 4 seconds.
+                Thread.sleep(Constant.REGISTER_LOADING_TIME);
+                // Create a new verify purpose account in database
+                createUserSnapshot();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                // Create a corresponding snapshot to hold data of user in database
-                try {
-                    // Loading for 4 seconds.
-                    Thread.sleep(Constant.REGISTER_LOADING_TIME);
-                    // Create a new verify purpose account in database
-                    try{
-                        createUserSnapshot();
-                    } catch (Exception e){
-                        // Connection issue happens.
-                        connectionSuccessful = false;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+            if(roleSelection.getCheckedRadioButtonId() == R.id.register_page_chef_Rb){
                 // Upload certificate to database storage
                 try {
                     // Loading for 4 seconds.
                     Thread.sleep(Constant.REGISTER_LOADING_TIME);
                     // Create a new verify purpose account in database
-                    try{
-                        uploadCertificate();
-                    } catch (Exception e){
-                        // Connection issue happens.
-                        connectionSuccessful = false;
-                    }
+                    uploadCertificate();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else{
+                uploadCertificateSuccessful = true;
             }
         }
 
@@ -336,18 +326,17 @@ public class RegisterActivity extends AppCompatActivity {
             }
             // If account creation failed, then show warning message.
             else if(!createVerifyAccountSuccessful){
-                clearData();
                 Toast.makeText(getApplicationContext(), getString(R.string.register_page_warning_register_fail), Toast.LENGTH_LONG).show();
             }
             // If corresponding data snapshot creation failed, restore the verification account and show error message.
             else if(!createUserSuccessful){
                 clearData();
-                Toast.makeText(getApplicationContext(), getString(R.string.register_page_warning_register_fail), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "snapshot error", Toast.LENGTH_LONG).show();
             }
             // If certificate upload failed, show error message.
             else if(!uploadCertificateSuccessful){
                 clearData();
-                Toast.makeText(getApplicationContext(), getString(R.string.register_page_warning_register_fail), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "uploading error", Toast.LENGTH_LONG).show();
             }
             // If account created successfully, then start dashboard.
             else{
@@ -357,6 +346,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         *  Roll back database status
+         */
         public void clearData(){
             if(FirebaseAuth.getInstance().getCurrentUser() != null){
                 FirebaseAuth.getInstance().getCurrentUser().delete();
@@ -374,17 +366,10 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                // Connection successful, set values in return.
-                connectionSuccessful = true;
                 // Register successful, set values in return.
                 if(task.isSuccessful()){
-                    // Sign in automatically
-                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            createVerifyAccountSuccessful = true;
-                        }
-                    });
+                    createVerifyAccountSuccessful = true;
+                    userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 }
                 // Register failed, set values in return.
                 else{
@@ -402,8 +387,6 @@ public class RegisterActivity extends AppCompatActivity {
         chefRef.putFile(certificateUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                // Connection successful, set values in return.
-                connectionSuccessful = true;
                 // Upload certificate successful, set values in return.
                 if(task.isSuccessful()){
                     uploadCertificateSuccessful = true;
@@ -439,14 +422,9 @@ public class RegisterActivity extends AppCompatActivity {
         Chef chef = new Chef();
         if(name != null) chef.setName(name);
         if(phoneNum != null) chef.setPhone(phoneNum);
-        try{
-            DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId);
-            chefRef.setValue(chef);
-            createStore();
-        }catch (Exception e){
-            // Connection issue happens.
-            connectionSuccessful = false;
-        }
+        DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId);
+        chefRef.setValue(chef);
+        createStore();
     }
 
     /**
@@ -457,14 +435,20 @@ public class RegisterActivity extends AppCompatActivity {
         if(name != null) customer.setName(name);
         if(phoneNum != null) customer.setPhone(phoneNum);
         if(postalAddress != null) customer.setPostalAddress(postalAddress);
-        try{
-            DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId);
-            customerRef.setValue(customer);
-            createUserSuccessful = true;
-        }catch (Exception e){
-            // Connection issue happens.
-            connectionSuccessful = false;
-        }
+        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId);
+        customerRef.setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // Create snapshot failed, set values in return.
+                if(task.isSuccessful()){
+                    createUserSuccessful = true;
+                }
+                // Create snapshot failed, set values in return.
+                else{
+                    createUserSuccessful = false;
+                }
+            }
+        });
     }
 
     /**
@@ -474,13 +458,21 @@ public class RegisterActivity extends AppCompatActivity {
         Store store = new Store();
         if(businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
                 && retailAddress != null) store.setAddress(retailAddress);
-        try{
-            DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE);
-            storeRef.setValue(store);
-            createUserSuccessful = true;
-        }catch (Exception e){
-            // Connection issue happens.
-            connectionSuccessful = false;
-        }
+        DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE);
+        storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // Connection successful, set values in return.
+                connectionSuccessful = true;
+                // Create snapshot failed, set values in return.
+                if(task.isSuccessful()){
+                    createUserSuccessful = true;
+                }
+                // Create snapshot failed, set values in return.
+                else{
+                    createUserSuccessful = false;
+                }
+            }
+        });
     }
 }
