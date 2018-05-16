@@ -40,7 +40,9 @@
     <string name="register_page_register_Btn">Register</string>
     <string name="register_page_cancel_Btn">Cancel</string>
 
-    <string name="register_page_warning_register_fail">New account creation failed. Please try again!</string>
+    <string name="register_page_verify_account_creation_success">Verify account created.</string>
+    <string name="register_page_account_snapshot_creation_success">Account data storage created.</string>
+    <string name="register_page_certificate_upload_success">Certificate uploaded.</string>
 
     //LoginPage
     <string name="login_page_tittle">Login</string>

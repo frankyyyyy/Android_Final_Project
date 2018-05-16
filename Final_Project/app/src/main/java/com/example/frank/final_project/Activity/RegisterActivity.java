@@ -101,22 +101,23 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *  Role selection radio button events
+     * Role selection radio button events
+     *
      * @param view
      * @param isChanged
      */
     @OnCheckedChanged({R.id.register_page_chef_Rb, R.id.register_page_customer_Rb})
-    public void roleOnCheckedChangeListener(CompoundButton view, boolean isChanged){
-        switch (view.getId()){
+    public void roleOnCheckedChangeListener(CompoundButton view, boolean isChanged) {
+        switch (view.getId()) {
             case R.id.register_page_chef_Rb:
-                if (isChanged){
+                if (isChanged) {
                     mChefLayout.setVisibility(View.VISIBLE);
                     mPostalAddress.setVisibility(View.GONE);
                     mAgreement.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.register_page_customer_Rb:
-                if (isChanged){
+                if (isChanged) {
                     mChefLayout.setVisibility(View.GONE);
                     mPostalAddress.setVisibility(View.VISIBLE);
                     mAgreement.setVisibility(View.VISIBLE);
@@ -128,20 +129,21 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *  Business style selection radio button events
+     * Business style selection radio button events
+     *
      * @param view
      * @param isChanged
      */
     @OnCheckedChanged({R.id.register_page_individual_Rb, R.id.register_page_retail_Rb})
-    public void businessStyleOnCheckedChangeListener(CompoundButton view, boolean isChanged){
-        switch (view.getId()){
+    public void businessStyleOnCheckedChangeListener(CompoundButton view, boolean isChanged) {
+        switch (view.getId()) {
             case R.id.register_page_individual_Rb:
-                if (isChanged){
+                if (isChanged) {
                     mRetailAddress.setVisibility(View.GONE);
                 }
                 break;
             case R.id.register_page_retail_Rb:
-                if (isChanged){
+                if (isChanged) {
                     mRetailAddress.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -151,9 +153,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *  Read inputs from front end
+     * Read inputs from front end
      */
-    private void readInputs(){
+    private void readInputs() {
         email = mEmail.getText().toString();
         password = mPassword.getText().toString();
         name = mName.getText().toString();
@@ -167,15 +169,15 @@ public class RegisterActivity extends AppCompatActivity {
      * @param view
      */
     @OnClick({R.id.register_page_register_Btn, R.id.register_page_cancel_Btn, R.id.register_page_add_certificate_Btn})
-    public void onClick(View view){
-        switch (view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             // On click register
             case R.id.register_page_register_Btn:
                 // Read inputs from front end
                 readInputs();
                 // Check inputs validation
-                if(allInputsAreValid()){
-                    new registerAttempt().execute();
+                if (allInputsAreValid()) {
+                    new createVerifyAccount().execute();
                 }
                 break;
             // On click cancel
@@ -195,19 +197,25 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *  Browse file folder and select the certificate file
+     * Browse file folder and select the certificate file
      */
-    private void openSystemFileSelection(){
+    private void openSystemFileSelection() {
         Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
         fileIntent.setType("image/*");
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(fileIntent, 1234);
     }
 
+    /**
+     *  Receive file target for uploading purpose
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case 1234:
                 if (resultCode == RESULT_OK) {
                     certificateUri = data.getData();
@@ -218,40 +226,41 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *  Check all input validity
+     * Check all input validity
+     *
      * @return areValid
      */
-    private boolean allInputsAreValid(){
+    private boolean allInputsAreValid() {
         // Check email input validity
-        if(!Utils.emailInputIsLegal(email)){
+        if (!Utils.emailInputIsLegal(email)) {
             mEmail.setError(getString(R.string.login_page_email_error));
         }
         // Check password input validity
-        else if(!Utils.passwordInputIsLegal(password)){
+        else if (!Utils.passwordInputIsLegal(password)) {
             mPassword.setError(getString(R.string.login_page_password_error));
         }
         // Check name input validity
-        else if((name != null) && !Utils.nameInputIsLegal(name)){
+        else if ((!name.isEmpty()) && !Utils.nameInputIsLegal(name)) {
             mName.setError(getString(R.string.register_page_name_error));
         }
         // Check phone input validity
-        else if((phoneNum != null) && !Utils.phoneNumInputIsLegal(phoneNum)){
+        else if ((!phoneNum.isEmpty()) && !Utils.phoneNumInputIsLegal(phoneNum)) {
             mPhoneNum.setError(getString(R.string.register_page_phoneNum_error));
         }
         // Check agreement checkbox
-        else if(!mAgreement.isChecked()){
+        else if (!mAgreement.isChecked()) {
             mAgreement.setError(getString(R.string.register_page_agreement_error));
-        }
-        else{
+            Toast.makeText(this, getString(R.string.register_page_agreement_error), Toast.LENGTH_LONG).show();
+        } else {
             return true;
         }
         return false;
     }
 
     /**
-     * Load email and password and spend 4 seconds for verification.
+     * Create a new verify purpose account in database
      */
-    private class registerAttempt extends AsyncTask<Void, Void, Void> {
+    private class createVerifyAccount extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -261,218 +270,207 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            // Create a brand new user account pack in database.
-            createNewUserAccount();
+            // Create a new verify purpose account in database
+            try {
+                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        // Connection successful, set values in return.
+                        connectionSuccessful = true;
+                        // Register successful, set values in return.
+                        if (task.isSuccessful()) {
+                            createVerifyAccountSuccessful = true;
+                            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        }
+                        // Register failed, set values in return.
+                        else {
+                            createVerifyAccountSuccessful = false;
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                // Connection issue happens.
+                connectionSuccessful = false;
+            }
             return null;
-        }
-
-        /**
-         *  Create a brand new user account pack in database
-         */
-        private void createNewUserAccount(){
-            try {
-                // Loading for 4 seconds.
-                Thread.sleep(Constant.REGISTER_LOADING_TIME);
-                // Create a new verify purpose account in database
-                try{
-                    createVerifyAccount();
-                }catch (Exception e){
-                    // Connection issue happens.
-                    connectionSuccessful = false;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // Create a corresponding snapshot to hold data of user in database
-            try {
-                // Loading for 4 seconds.
-                Thread.sleep(Constant.REGISTER_LOADING_TIME);
-                // Create a new verify purpose account in database
-                createUserSnapshot();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if(roleSelection.getCheckedRadioButtonId() == R.id.register_page_chef_Rb){
-                // Upload certificate to database storage
-                try {
-                    // Loading for 4 seconds.
-                    Thread.sleep(Constant.REGISTER_LOADING_TIME);
-                    // Create a new verify purpose account in database
-                    uploadCertificate();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else{
-                uploadCertificateSuccessful = true;
-            }
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mProgressBar.setVisibility(View.GONE);
-            mRegisterForm.setVisibility(View.VISIBLE);
-            judgeOnRegisterResult();
-        }
-
-        /**
-         *  Open dashboard if register is successful, otherwise show error message.
-         */
-        private void judgeOnRegisterResult() {
-            // Connection to Firebase in fail. Demonstrate warning message.
-            if(!connectionSuccessful){
-                Toast.makeText(getApplicationContext(), getString(R.string.connection_issue_warning), Toast.LENGTH_LONG).show();
-            }
-            // If account creation failed, then show warning message.
-            else if(!createVerifyAccountSuccessful){
-                Toast.makeText(getApplicationContext(), getString(R.string.register_page_warning_register_fail), Toast.LENGTH_LONG).show();
-            }
-            // If corresponding data snapshot creation failed, restore the verification account and show error message.
-            else if(!createUserSuccessful){
-                clearData();
-                Toast.makeText(getApplicationContext(), "snapshot error", Toast.LENGTH_LONG).show();
-            }
-            // If certificate upload failed, show error message.
-            else if(!uploadCertificateSuccessful){
-                clearData();
-                Toast.makeText(getApplicationContext(), "uploading error", Toast.LENGTH_LONG).show();
-            }
-            // If account created successfully, then start dashboard.
-            else{
-                Intent DashboardIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-                startActivity(DashboardIntent);
-                finish();
-            }
-        }
-
-        /**
-         *  Roll back database status
-         */
-        public void clearData(){
-            if(FirebaseAuth.getInstance().getCurrentUser() != null){
-                FirebaseAuth.getInstance().getCurrentUser().delete();
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).removeValue();
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId).removeValue();
-                FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.CERTIFICATE).delete();
+            if (!createVerifyAccountSuccessful) {
+                new createVerifyAccount().execute();
+            }else{
+                new createUserSnapshot().execute();
             }
         }
     }
 
     /**
-     *  Create a new verify purpose account in database
+     * Create a snapshot in database to store user data
      */
-    private void createVerifyAccount(){
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                // Register successful, set values in return.
-                if(task.isSuccessful()){
-                    createVerifyAccountSuccessful = true;
-                    userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private class createUserSnapshot extends AsyncTask<Void, Integer, Void> {
+
+        int role;
+
+        @Override
+        protected void onPreExecute() {
+            role = roleSelection.getCheckedRadioButtonId();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                createUserSnapshot();
+            } catch (Exception e) {
+                // Connection issue happens.
+                connectionSuccessful = false;
+            }
+            return null;
+        }
+
+        /**
+         * Create a snapshot in database to store user data
+         */
+        private void createUserSnapshot() {
+            switch (role) {
+                case R.id.register_page_chef_Rb:
+                    createChef();
+                    break;
+                case R.id.register_page_customer_Rb:
+                    createCustomer();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * Create a new chef at snapshot
+         */
+        private void createChef() {
+            Chef chef = new Chef();
+            if (name != null) chef.setName(name);
+            if (phoneNum != null) chef.setPhone(phoneNum);
+            DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId);
+            chefRef.setValue(chef);
+            createStore();
+        }
+
+        /**
+         * Create a new customer at snapshot
+         */
+        private void createCustomer() {
+            Customer customer = new Customer();
+            if (name != null) customer.setName(name);
+            if (phoneNum != null) customer.setPhone(phoneNum);
+            if (postalAddress != null) customer.setPostalAddress(postalAddress);
+            DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId);
+            customerRef.setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    // Connection successful, set values in return.
+                    connectionSuccessful = true;
+                    // Create snapshot failed, set values in return.
+                    if (task.isSuccessful()) {
+                        createUserSuccessful = true;
+                    }
+                    // Create snapshot failed, set values in return.
+                    else {
+                        createUserSuccessful = false;
+                    }
                 }
-                // Register failed, set values in return.
-                else{
-                    createVerifyAccountSuccessful = false;
+            });
+        }
+
+        /**
+         * Create a new store at snapshot
+         */
+        private void createStore() {
+            Store store = new Store();
+            if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
+                    && retailAddress != null) store.setAddress(retailAddress);
+            DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE);
+            storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    // Connection successful, set values in return.
+                    connectionSuccessful = true;
+                    // Create snapshot failed, set values in return.
+                    if (task.isSuccessful()) {
+                        createUserSuccessful = true;
+                    }
+                    // Create snapshot failed, set values in return.
+                    else {
+                        createUserSuccessful = false;
+                    }
+                }
+            });
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!connectionSuccessful || !createUserSuccessful) {
+                new createUserSnapshot().execute();
+            }else{
+                if(role == R.id.register_page_customer_Rb){
+                    startDashboard();
+                }else{
+                    new uploadCertificate().execute();
                 }
             }
-        });
+        }
     }
 
     /**
      * Upload certificate to database storage
      */
-    private void uploadCertificate(){
-        StorageReference chefRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.CERTIFICATE);
-        chefRef.putFile(certificateUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                // Upload certificate successful, set values in return.
-                if(task.isSuccessful()){
-                    uploadCertificateSuccessful = true;
-                }
-                // Upload certificate failed, set values in return.
-                else{
-                    uploadCertificateSuccessful = false;
-                }
-            }
-        });
-    }
+    private class uploadCertificate extends AsyncTask<Void, Void, Void> {
 
-    /**
-     *  Create a snapshot in database to store user data
-     */
-    private void createUserSnapshot(){
-        switch (roleSelection.getCheckedRadioButtonId()){
-            case R.id.register_page_chef_Rb:
-                createChef();
-                break;
-            case R.id.register_page_customer_Rb:
-                createCustomer();
-                break;
-            default:
-                break;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                StorageReference chefRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.CERTIFICATE);
+                chefRef.putFile(certificateUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        // Connection successful, set values in return.
+                        connectionSuccessful = true;
+                        // Upload certificate successful, set values in return.
+                        if (task.isSuccessful()) {
+                            uploadCertificateSuccessful = true;
+                        }
+                        // Upload certificate failed, set values in return.
+                        else {
+                            uploadCertificateSuccessful = false;
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                // Connection issue happens.
+                connectionSuccessful = false;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!connectionSuccessful || !uploadCertificateSuccessful) {
+                new uploadCertificate().execute();
+            }else{
+                mProgressBar.setVisibility(View.GONE);
+                mRegisterForm.setVisibility(View.VISIBLE);
+                // If account creation completed, open dashboard page and dismiss this page.
+                startDashboard();
+            }
         }
     }
 
     /**
-     *  Create a new chef at snapshot
+     *  Terminate register page and start dashboard.
      */
-    private void createChef(){
-        Chef chef = new Chef();
-        if(name != null) chef.setName(name);
-        if(phoneNum != null) chef.setPhone(phoneNum);
-        DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId);
-        chefRef.setValue(chef);
-        createStore();
-    }
-
-    /**
-     *  Create a new customer at snapshot
-     */
-    private void createCustomer(){
-        Customer customer = new Customer();
-        if(name != null) customer.setName(name);
-        if(phoneNum != null) customer.setPhone(phoneNum);
-        if(postalAddress != null) customer.setPostalAddress(postalAddress);
-        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId);
-        customerRef.setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                // Create snapshot failed, set values in return.
-                if(task.isSuccessful()){
-                    createUserSuccessful = true;
-                }
-                // Create snapshot failed, set values in return.
-                else{
-                    createUserSuccessful = false;
-                }
-            }
-        });
-    }
-
-    /**
-     *  Create a new store at snapshot
-     */
-    private void createStore(){
-        Store store = new Store();
-        if(businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
-                && retailAddress != null) store.setAddress(retailAddress);
-        DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE);
-        storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                // Connection successful, set values in return.
-                connectionSuccessful = true;
-                // Create snapshot failed, set values in return.
-                if(task.isSuccessful()){
-                    createUserSuccessful = true;
-                }
-                // Create snapshot failed, set values in return.
-                else{
-                    createUserSuccessful = false;
-                }
-            }
-        });
+    private void startDashboard(){
+        Intent dashboardIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+        startActivity(dashboardIntent);
+        finish();
     }
 }
