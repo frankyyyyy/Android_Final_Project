@@ -18,6 +18,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.login_page_password_Et)
     EditText mPassword;
+
+    private DatabaseReference roleRef;
+    private ValueEventListener valueEventListener;
 
     private boolean loginSuccessful = false;
     private boolean connectionSuccessful = false;
@@ -148,11 +157,16 @@ public class LoginActivity extends AppCompatActivity {
             }
             // If account email and password are verified, then start dashboard
             else{
-                Intent DashboardIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-                startActivity(DashboardIntent);
+                Intent intent = new Intent(getApplicationContext(), CustomerDashboard.class);
+                startActivity(intent);
                 finish();
+//                checkRoleNOpenDashboard();
             }
         }
+    }
+
+    private void checkRoleNOpenDashboard(){
+
     }
 
     /**

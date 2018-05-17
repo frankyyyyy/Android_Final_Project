@@ -22,7 +22,7 @@ public class Constant {
 
     //Chef
     public static final String USER = "user";
-    public static final String CHEF_ID_FRONT = "chef_";
+    public static final String CHEF_ID = "chefId";
     public static final String STORE_ID = "storeId";
     public static final String PHONE = "phone";
     public static final String EMAIL = "email";

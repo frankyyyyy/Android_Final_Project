@@ -11,7 +11,7 @@ public class Store {
     public enum SaleType {Individual, Retail};
 
     private String name;
-    private int rank;
+    private float rate;
     private boolean status;
     private SaleType saleType;
     private String address;
@@ -22,9 +22,9 @@ public class Store {
 
     }
 
-    public Store(String name, int rank, boolean status, SaleType saleType, String address, List<Cake> menu, List<Order> orders){
+    public Store(String name, float rate, boolean status, SaleType saleType, String address, List<Cake> menu, List<Order> orders){
         this.name = name;
-        this.rank = rank;
+        this.rate = rate;
         this.status = status;
         this.saleType = saleType;
         this.address = address;
@@ -40,12 +40,12 @@ public class Store {
         this.name = name;
     }
 
-    public int getRank() {
-        return rank;
+    public float getRate() {
+        return rate;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRate(float rank) {
+        this.rate = rate;
     }
 
     public boolean isStatus() {

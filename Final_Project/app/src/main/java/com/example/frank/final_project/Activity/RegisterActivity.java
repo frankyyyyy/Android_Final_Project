@@ -26,11 +26,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Boolean connectionSuccessful = false;
     private Boolean uploadCertificateSuccessful = false;
 
+    private String[] chefIds;
     private Uri certificateUri;
 
     @Override
@@ -310,7 +316,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private class createUserSnapshot extends AsyncTask<Void, Integer, Void> {
 
-        int role;
+        private int role;
 
         @Override
         protected void onPreExecute() {
@@ -351,6 +357,7 @@ public class RegisterActivity extends AppCompatActivity {
             Chef chef = new Chef();
             if (name != null) chef.setName(name);
             if (phoneNum != null) chef.setPhone(phoneNum);
+            // Create chef
             DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId);
             chefRef.setValue(chef);
             createStore();
@@ -413,7 +420,9 @@ public class RegisterActivity extends AppCompatActivity {
                 new createUserSnapshot().execute();
             }else{
                 if(role == R.id.register_page_customer_Rb){
-                    startDashboard();
+                    Intent dashboardIntent = new Intent(getApplicationContext(), CustomerDashboard.class);
+                    startActivity(dashboardIntent);
+                    finish();
                 }else{
                     new uploadCertificate().execute();
                 }
@@ -460,17 +469,10 @@ public class RegisterActivity extends AppCompatActivity {
                 mProgressBar.setVisibility(View.GONE);
                 mRegisterForm.setVisibility(View.VISIBLE);
                 // If account creation completed, open dashboard page and dismiss this page.
-                startDashboard();
+                Intent dashboardIntent = new Intent(getApplicationContext(), ChefDashboard.class);
+                startActivity(dashboardIntent);
+                finish();
             }
         }
-    }
-
-    /**
-     *  Terminate register page and start dashboard.
-     */
-    private void startDashboard(){
-        Intent dashboardIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-        startActivity(dashboardIntent);
-        finish();
     }
 }

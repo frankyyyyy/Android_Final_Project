@@ -9,16 +9,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.MainActivity">
+        <activity android:name=".Activity.CustomerDashboard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.LoginActivity" android:label="@string/login_page_tittle"/>
-        <activity android:name=".Activity.RegisterActivity" android:label="@string/register_page_tittle"/>
-        <activity android:name=".Activity.DashboardActivity" android:label="@string/dashboard_page_tittle"/>
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:label="@string/login_page_tittle" />
+        <activity
+            android:name=".Activity.RegisterActivity"
+            android:label="@string/register_page_tittle" />
+        <activity
+            android:name=".Activity.MainActivity"
+            android:label="@string/dashboard_page_tittle" />
+        <activity android:name=".Activity.ChefDashboard" />
+        <activity android:name=".Activity.ChatActivity"></activity>
     </application>
 
 </manifest>
