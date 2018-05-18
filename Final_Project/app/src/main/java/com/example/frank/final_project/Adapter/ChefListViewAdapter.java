@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 public class ChefListViewAdapter extends FirebaseRecyclerAdapter<Chef, ChefListViewHolder>{
     private Context context;
-    ObservableSnapshotArray haha;
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See

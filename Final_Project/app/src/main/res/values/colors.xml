@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="main_page_title">#000000</color>
+
+    <color name="chat_room_self">#80DEEA</color>
+    <color name="chat_room_opposite">#F48FB1</color>
 </resources>

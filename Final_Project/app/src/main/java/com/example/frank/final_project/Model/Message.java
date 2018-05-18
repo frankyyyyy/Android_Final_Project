@@ -7,9 +7,11 @@ package com.example.frank.final_project.Model;
 public class Message {
 
     private String sender;
+    private String time;
     private String content;
-    public Message(String sender, String content){
+    public Message(String sender, String time, String content){
         this.sender = sender;
+        this.time = time;
         this.content = content;
     }
 
@@ -27,5 +29,13 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

@@ -9,6 +9,8 @@ import java.util.List;
 
 public abstract class User implements Serializable {
 
+    public enum role{CHEF, CUSTOMER};
+
     private String Id;
     private String name;
     private String phone;

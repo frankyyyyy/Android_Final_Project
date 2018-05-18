@@ -34,7 +34,7 @@ public class Constant {
     public static final String CERTIFICATE = "certificate";
 
     //Customer
-    public static final String CUSTOMER_ID_FRONT = "customer_";
+    public static final String CUSTOMER_ID = "customerId";
     public static final String CUSTOMER = "customer";
     public static final String POSTAL_ADDRESS = "postalAddress";
 

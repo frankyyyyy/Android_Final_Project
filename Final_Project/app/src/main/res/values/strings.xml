@@ -3,6 +3,8 @@
 
     <string name="connection_issue_warning">Woooops! Connection issue happens. Please try again later.</string>
 
+
+
     //MainPage
     <string name="main_page_tittle">Chef Legend</string>
     <string name="main_page_sub_tittle">Sweeten your dream here</string>
@@ -57,6 +59,15 @@
 
     //Dashboard
     <string name="dashboard_page_tittle">Dashboard</string>
+
+
+    //Chat
+    <string name="chat_page_send_button">Send</string>
+    <string name="chat_page_input">Input</string>
+
+    <string name="refresh">Refresh</string>
+    <string name="chat_page_try_again_warning">Loading fail. Please try again.</string>
+    <string name="chat_page_loading_fail_warning">Loading fail. Please try refresh.</string>
 
     <!--<string name="prompt_email">Email</string>-->
     <!--<string name="prompt_password">Password (optional)</string>-->
