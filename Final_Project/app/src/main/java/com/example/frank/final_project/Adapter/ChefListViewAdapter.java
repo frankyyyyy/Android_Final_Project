@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,6 @@ import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.ChefListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.ObservableSnapshotArray;
-
-import java.util.ArrayList;
 
 /**
  * Created by Frank on 2018/5/17.
@@ -46,8 +42,10 @@ public class ChefListViewAdapter extends FirebaseRecyclerAdapter<Chef, ChefListV
             @Override
             public void onClick(View v) {
                 String chefId = model.getId();
+                String chefName = model.getName();
                 Intent chatIntent = new Intent(context, ChatActivity.class);
                 chatIntent.putExtra(Constant.CHEF_ID, chefId);
+                chatIntent.putExtra(Constant.CHEF_NAME, chefName);
                 context.startActivity(chatIntent);
             }
         });
@@ -57,6 +55,6 @@ public class ChefListViewAdapter extends FirebaseRecyclerAdapter<Chef, ChefListV
     @Override
     public ChefListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ChefListViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chef_list_chef_item, parent, false));
+                .inflate(R.layout.item_chef_list_chef_container, parent, false));
     }
 }

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.example.frank.final_project.Adapter.ChefListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
@@ -14,6 +15,7 @@ import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,11 +24,14 @@ import butterknife.ButterKnife;
 
 public class CustomerDashboard extends AppCompatActivity {
 
+    @BindView(R.id.customer_dashboard_page_Pb)
+    ProgressBar mProgressBarView;
+
+    @BindView(R.id.customer_dashboard_page_chefList_lyout)
+    ScrollView mChefListView;
+
     @BindView(R.id.customer_dashboard_page_chefList_Rv)
     RecyclerView mChefList;
-
-    @BindView(R.id.customer_dashboard_page_Pb)
-    ProgressBar mProgressBar;
 
     private DatabaseReference chefRef;
 
@@ -36,22 +41,27 @@ public class CustomerDashboard extends AppCompatActivity {
         setContentView(R.layout.activity_customer_dashboard);
         ButterKnife.bind(this);
 
+        // Load page contents
         loading();
-
-
-
-
-
     }
 
+    /**
+     *  Load page contents
+     */
     private void loading() {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        // Show loading progress bar
+        showLoading();
+        // Read chef snapshot reference
         chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF);
+        // Attach chefs
         attachChefList();
-        mChefList.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
+        // Show contents
+        showContents();
     }
 
+    /**
+     *  Attach chef info to list
+     */
     private void attachChefList(){
         FirebaseRecyclerOptions<Chef> options =
                 new FirebaseRecyclerOptions.Builder<Chef>()
@@ -64,6 +74,22 @@ public class CustomerDashboard extends AppCompatActivity {
         mChefList.setLayoutManager(mLayoutManager);
         mChefList.setItemAnimator(new DefaultItemAnimator());
         mChefList.setAdapter(chefListAdapter);
+    }
+
+    /**
+     *  Show loading progress bar
+     */
+    private void showLoading(){
+        mChefListView.setVisibility(View.GONE);
+        mProgressBarView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     *  Show contents
+     */
+    private void showContents(){
+        mChefListView.setVisibility(View.VISIBLE);
+        mProgressBarView.setVisibility(View.GONE);
     }
 
 }

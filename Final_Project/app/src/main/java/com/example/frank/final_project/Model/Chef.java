@@ -11,17 +11,17 @@ public class Chef extends User {
     private String Id;
     private String name;
     private String phone;
-    private List<Message> messages;
     private Store store;
+    private String certificateUrl;
 
     public Chef(){
 
     }
 
-    public Chef(String Id, String name, String phone, List<Message> messages, Store store) {
+    public Chef(String Id, String name, String phone, Store store, String certificateUrl) {
         super(Id, name, phone);
-        this.messages = messages;
         this.store = store;
+        this.certificateUrl = certificateUrl;
     }
 
     public String getId() {
@@ -56,11 +56,11 @@ public class Chef extends User {
         this.store = store;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public String getCertificateUrl() {
+        return certificateUrl;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setCertificateUrl(String certificateUrl) {
+        this.certificateUrl = certificateUrl;
     }
 }

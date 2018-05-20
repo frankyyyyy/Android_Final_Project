@@ -9,6 +9,11 @@ public class Message {
     private String sender;
     private String time;
     private String content;
+
+    public Message(){
+
+    }
+
     public Message(String sender, String time, String content){
         this.sender = sender;
         this.time = time;

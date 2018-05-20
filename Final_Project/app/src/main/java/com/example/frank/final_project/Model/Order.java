@@ -15,20 +15,8 @@ public class Order {
     private List<Cake> cakes;
     private DeliveryMethod deliveryMethod;
 
-    public CompleteStatus getCompleteStatus() {
-        return completeStatus;
-    }
+    public Order(){
 
-    public void setCompleteStatus(CompleteStatus completeStatus) {
-        this.completeStatus = completeStatus;
-    }
-
-    private enum CompleteStatus{
-        MAKING, DElIVERING, COMPLETED
-    }
-
-    private enum DeliveryMethod {
-        PICKUP, DELIVERY
     }
 
     public Order(int id, String customerId, String storeId, List<Cake> cakes, CompleteStatus completeStatus, DeliveryMethod deliveryMethod){
@@ -78,6 +66,22 @@ public class Order {
 
     public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
         this.deliveryMethod = deliveryMethod;
+    }
+
+    public CompleteStatus getCompleteStatus() {
+        return completeStatus;
+    }
+
+    public void setCompleteStatus(CompleteStatus completeStatus) {
+        this.completeStatus = completeStatus;
+    }
+
+    private enum CompleteStatus{
+        MAKING, DElIVERING, COMPLETED
+    }
+
+    private enum DeliveryMethod {
+        PICKUP, DELIVERY
     }
 
 }

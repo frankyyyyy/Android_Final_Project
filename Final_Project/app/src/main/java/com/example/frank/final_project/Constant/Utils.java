@@ -32,6 +32,16 @@ public class Utils {
     }
 
     /**
+     * Check if passwords entered in two times are all the same
+     * @param password First time input
+     * @param confirm Second time input
+     * @return result
+     */
+    public static boolean confirmPassword(String password, String confirm){
+        return password.equals(confirm);
+    }
+
+    /**
      * Check password input validity
      * @param name input
      * @return validity

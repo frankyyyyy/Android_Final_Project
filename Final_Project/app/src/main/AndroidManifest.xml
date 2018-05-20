@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.CustomerDashboard">
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,10 +23,15 @@
             android:name=".Activity.RegisterActivity"
             android:label="@string/register_page_tittle" />
         <activity
-            android:name=".Activity.MainActivity"
-            android:label="@string/dashboard_page_tittle" />
+            android:name=".Activity.CustomerDashboard"
+            android:label="@string/customer_dashboard_page_tittle" />
         <activity android:name=".Activity.ChefDashboard" />
-        <activity android:name=".Activity.ChatActivity"></activity>
+        <activity android:name=".Activity.ChatActivity" />
+
+        <service
+            android:name=".Service.MessageNotifier"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

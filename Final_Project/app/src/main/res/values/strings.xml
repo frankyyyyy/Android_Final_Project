@@ -17,6 +17,8 @@
     <string name="register_page_email_error">Invalid emailInput address</string>
     <string name="register_page_password_Et">Password</string>
     <string name="register_page_password_error">6-16 characters required</string>
+    <string name="register_page_password_confirm_Et">Confirm password</string>
+    <string name="register_page_password_confirm_error">Password entered twice are not same</string>
     <string name="register_page_name_Et">Name (optional)</string>
     <string name="register_page_name_error">Only alphabets, numbers and _ allowed here </string>
     <string name="register_page_phoneNum_Et">Phone (optional)</string>
@@ -45,6 +47,9 @@
     <string name="register_page_verify_account_creation_success">Verify account created.</string>
     <string name="register_page_account_snapshot_creation_success">Account data storage created.</string>
     <string name="register_page_certificate_upload_success">Certificate uploaded.</string>
+    <string name="register_page_account_creation_fail">New account creation failed. </string>
+
+    <string name="register_page_register_success">Welcome to the new world.</string>
 
     //LoginPage
     <string name="login_page_tittle">Login</string>
@@ -56,9 +61,10 @@
     <string name="login_page_cancel_Btn">Cancel</string>
 
     <string name="login_page_warning_login_fail">Authentication failed.</string>
+    <string name="login_page_login_success">Welcome back</string>
 
     //Dashboard
-    <string name="dashboard_page_tittle">Dashboard</string>
+    <string name="customer_dashboard_page_tittle">Stores</string>
 
 
     //Chat
@@ -67,7 +73,6 @@
 
     <string name="refresh">Refresh</string>
     <string name="chat_page_try_again_warning">Loading fail. Please try again.</string>
-    <string name="chat_page_loading_fail_warning">Loading fail. Please try refresh.</string>
 
     <!--<string name="prompt_email">Email</string>-->
     <!--<string name="prompt_password">Password (optional)</string>-->

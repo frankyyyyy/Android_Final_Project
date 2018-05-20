@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.R;
-import com.example.frank.final_project.ViewHolder.ChefListViewHolder;
 import com.example.frank.final_project.ViewHolder.MessageListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -37,6 +36,6 @@ public class MessageListViewAdapter extends FirebaseRecyclerAdapter<Message, Mes
     @Override
     public MessageListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MessageListViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_page_message_container, parent, false));
+                .inflate(R.layout.item_chat_page_message_container, parent, false));
     }
 }

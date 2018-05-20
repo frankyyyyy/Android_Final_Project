@@ -14,6 +14,10 @@ public class Cake {
     private String ingredients;
     private int price;
 
+    public Cake(){
+
+    }
+
     public Cake(int id, String name, int rank, String size, String description, String ingredients, int price){
         this.id = id;
         this.name = name;

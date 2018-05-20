@@ -9,8 +9,6 @@ public class Constant {
     public static final int LOGIN_IN_LOADING_TIME = 2000;
     public static final int REGISTER_LOADING_TIME = 4000;
 
-    public static final String COUNT = "count";
-
     //Store
     public static final String STORE = "store";
     public static final String STORE_ID_FRONT = "store_";
@@ -23,6 +21,7 @@ public class Constant {
     //Chef
     public static final String USER = "user";
     public static final String CHEF_ID = "chefId";
+    public static final String CHEF_NAME = "chefName";
     public static final String STORE_ID = "storeId";
     public static final String PHONE = "phone";
     public static final String EMAIL = "email";
@@ -35,6 +34,7 @@ public class Constant {
 
     //Customer
     public static final String CUSTOMER_ID = "customerId";
+    public static final String CUSTOMER_NAME = "customerName";
     public static final String CUSTOMER = "customer";
     public static final String POSTAL_ADDRESS = "postalAddress";
 
@@ -60,4 +60,5 @@ public class Constant {
     public static final String SENDER = "sender";
     public static final String RECEIVER = "receiver";
     public static final String CONTENT = "content";
+    public static final String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 }

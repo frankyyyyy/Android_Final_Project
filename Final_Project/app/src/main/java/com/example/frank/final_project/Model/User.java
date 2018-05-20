@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class User implements Serializable {
 
-    public enum role{CHEF, CUSTOMER};
+    public enum Role {CHEF, CUSTOMER}
 
     private String Id;
     private String name;
