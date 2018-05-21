@@ -25,7 +25,7 @@
         <activity
             android:name=".Activity.CustomerDashboard"
             android:label="@string/customer_dashboard_page_tittle" />
-        <activity android:name=".Activity.ChefDashboard" />
+        <activity android:name=".Activity.StoreDashboard" />
         <activity android:name=".Activity.ChatActivity" />
 
         <service

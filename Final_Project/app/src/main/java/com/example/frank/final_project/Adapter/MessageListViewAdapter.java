@@ -28,8 +28,8 @@ public class MessageListViewAdapter extends FirebaseRecyclerAdapter<Message, Mes
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull MessageListViewHolder holder, int position, @NonNull Message model) {
-        holder.bind(model);
+    protected void onBindViewHolder(@NonNull MessageListViewHolder holder, int position, @NonNull Message message) {
+        holder.bind(message);
     }
 
     @NonNull

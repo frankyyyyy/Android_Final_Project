@@ -2,7 +2,6 @@ package com.example.frank.final_project.Activity;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -415,7 +414,7 @@ public class RegisterActivity extends AppCompatActivity {
         switch (roleSelectionId) {
             // Go to chef dashboard
             case R.id.register_page_chef_Rb:
-                Intent chefDashboard = new Intent(getApplicationContext(), ChefDashboard.class);
+                Intent chefDashboard = new Intent(getApplicationContext(), StoreDashboard.class);
                 startActivity(chefDashboard);
                 finish();
                 // Show welcome message

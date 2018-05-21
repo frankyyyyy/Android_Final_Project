@@ -36,17 +36,18 @@ public class ChefListViewAdapter extends FirebaseRecyclerAdapter<Chef, ChefListV
 
 
     @Override
-    protected void onBindViewHolder(@NonNull ChefListViewHolder holder, int position, @NonNull final Chef model) {
-        holder.bind(model);
+    protected void onBindViewHolder(@NonNull ChefListViewHolder holder, int position, @NonNull final Chef chef) {
+        holder.bind(chef);
         holder.getChefItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String chefId = model.getId();
-                String chefName = model.getName();
+                String chefId = chef.getId();
+                String chefName = chef.getName();
                 Intent chatIntent = new Intent(context, ChatActivity.class);
                 chatIntent.putExtra(Constant.CHEF_ID, chefId);
                 chatIntent.putExtra(Constant.CHEF_NAME, chefName);
                 context.startActivity(chatIntent);
+
             }
         });
     }

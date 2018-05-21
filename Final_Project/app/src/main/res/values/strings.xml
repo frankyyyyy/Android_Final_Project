@@ -66,6 +66,9 @@
     //Dashboard
     <string name="customer_dashboard_page_tittle">Stores</string>
 
+    <string name="chef_dashboard_setting">Settings</string>
+    <string name="chef_dashboard_sign_out">Sign out</string>
+
 
     //Chat
     <string name="chat_page_send_button">Send</string>

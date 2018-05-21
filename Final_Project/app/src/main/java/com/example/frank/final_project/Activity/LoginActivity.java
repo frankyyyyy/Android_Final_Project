@@ -10,13 +10,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Constant.Utils;
+import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
@@ -107,12 +110,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Login successful, open dashboard for user.
                 if(task.isSuccessful()){
-                    Intent intent = new Intent(getApplicationContext(), CustomerDashboard.class);
-                    startActivity(intent);
-                    finish();
+                    verifyRole();
                     // Show welcome message
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.login_page_login_success) + ": " + email, Toast.LENGTH_LONG).show();
+                    finish();
                 }
                 // Login failed, show error message
                 else{
@@ -122,6 +124,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void verifyRole(){
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId) == null){
+            Intent storeIntent = new Intent(this, StoreDashboard.class);
+            startActivity(storeIntent);
+        }else{
+            Intent customerIntent = new Intent(this, CustomerDashboard.class);
+            startActivity(customerIntent);
+        }
     }
 
 

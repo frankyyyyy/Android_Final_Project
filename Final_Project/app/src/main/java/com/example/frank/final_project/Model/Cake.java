@@ -6,8 +6,8 @@ package com.example.frank.final_project.Model;
 
 public class Cake {
 
-    private int id;
     private String name;
+    private String imageUrl;
     private int rank;
     private String size;
     private String description;
@@ -18,22 +18,14 @@ public class Cake {
 
     }
 
-    public Cake(int id, String name, int rank, String size, String description, String ingredients, int price){
-        this.id = id;
+    public Cake(String name, String imageUrl, int rank, String size, String description, String ingredients, int price){
         this.name = name;
+        this.imageUrl = imageUrl;
         this.rank = rank;
         this.size = size;
         this.description = description;
         this.ingredients = ingredients;
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -82,5 +74,13 @@ public class Cake {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

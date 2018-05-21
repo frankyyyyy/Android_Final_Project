@@ -1,6 +1,10 @@
 package com.example.frank.final_project.Activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -63,37 +67,10 @@ public class ChatActivity extends AppCompatActivity {
 
         // Load page contents
         loading();
-        setListenerToMessageUpdate();
-    }
-
-    private void setListenerToMessageUpdate() {
-        oppositeMessageRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                if(mMessageListView.getY() == 0){
-//                    mMessageListView.scrollTo(0,0);
-
-//                }
-//                To do scroll to bottom when new message add
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) { }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s)  { }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)  { }
-        });
     }
 
     @OnClick(R.id.chat_page_send_Btn)
     public void sendMessage(){
-        // Show loading progress bar
-        showLoading();
         // Read message content
         String newMessageContent = mSendContent.getText().toString();
         // Read time from system
@@ -123,6 +100,7 @@ public class ChatActivity extends AppCompatActivity {
      *  Load page contents
      */
     private void loading() {
+        showLoading();
         // Load current user Id
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Load chat target user Id
@@ -135,7 +113,6 @@ public class ChatActivity extends AppCompatActivity {
         attachMessageList();
         // Show contents
         showContents();
-
     }
 
     /**
@@ -174,8 +151,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private DatabaseReference selfMessageRef() {
         return (userRole == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(oppositeUserId).child(Constant.MESSAGES).child(userId) :
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(oppositeUserId).child(Constant.MESSAGES).child(userId);
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId).child(Constant.MESSAGES).child(oppositeUserId) :
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.MESSAGES).child(oppositeUserId);
     }
 
     /**

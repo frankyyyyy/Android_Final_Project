@@ -1,0 +1,43 @@
+package com.example.frank.final_project.Adapter;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+
+import com.example.frank.final_project.Model.Cake;
+import com.example.frank.final_project.ViewHolder.MenuViewHolder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.squareup.picasso.Picasso;
+
+/**
+ * Created by Frank on 2018/5/21.
+ */
+
+public class MenuViewAdapter extends FirebaseRecyclerAdapter<Cake, MenuViewHolder> {
+    private final Context context;
+
+    /**
+     * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
+     * {@link FirebaseRecyclerOptions} for configuration options.
+     *
+     * @param options
+     */
+    public MenuViewAdapter(@NonNull FirebaseRecyclerOptions<Cake> options, Context context) {
+        super(options);
+        this.context = context;
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull MenuViewHolder holder, int position, @NonNull Cake cake) {
+        holder.bind(cake);
+        Picasso.with(context).load(cake.getImageUrl()).into(holder.getCakeImageView());
+    }
+
+    @NonNull
+    @Override
+    public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return null;
+    }
+}

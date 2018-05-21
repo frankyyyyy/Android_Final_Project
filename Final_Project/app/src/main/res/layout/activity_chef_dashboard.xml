@@ -7,12 +7,28 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context=".Activity.ChefDashboard">
+    tools:context=".Activity.StoreDashboard">
 
-    <TextView
+    <ScrollView
+        android:id="@+id/chef_dashboard_page_menu_lyout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/chef_dashboard_page_menu_Rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/chef_dashboard_page_Pb"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
 
 </RelativeLayout>

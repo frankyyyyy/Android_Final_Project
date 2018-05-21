@@ -1,5 +1,6 @@
 package com.example.frank.final_project.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,6 +14,7 @@ import com.example.frank.final_project.Adapter.ChefListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.R;
+import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,6 +59,32 @@ public class CustomerDashboard extends AppCompatActivity {
         attachChefList();
         // Show contents
         showContents();
+        // Start message service
+        startMessageService();
+    }
+
+    /**
+     *  Show loading progress bar
+     */
+    private void showLoading(){
+        mChefListView.setVisibility(View.GONE);
+        mProgressBarView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     *  Show chef list contents
+     */
+    private void showContents(){
+        mChefListView.setVisibility(View.VISIBLE);
+        mProgressBarView.setVisibility(View.GONE);
+    }
+
+    /**
+     *  Start message notification service
+     */
+    private void startMessageService() {
+        Intent messageNotifier = new Intent(this, MessageNotifier.class);
+        startService(messageNotifier);
     }
 
     /**
@@ -75,21 +103,4 @@ public class CustomerDashboard extends AppCompatActivity {
         mChefList.setItemAnimator(new DefaultItemAnimator());
         mChefList.setAdapter(chefListAdapter);
     }
-
-    /**
-     *  Show loading progress bar
-     */
-    private void showLoading(){
-        mChefListView.setVisibility(View.GONE);
-        mProgressBarView.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     *  Show contents
-     */
-    private void showContents(){
-        mChefListView.setVisibility(View.VISIBLE);
-        mProgressBarView.setVisibility(View.GONE);
-    }
-
 }

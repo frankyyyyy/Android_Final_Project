@@ -6,6 +6,6 @@
 
     <color name="main_page_title">#000000</color>
 
-    <color name="chat_room_self">#80DEEA</color>
-    <color name="chat_room_opposite">#F48FB1</color>
+    <color name="chat_room_customer">#80DEEA</color>
+    <color name="chat_room_chef">#F48FB1</color>
 </resources>
