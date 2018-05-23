@@ -3,10 +3,13 @@ package com.example.frank.final_project.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.frank.final_project.Model.Cake;
+import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.MenuViewHolder;
+import com.example.frank.final_project.ViewHolder.MessageListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
@@ -32,12 +35,15 @@ public class MenuViewAdapter extends FirebaseRecyclerAdapter<Cake, MenuViewHolde
     @Override
     protected void onBindViewHolder(@NonNull MenuViewHolder holder, int position, @NonNull Cake cake) {
         holder.bind(cake);
-        Picasso.with(context).load(cake.getImageUrl()).into(holder.getCakeImageView());
+        if(cake.getImageUrl() != null){
+            Picasso.with(context).load(cake.getImageUrl()).into(holder.getCakeImageView());
+        }
     }
 
     @NonNull
     @Override
     public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        return new MenuViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_menu_cake_container, parent, false));
     }
 }

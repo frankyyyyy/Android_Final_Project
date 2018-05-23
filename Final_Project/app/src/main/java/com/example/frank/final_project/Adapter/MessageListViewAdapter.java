@@ -11,6 +11,7 @@ import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.MessageListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by Frank on 2018/5/18.

@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void verifyRole(){
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if(FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId) == null){
+        if(FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId) != null){
             Intent storeIntent = new Intent(this, StoreDashboard.class);
             startActivity(storeIntent);
         }else{

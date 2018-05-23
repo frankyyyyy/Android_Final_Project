@@ -8,20 +8,18 @@ public class Cake {
 
     private String name;
     private String imageUrl;
-    private int rank;
     private String size;
     private String description;
     private String ingredients;
-    private int price;
+    private double price;
 
     public Cake(){
 
     }
 
-    public Cake(String name, String imageUrl, int rank, String size, String description, String ingredients, int price){
+    public Cake(String name, String imageUrl, String size, String description, String ingredients, double price){
         this.name = name;
         this.imageUrl = imageUrl;
-        this.rank = rank;
         this.size = size;
         this.description = description;
         this.ingredients = ingredients;
@@ -34,14 +32,6 @@ public class Cake {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
     }
 
     public String getSize() {
@@ -68,11 +58,11 @@ public class Cake {
         this.ingredients = ingredients;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

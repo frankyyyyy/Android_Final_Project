@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -140,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
 
     /**
      *  Get corresponding reference to message
-     * @return chef regarded message reference
+     * @return opposite regarded message reference
      */
     private DatabaseReference oppositeMessageRef(){
         return (userRole == User.Role.CUSTOMER) ?
@@ -148,7 +149,10 @@ public class ChatActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(oppositeUserId).child(Constant.MESSAGES).child(userId);
     }
 
-
+    /**
+     *  Get corresponding reference to message
+     * @return self regarded message reference
+     */
     private DatabaseReference selfMessageRef() {
         return (userRole == User.Role.CUSTOMER) ?
                 FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId).child(Constant.MESSAGES).child(oppositeUserId) :
@@ -165,6 +169,7 @@ public class ChatActivity extends AppCompatActivity {
                         .setLifecycleOwner(this)
                         .build();
         messageListAdapter = new MessageListViewAdapter(options, this);
+        mMessageList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mMessageList.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mMessageList.setLayoutManager(mLayoutManager);

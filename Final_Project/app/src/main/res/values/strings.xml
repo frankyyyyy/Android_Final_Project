@@ -3,7 +3,10 @@
 
     <string name="connection_issue_warning">Woooops! Connection issue happens. Please try again later.</string>
 
-
+    //Warning
+    <string name="exit_tittle">Are you sure?</string>
+    <string name="exit_confirm">Confirm</string>
+    <string name="exit_cancel">Cancel</string>
 
     //MainPage
     <string name="main_page_tittle">Chef Legend</string>
@@ -66,6 +69,7 @@
     //Dashboard
     <string name="customer_dashboard_page_tittle">Stores</string>
 
+    <string name="chef_dashboard_add">Add</string>
     <string name="chef_dashboard_setting">Settings</string>
     <string name="chef_dashboard_sign_out">Sign out</string>
 
@@ -76,6 +80,31 @@
 
     <string name="refresh">Refresh</string>
     <string name="chat_page_try_again_warning">Loading fail. Please try again.</string>
+
+    //Cake
+    <string name="cake_add_tittle">Please full fill following blanks to add a new cake:</string>
+    <string name="cake_name_hint">Cake name</string>
+
+    <string name="allergy_ingredients">Ingredients Allergy Guide:</string>
+    <string name="ingredients_milk">Milk</string>
+    <string name="ingredients_egg">Egg</string>
+    <string name="ingredients_nuts">Nuts</string>
+    <string name="ingredients_gluten">Gluten</string>
+    <string name="ingredients_alcohol">Alcohol</string>
+    <string name="ingredients_sugar">Sugar</string>
+
+    <string name="cake_size_text">The largest size of this cake:</string>
+    <string-array name="cake_size_unit">
+        <item>inch</item>
+        <item>centimeter</item>
+    </string-array>
+
+    <string name="cake_price_text">Please set a price for your cake:</string>
+
+    <string name="cake_description_hint">Put your new cake description here.</string>
+    <string name="cake_picture">Press add button to add your cake picture here:</string>
+    <string name="cake_add_submit">Submit</string>
+    <string name="cake_add_cancel">Cancel</string>
 
     <!--<string name="prompt_email">Email</string>-->
     <!--<string name="prompt_password">Password (optional)</string>-->

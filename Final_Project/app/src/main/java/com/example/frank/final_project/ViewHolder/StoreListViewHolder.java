@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
  * Created by Frank on 2018/5/17.
  */
 
-public class ChefListViewHolder extends RecyclerView.ViewHolder {
+public class StoreListViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.chef_list_storeName_Tv)
     TextView storeName;
@@ -28,9 +28,9 @@ public class ChefListViewHolder extends RecyclerView.ViewHolder {
     RatingBar storeRate;
 
     @BindView(R.id.chef_list_chef_item)
-    LinearLayout chefItem;
+    LinearLayout storeItem;
 
-    public ChefListViewHolder(View itemView) {
+    public StoreListViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
@@ -41,8 +41,8 @@ public class ChefListViewHolder extends RecyclerView.ViewHolder {
         storeRate.setRating(chef.getStore().getRate());
     }
 
-    public LinearLayout getChefItem(){
-        return chefItem;
+    public LinearLayout getStoreItem(){
+        return storeItem;
     }
 
 

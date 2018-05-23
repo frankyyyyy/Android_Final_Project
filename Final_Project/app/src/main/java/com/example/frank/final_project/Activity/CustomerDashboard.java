@@ -4,20 +4,20 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
-import com.example.frank.final_project.Adapter.ChefListViewAdapter;
+import com.example.frank.final_project.Adapter.StoreListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -96,7 +96,8 @@ public class CustomerDashboard extends AppCompatActivity {
                         .setQuery(chefRef, Chef.class)
                         .setLifecycleOwner(this)
                         .build();
-        FirebaseRecyclerAdapter chefListAdapter = new ChefListViewAdapter(options, this);
+        FirebaseRecyclerAdapter chefListAdapter = new StoreListViewAdapter(options, this);
+        mChefList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mChefList.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mChefList.setLayoutManager(mLayoutManager);

@@ -61,4 +61,11 @@ public class Constant {
     public static final String RECEIVER = "receiver";
     public static final String CONTENT = "content";
     public static final String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
+
+    // Cake
+    public static final String CAKE_NAME = "name";
+    public static final String CAKE_SIZE = "size";
+    public static final String CAKE_INGREDIENTS = "ingredients";
+    public static final String CAKE_DESCRIPTION = "description";
+    public static final String CAKE_PRIZE = "price";
 }
