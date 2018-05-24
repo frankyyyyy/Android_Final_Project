@@ -9,6 +9,13 @@
     android:paddingTop="16dp"
     tools:context=".Activity.AddCakeActivity">
 
+    <ProgressBar
+        android:id="@+id/add_cake_Pv"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,6 +23,7 @@
         android:baselineAligned="false">
 
         <LinearLayout
+            android:id="@+id/add_cake_form_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

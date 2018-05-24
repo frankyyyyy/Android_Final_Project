@@ -25,7 +25,9 @@
         <activity
             android:name=".Activity.CustomerDashboard"
             android:label="@string/customer_dashboard_page_tittle" />
-        <activity android:name=".Activity.StoreDashboard" />
+        <activity
+            android:name=".Activity.StoreDashboard"
+            android:label="@string/store_dashboard_page_tittle" />
         <activity android:name=".Activity.ChatActivity" />
 
         <service
@@ -33,7 +35,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".Activity.AddCakeActivity"></activity>
+        <activity android:name=".Activity.AddCakeActivity" />
+        <activity android:name=".Activity.ContactActivity"></activity>
     </application>
 
 </manifest>

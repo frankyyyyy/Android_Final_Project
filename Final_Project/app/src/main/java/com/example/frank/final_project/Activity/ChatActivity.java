@@ -1,10 +1,6 @@
 package com.example.frank.final_project.Activity;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -19,17 +15,18 @@ import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.MessageListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -52,10 +49,6 @@ public class ChatActivity extends AppCompatActivity {
     @BindView(R.id.chat_page_send_contents_Et)
     EditText mSendContent;
 
-    private String userId;
-    private User.Role userRole;
-    private String oppositeUserId;
-    private String oppositeUserName;
     private DatabaseReference selfMessageRef;
     private DatabaseReference oppositeMessageRef;
     private FirebaseRecyclerAdapter messageListAdapter;
@@ -77,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         // Read time from system
         String timeStamp = getDatetime();
         // Build a new message
-        Message newMessage = new Message(oppositeUserName, timeStamp, newMessageContent);
+        Message newMessage = new Message(CurrentUser.getOppositeName(), timeStamp, newMessageContent);
         // Push message to database regarding to snapshot reference
         String key = oppositeMessageRef.push().getKey();
         oppositeMessageRef.child(key).setValue(newMessage);
@@ -102,10 +95,6 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void loading() {
         showLoading();
-        // Load current user Id
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Load chat target user Id
-        loadOppositeUserInfo();
         // Read self message snapshot reference
         selfMessageRef = selfMessageRef();
         // Read opposite message snapshot reference
@@ -117,36 +106,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
-     *  Load chat target user id from previous page
-     */
-    private void loadOppositeUserInfo(){
-        Intent intent = getIntent();
-        if(intent != null){
-            // The user is a chef, chat target is a customer.
-            if(intent.getStringExtra(Constant.CHEF_ID) == null){
-                userRole = User.Role.CHEF;
-                oppositeUserId = intent.getStringExtra(Constant.CUSTOMER_ID);
-                oppositeUserName = intent.getStringExtra(Constant.CUSTOMER_NAME);
-            }
-            // The user is a customer, chat target is a chef.
-            else{
-                userRole = User.Role.CUSTOMER;
-                oppositeUserId = intent.getStringExtra(Constant.CHEF_ID);
-                oppositeUserName = intent.getStringExtra(Constant.CHEF_NAME);
-            }
-        }else{
-            tryAgainWarning();
-        }
-    }
-
-    /**
      *  Get corresponding reference to message
      * @return opposite regarded message reference
      */
     private DatabaseReference oppositeMessageRef(){
-        return (userRole == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(oppositeUserId).child(Constant.MESSAGES).child(userId) :
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(oppositeUserId).child(Constant.MESSAGES).child(userId);
+        return (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getOppositeId()).child(Constant.MESSAGES).child(CurrentUser.getUserId()) :
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getOppositeId()).child(Constant.MESSAGES).child(CurrentUser.getUserId());
     }
 
     /**
@@ -154,9 +120,9 @@ public class ChatActivity extends AppCompatActivity {
      * @return self regarded message reference
      */
     private DatabaseReference selfMessageRef() {
-        return (userRole == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId).child(Constant.MESSAGES).child(oppositeUserId) :
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.MESSAGES).child(oppositeUserId);
+        return (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getOppositeId()) :
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getOppositeId());
     }
 
     /**
@@ -200,6 +166,6 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void tryAgainWarning(){
         finish();
-        Toast.makeText(getApplicationContext(), getString(R.string.chat_page_try_again_warning), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.try_again_warning), Toast.LENGTH_LONG).show();
     }
 }

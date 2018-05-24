@@ -18,8 +18,10 @@ import android.widget.Toast;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Constant.Utils;
 import com.example.frank.final_project.Model.Chef;
+import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.Customer;
 import com.example.frank.final_project.Model.Store;
+import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -65,6 +67,9 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.register_page_chef_layout)
     LinearLayout mChefLayout;
 
+    @BindView(R.id.register_page_store_name_Et)
+    EditText mStoreName;
+
     @BindView(R.id.register_page_businessStyle_Rg)
     RadioGroup businessStyleSelection;
 
@@ -87,6 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String name;
     private String phoneNum;
     private int roleSelectionId;
+    private String storeName;
     private String retailAddress;
     private String postalAddress;
 
@@ -167,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
         name = mName.getText().toString();
         phoneNum = mPhoneNum.getText().toString();
         roleSelectionId = mRoleSelection.getCheckedRadioButtonId();
+        storeName = mStoreName.getText().toString();
         retailAddress = mRetailAddress.getText().toString();
         postalAddress = mPostalAddress.getText().toString();
     }
@@ -257,6 +264,9 @@ public class RegisterActivity extends AppCompatActivity {
         else if ((!phoneNum.isEmpty()) && !Utils.phoneNumInputIsLegal(phoneNum)) {
             mPhoneNum.setError(getString(R.string.register_page_phoneNum_error));
         }
+        else if(storeName.isEmpty()){
+            mStoreName.setError(getString(R.string.register_page_store_name_error));
+        }
         // Check agreement checkbox
         else if (!mAgreement.isChecked()) {
             Toast.makeText(this, getString(R.string.register_page_agreement_error), Toast.LENGTH_LONG).show();
@@ -271,8 +281,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void createVerifyAccount(){
         // Show progress bar
-        mProgressBar.setVisibility(View.VISIBLE);
-        mRegisterForm.setVisibility(View.GONE);
+        showLoading();
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -289,6 +298,22 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     *  Show loading progress bar
+     */
+    private void showLoading(){
+        mRegisterForm.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     *  Show contents
+     */
+    private void showContents(){
+        mRegisterForm.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     /**
@@ -329,6 +354,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else{
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
+                    showContents();
                 }
             }
         });
@@ -356,6 +382,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
+                    showContents();
                 }
             }
         });
@@ -366,6 +393,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void createStore() {
         Store store = new Store();
+        store.setName(storeName);
         if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
                 && retailAddress != null) store.setAddress(retailAddress);
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE);
@@ -381,6 +409,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
+                    showContents();
                 }
             }
         });
@@ -402,6 +431,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
+                    showContents();
                 }
             }
         });
@@ -412,18 +442,26 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void openDashboard(){
         switch (roleSelectionId) {
-            // Go to chef dashboard
+            // Go to store dashboard
             case R.id.register_page_chef_Rb:
-                Intent chefDashboard = new Intent(getApplicationContext(), StoreDashboard.class);
-                startActivity(chefDashboard);
+                Intent storeIntent = new Intent(getApplicationContext(), StoreDashboard.class);
+                CurrentUser.setUserId(userId);
+                CurrentUser.setUserRole(User.Role.CHEF);
+                CurrentUser.setUserEmail(email);
+                CurrentUser.setUserPassword(password);
+                startActivity(storeIntent);
                 finish();
                 // Show welcome message
                 Toast.makeText(getApplicationContext(), getString(R.string.register_page_register_success), Toast.LENGTH_LONG).show();
                 break;
             // Go to customer dashboard
             case R.id.register_page_customer_Rb:
-                Intent customerDashboard = new Intent(getApplicationContext(), CustomerDashboard.class);
-                startActivity(customerDashboard);
+                Intent customerIntent = new Intent(getApplicationContext(), CustomerDashboard.class);
+                CurrentUser.setUserId(userId);
+                CurrentUser.setUserRole(User.Role.CUSTOMER);
+                CurrentUser.setUserEmail(email);
+                CurrentUser.setUserPassword(password);
+                startActivity(customerIntent);
                 finish();
                 // Show welcome message
                 Toast.makeText(getApplicationContext(), getString(R.string.register_page_register_success), Toast.LENGTH_LONG).show();

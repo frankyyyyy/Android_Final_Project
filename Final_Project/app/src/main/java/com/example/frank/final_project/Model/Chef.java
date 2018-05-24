@@ -13,15 +13,17 @@ public class Chef extends User {
     private String phone;
     private Store store;
     private String certificateUrl;
+    private Contact contact;
 
     public Chef(){
 
     }
 
-    public Chef(String Id, String name, String phone, Store store, String certificateUrl) {
+    public Chef(String Id, String name, String phone, Store store, String certificateUrl, Contact contact) {
         super(Id, name, phone);
         this.store = store;
         this.certificateUrl = certificateUrl;
+        this.contact = contact;
     }
 
     public String getId() {
@@ -62,5 +64,13 @@ public class Chef extends User {
 
     public void setCertificateUrl(String certificateUrl) {
         this.certificateUrl = certificateUrl;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }

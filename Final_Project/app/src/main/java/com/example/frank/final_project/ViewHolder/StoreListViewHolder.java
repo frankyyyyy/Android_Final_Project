@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
  * Created by Frank on 2018/5/17.
  */
 
-public class StoreListViewHolder extends RecyclerView.ViewHolder {
+public class StoreListViewHolder extends RecyclerView.ViewHolder{
 
     @BindView(R.id.chef_list_storeName_Tv)
     TextView storeName;
@@ -27,7 +27,7 @@ public class StoreListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.chef_list_storeRate_Rb)
     RatingBar storeRate;
 
-    @BindView(R.id.chef_list_chef_item)
+    @BindView(R.id.chef_item)
     LinearLayout storeItem;
 
     public StoreListViewHolder(View itemView) {
@@ -44,6 +44,4 @@ public class StoreListViewHolder extends RecyclerView.ViewHolder {
     public LinearLayout getStoreItem(){
         return storeItem;
     }
-
-
 }

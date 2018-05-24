@@ -6,9 +6,6 @@ package com.example.frank.final_project.Constant;
 
 public class Constant {
 
-    public static final int LOGIN_IN_LOADING_TIME = 2000;
-    public static final int REGISTER_LOADING_TIME = 4000;
-
     //Store
     public static final String STORE = "store";
     public static final String STORE_ID_FRONT = "store_";
@@ -25,12 +22,14 @@ public class Constant {
     public static final String STORE_ID = "storeId";
     public static final String PHONE = "phone";
     public static final String EMAIL = "email";
+    public static final String PASSWORD = "password";
     public static final String SECURITY_QUESTION = "security_question";
     public static final String QUESTION = "question";
     public static final String ANSWER = "answer";
     public static final String MESSAGES = "messages";
     public static final String CHEF = "chef";
     public static final String CERTIFICATE = "certificate";
+    public static final String CONTACT = "contact";
 
     //Customer
     public static final String CUSTOMER_ID = "customerId";
@@ -46,13 +45,6 @@ public class Constant {
     public static final String DESCRIPTION = "description";
     public static final String INGREDIENTS = "ingredients";
     public static final String PRICE = "price";
-
-    //Order
-    public static final String ORDERS = "orders";
-    public static final String ORDER_ID_FRONT = "order_";
-    public static final String COMPLETE_STATUS = "completeStatus";
-    public static final String CAKES = "cakes";
-    public static final String DELIVERY_METHOD = "deliveryMethod";
 
     //message
     public static final String MESSAGE_ID_FRONT = "message_";

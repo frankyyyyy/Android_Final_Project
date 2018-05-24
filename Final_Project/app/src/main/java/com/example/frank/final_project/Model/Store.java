@@ -15,21 +15,17 @@ public class Store {
     private boolean status;
     private SaleType saleType;
     private String address;
-    private List<Cake> menu;
-    private List<Order> orders;
 
     public Store(){
 
     }
 
-    public Store(String name, float rate, boolean status, SaleType saleType, String address, List<Cake> menu, List<Order> orders){
+    public Store(String name, float rate, boolean status, SaleType saleType, String address){
         this.name = name;
         this.rate = rate;
         this.status = status;
         this.saleType = saleType;
         this.address = address;
-        this.menu = menu;
-        this.orders = orders;
     }
 
     public String getName() {
@@ -64,14 +60,6 @@ public class Store {
         this.saleType = saleType;
     }
 
-    public List<Cake> getMenu() {
-        return menu;
-    }
-
-    public void setMenu(List<Cake> menu) {
-        this.menu = menu;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -80,11 +68,4 @@ public class Store {
         this.address = address;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
 }

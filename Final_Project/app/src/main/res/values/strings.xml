@@ -3,7 +3,13 @@
 
     <string name="connection_issue_warning">Woooops! Connection issue happens. Please try again later.</string>
 
+    //Menu
+    <string name="message">Messages</string>
+    <string name="setting">Settings</string>
+    <string name="sign_out">Sign out</string>
+
     //Warning
+    <string name="try_again_warning">Loading fail. Please try again.</string>
     <string name="exit_tittle">Are you sure?</string>
     <string name="exit_confirm">Confirm</string>
     <string name="exit_cancel">Cancel</string>
@@ -30,6 +36,9 @@
     <string name="register_page_role_selection">Register as a: </string>
     <string name="register_page_chef_Rb">Chef</string>
     <string name="register_page_customer_Rb">Customer</string>
+
+    <string name="register_page_store_name_Et">Store Name</string>
+    <string name="register_page_store_name_error">Store Name Required</string>
 
     <string name="register_page_business_selection">Business Style: </string>
     <string name="register_page_retail_Rb">Retail</string>
@@ -68,18 +77,14 @@
 
     //Dashboard
     <string name="customer_dashboard_page_tittle">Stores</string>
-
-    <string name="chef_dashboard_add">Add</string>
-    <string name="chef_dashboard_setting">Settings</string>
-    <string name="chef_dashboard_sign_out">Sign out</string>
-
+    <string name="store_dashboard_page_tittle">Menu</string>
 
     //Chat
     <string name="chat_page_send_button">Send</string>
     <string name="chat_page_input">Input</string>
 
     <string name="refresh">Refresh</string>
-    <string name="chat_page_try_again_warning">Loading fail. Please try again.</string>
+
 
     //Cake
     <string name="cake_add_tittle">Please full fill following blanks to add a new cake:</string>

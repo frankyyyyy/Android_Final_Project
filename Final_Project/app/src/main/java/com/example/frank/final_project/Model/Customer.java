@@ -11,17 +11,17 @@ public class Customer extends User {
     private String Id;
     private String name;
     private String phone;
-    private List<Order> orders;
     private String postalAddress;
+    private String contact;
 
     public Customer(){
 
     }
 
-    public Customer(String Id, String name, String phone, List<String> chefIds, List<Order> orders, String postalAddress) {
+    public Customer(String Id, String name, String phone, List<String> chefIds, String postalAddress, String contact) {
         super(Id, name, phone);
-        this.orders = orders;
         this.postalAddress = postalAddress;
+        this.contact = contact;
     }
 
     public String getPostalAddress() {
@@ -30,14 +30,6 @@ public class Customer extends User {
 
     public void setPostalAddress(String postalAddress) {
         this.postalAddress = postalAddress;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 
     public String getId() {
@@ -62,5 +54,13 @@ public class Customer extends User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }

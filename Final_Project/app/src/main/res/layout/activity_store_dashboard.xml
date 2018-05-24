@@ -16,28 +16,14 @@
         android:layout_centerInParent="true"
         android:visibility="gone"/>
 
-    <EditText
-        android:id="@+id/editText"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/store_dashboard_page_menu_Rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
-
-    <ScrollView
-        android:id="@+id/store_dashboard_page_menu_lyout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/store_dashboard_page_menu_Rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </ScrollView>
+        android:layout_height="wrap_content" >
+    </android.support.v7.widget.RecyclerView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/store_dashboard_page_add_Btn"
+        android:id="@+id/store_dashboard_page_float_Btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

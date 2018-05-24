@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,6 +38,12 @@ import butterknife.OnClick;
 
 public class AddCakeActivity extends AppCompatActivity {
 
+    @BindView(R.id.add_cake_Pv)
+    ProgressBar mProgressBarView;
+
+    @BindView(R.id.add_cake_form_view)
+    LinearLayout mAddCakeForm;
+
     @BindView(R.id.add_cake_name_Et)
     EditText mCakeName;
 
@@ -60,6 +68,7 @@ public class AddCakeActivity extends AppCompatActivity {
     private String cakeDescription;
     private String cakePictureUri;
 
+    private String userId;
     private Uri localPictureUri;
     private DatabaseReference menuRef;
     private StorageReference cakePictureRef;
@@ -69,7 +78,13 @@ public class AddCakeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cake);
         ButterKnife.bind(this);
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
+
+
+
+
+
 
     @OnClick(R.id.add_cake_picture_Iv)
     public void addPicture(){
@@ -103,6 +118,14 @@ public class AddCakeActivity extends AppCompatActivity {
                 break;
         }
     }
+
+
+
+
+
+
+
+
 
     @OnClick({R.id.add_cake_submit_Btn, R.id.add_cake_cancel_Btn})
     public void onClick(View view){
@@ -154,7 +177,16 @@ public class AddCakeActivity extends AppCompatActivity {
                 }, getFragmentManager());
     }
 
+
+
+
+
+
+
+
+
     private void addNewCakeToDatabase() {
+        showLoading();
         // Read data from form
         cakeName = mCakeName.getText().toString();
         for (CheckBox ingredient: mIngredientList) {
@@ -176,9 +208,7 @@ public class AddCakeActivity extends AppCompatActivity {
             newCake.setPrice(cakePrice);
             newCake.setDescription(cakeDescription);
             // Insert new cake
-            menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).
-                    child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
-                    child(Constant.STORE).child(Constant.MENU);
+            menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU);
             final String cakeId = menuRef.push().getKey();
             menuRef.child(cakeId).setValue(newCake).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -186,9 +216,7 @@ public class AddCakeActivity extends AppCompatActivity {
                     if(task.isSuccessful())
                     {
                         // Upload cake picture.
-                        cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).
-                                child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
-                                child(Constant.STORE).child(Constant.MENU).child(cakeId);
+                        cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU).child(cakeId);
                         cakePictureRef.putFile(localPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -206,6 +234,7 @@ public class AddCakeActivity extends AppCompatActivity {
                                 }
                                 else
                                 {
+                                    showContents();
                                     String message = task.getException().getMessage();
                                     Toast.makeText(AddCakeActivity.this, "Error occured: " + message, Toast.LENGTH_SHORT).show();
                                 }
@@ -215,6 +244,7 @@ public class AddCakeActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        showContents();
                         String message = task.getException().getMessage();
                         Toast.makeText(AddCakeActivity.this, "Error occured: " + message, Toast.LENGTH_SHORT).show();
                     }
@@ -250,5 +280,19 @@ public class AddCakeActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     *  Show loading progress bar
+     */
+    private void showLoading(){
+        mAddCakeForm.setVisibility(View.GONE);
+        mProgressBarView.setVisibility(View.VISIBLE);
+    }
 
+    /**
+     *  Show contents
+     */
+    private void showContents(){
+        mAddCakeForm.setVisibility(View.VISIBLE);
+        mProgressBarView.setVisibility(View.GONE);
+    }
 }

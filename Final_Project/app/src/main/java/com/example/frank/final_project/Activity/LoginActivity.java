@@ -1,6 +1,7 @@
 package com.example.frank.final_project.Activity;
 
 import android.content.Intent;
+import android.database.CursorIndexOutOfBoundsException;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,13 +13,15 @@ import android.widget.Toast;
 
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Constant.Utils;
+import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -100,42 +103,90 @@ public class LoginActivity extends AppCompatActivity {
      * @param email input
      * @param password input
      */
-    private void loginAttempt(final String email, String password){
+    private void loginAttempt(final String email, final String password){
         // Show progressbar.
-        mProgressBar.setVisibility(View.VISIBLE);
-        mLoginForm.setVisibility(View.GONE);
+        showLoading();
         // Log in attempt with email and password input.
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Login successful, open dashboard for user.
                 if(task.isSuccessful()){
-                    verifyRole();
-                    // Show welcome message
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.login_page_login_success) + ": " + email, Toast.LENGTH_LONG).show();
-                    finish();
+                    verifyRoleAndStartDashboard(email, password);
                 }
                 // Login failed, show error message
                 else{
                     Toast.makeText(getApplicationContext(), getString(R.string.login_page_warning_login_fail), Toast.LENGTH_LONG).show();
-                    mProgressBar.setVisibility(View.GONE);
-                    mLoginForm.setVisibility(View.VISIBLE);
+                    showContents();
                 }
             }
         });
     }
 
-    private void verifyRole(){
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if(FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId) != null){
-            Intent storeIntent = new Intent(this, StoreDashboard.class);
-            startActivity(storeIntent);
-        }else{
-            Intent customerIntent = new Intent(this, CustomerDashboard.class);
-            startActivity(customerIntent);
-        }
+    /**
+     *  Verify the current user role and go to corresponding dashboard
+     * @param email
+     */
+    private void verifyRoleAndStartDashboard(final String email, final String password){
+        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    // user is a chef, go to store dashboard
+                    Intent storeIntent = new Intent(getApplicationContext(), StoreDashboard.class);
+                    CurrentUser.setUserId(userId);
+                    CurrentUser.setUserRole(User.Role.CHEF);
+                    CurrentUser.setUserEmail(email);
+                    CurrentUser.setUserPassword(password);
+//                    // Pass role identity
+//                    storeIntent.putExtra(Constant.CHEF, Constant.CHEF);
+//                    // Pass user email and password
+//                    storeIntent.putExtra(Constant.EMAIL, email);
+//                    storeIntent.putExtra(Constant.PASSWORD, password);
+                    // Start store dashboard
+                    startActivity(storeIntent);
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.login_page_login_success) + ": " + email, Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    // user is a customer
+                    Intent customerIntent = new Intent(getApplicationContext(), CustomerDashboard.class);
+                    CurrentUser.setUserId(userId);
+                    CurrentUser.setUserRole(User.Role.CUSTOMER);
+                    CurrentUser.setUserEmail(email);
+                    CurrentUser.setUserPassword(password);
+//                    // Pass user email and password
+//                    customerIntent.putExtra(Constant.EMAIL, email);
+//                    customerIntent.putExtra(Constant.PASSWORD, password);
+                    // Start customer dashboard
+                    startActivity(customerIntent);
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.login_page_login_success) + ": " + email, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
+    /**
+     *  Show loading progress bar
+     */
+    private void showLoading(){
+        mLoginForm.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
 
+    /**
+     *  Show sumbit form contents
+     */
+    private void showContents(){
+        mLoginForm.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+    }
 }

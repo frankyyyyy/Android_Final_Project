@@ -1,5 +1,6 @@
 package com.example.frank.final_project.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import com.example.frank.final_project.Activity.ChatActivity;
 import com.example.frank.final_project.Activity.StoreDashboard;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.Chef;
+import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.StoreListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -41,22 +43,18 @@ public class StoreListViewAdapter extends FirebaseRecyclerAdapter<Chef, StoreLis
         holder.bind(chef);
         final String chefId = chef.getId();
         final String chefName = chef.getName();
-        holder.getStoreItem().setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Intent chatIntent = new Intent(context, ChatActivity.class);
-                chatIntent.putExtra(Constant.CHEF_ID, chefId);
-                chatIntent.putExtra(Constant.CHEF_NAME, chefName);
-                context.startActivity(chatIntent);
-                return true;
-            }
-        });
         holder.getStoreItem().setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                // Go to store dashboard
                 Intent storeIntent = new Intent(context, StoreDashboard.class);
-                storeIntent.putExtra(Constant.CHEF_ID, chefId);
+                CurrentUser.setOppositeId(chefId);
+                if(chefName != null){
+                    CurrentUser.setOppositeName(chefName);
+                }
                 context.startActivity(storeIntent);
+                Activity mainActivity = (Activity) context;
+                mainActivity.finish();
             }
         });
     }
