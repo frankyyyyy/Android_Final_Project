@@ -224,7 +224,7 @@ public class AddCakeActivity extends AppCompatActivity {
                                 {
                                     // Save cake picture link uri in cake database
                                     cakePictureUri = task.getResult().getDownloadUrl().toString();
-                                    menuRef.child(cakeId).child("cakePictureUri").setValue(cakePictureUri).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    menuRef.child(cakeId).child(Constant.CAKE_IMAGEURI).setValue(cakePictureUri).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             finish();

@@ -57,6 +57,7 @@ public class Constant {
     // Cake
     public static final String CAKE_NAME = "name";
     public static final String CAKE_SIZE = "size";
+    public static final String CAKE_IMAGEURI = "imageUrl";
     public static final String CAKE_INGREDIENTS = "ingredients";
     public static final String CAKE_DESCRIPTION = "description";
     public static final String CAKE_PRIZE = "price";

@@ -41,18 +41,13 @@ public class CakePictureAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(this.context).inflate(R.layout.item_cake, null);
-        ViewHolder viewHolder = new ViewHolder(convertView);
-        Picasso.with(context).load(getItem(position)).into(viewHolder.mCakePicture);
-        return null;
-    }
-
-    class ViewHolder {
-        @BindView(R.id.cake_item)
-        ImageView mCakePicture;
-
-        public ViewHolder(View view){
-            ButterKnife.bind(this, view);
+        if(convertView == null){
+            convertView = View.inflate(context, R.layout.item_cake, null);
         }
+//        convertView = LayoutInflater.from(this.context).inflate(R.layout.item_cake, null);
+//        ViewHolder viewHolder = new ViewHolder(convertView);
+        Picasso.with(context).load(getItem(position)).into((ImageView) convertView);
+        return convertView;
     }
+
 }
