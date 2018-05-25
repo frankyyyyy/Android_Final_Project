@@ -5,6 +5,7 @@ public class CurrentUser {
     private static String userId;
     private static String oppositeId;
     private static String oppositeName;
+    private static Cake currentCake;
     private static User.Role userRole;
     private static String userEmail;
     private static String userPassword;
@@ -59,5 +60,13 @@ public class CurrentUser {
 
     public static void setOppositeName(String oppositeName) {
         CurrentUser.oppositeName = oppositeName;
+    }
+
+    public static Cake getCurrentCake() {
+        return currentCake;
+    }
+
+    public static void setCurrentCake(Cake currentCake) {
+        CurrentUser.currentCake = currentCake;
     }
 }

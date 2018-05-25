@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.frank.final_project.Activity.ChatActivity;
-import com.example.frank.final_project.Activity.StoreDashboard;
-import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Activity.MenuDashboard;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
@@ -47,7 +45,7 @@ public class StoreListViewAdapter extends FirebaseRecyclerAdapter<Chef, StoreLis
             @Override
             public void onClick(View v) {
                 // Go to store dashboard
-                Intent storeIntent = new Intent(context, StoreDashboard.class);
+                Intent storeIntent = new Intent(context, MenuDashboard.class);
                 CurrentUser.setOppositeId(chefId);
                 if(chefName != null){
                     CurrentUser.setOppositeName(chefName);

@@ -1,16 +1,16 @@
 package com.example.frank.final_project.Activity;
 
-import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.MessageListViewAdapter;
@@ -21,12 +21,8 @@ import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -37,11 +33,11 @@ import butterknife.OnClick;
 
 public class ChatActivity extends AppCompatActivity {
 
+    @BindView(R.id.chat_toolbar)
+    Toolbar mToolbar;
+
     @BindView(R.id.chat_page_chat_contents_progressbar_lyout)
     LinearLayout mProgressBarView;
-
-    @BindView(R.id.chat_page_chat_contents_Sv)
-    ScrollView mMessageListView;
 
     @BindView(R.id.chat_page_chat_contents_Rv)
     RecyclerView mMessageList;
@@ -59,8 +55,29 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        // Load page contents
-        loading();
+        // Setup tool bar button
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
+
+        // Set back button function
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        showLoading();
+        // Read self message snapshot reference
+        selfMessageRef = selfMessageRef();
+        // Read opposite message snapshot reference
+        oppositeMessageRef = oppositeMessageRef();
+        // Attach messages
+        attachMessageList();
+        // Show contents
+        showContents();
     }
 
     @OnClick(R.id.chat_page_send_Btn)
@@ -87,22 +104,6 @@ public class ChatActivity extends AppCompatActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constant.TIME_FORMAT);
         Date date = new Date(System.currentTimeMillis());
         return simpleDateFormat.format(date);
-    }
-
-
-    /**
-     *  Load page contents
-     */
-    private void loading() {
-        showLoading();
-        // Read self message snapshot reference
-        selfMessageRef = selfMessageRef();
-        // Read opposite message snapshot reference
-        oppositeMessageRef = oppositeMessageRef();
-        // Attach messages
-        attachMessageList();
-        // Show contents
-        showContents();
     }
 
     /**
@@ -148,7 +149,7 @@ public class ChatActivity extends AppCompatActivity {
      *  Show loading progress bar
      */
     private void showLoading(){
-        mMessageListView.setVisibility(View.GONE);
+        mMessageList.setVisibility(View.GONE);
         mProgressBarView.setVisibility(View.VISIBLE);
     }
 
@@ -156,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
      *  Show contents
      */
     private void showContents(){
-        mMessageListView.setVisibility(View.VISIBLE);
+        mMessageList.setVisibility(View.VISIBLE);
         mProgressBarView.setVisibility(View.GONE);
     }
 

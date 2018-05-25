@@ -12,13 +12,13 @@ public class Customer extends User {
     private String name;
     private String phone;
     private String postalAddress;
-    private String contact;
+    private Contact contact;
 
     public Customer(){
 
     }
 
-    public Customer(String Id, String name, String phone, List<String> chefIds, String postalAddress, String contact) {
+    public Customer(String Id, String name, String phone, List<String> chefIds, String postalAddress, Contact contact) {
         super(Id, name, phone);
         this.postalAddress = postalAddress;
         this.contact = contact;
@@ -56,11 +56,11 @@ public class Customer extends User {
         this.phone = phone;
     }
 
-    public String getContact() {
+    public Contact getContact() {
         return contact;
     }
 
-    public void setContact(String contact) {
+    public void setContact(Contact contact) {
         this.contact = contact;
     }
 }

@@ -110,6 +110,9 @@
     <string name="cake_picture">Press add button to add your cake picture here:</string>
     <string name="cake_add_submit">Submit</string>
     <string name="cake_add_cancel">Cancel</string>
+    <string name="title_activity_cake_dashboard">CakeDashboardActivity</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="title_activity_contact">ContactActivity</string>
 
     <!--<string name="prompt_email">Email</string>-->
     <!--<string name="prompt_password">Password (optional)</string>-->

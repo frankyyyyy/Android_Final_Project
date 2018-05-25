@@ -1,7 +1,6 @@
 package com.example.frank.final_project.Activity;
 
 import android.content.Intent;
-import android.database.CursorIndexOutOfBoundsException;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -134,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     // user is a chef, go to store dashboard
-                    Intent storeIntent = new Intent(getApplicationContext(), StoreDashboard.class);
+                    Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
                     CurrentUser.setUserId(userId);
                     CurrentUser.setUserRole(User.Role.CHEF);
                     CurrentUser.setUserEmail(email);
@@ -151,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 } else {
                     // user is a customer
-                    Intent customerIntent = new Intent(getApplicationContext(), CustomerDashboard.class);
+                    Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
                     CurrentUser.setUserId(userId);
                     CurrentUser.setUserRole(User.Role.CUSTOMER);
                     CurrentUser.setUserEmail(email);

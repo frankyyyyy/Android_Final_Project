@@ -444,7 +444,7 @@ public class RegisterActivity extends AppCompatActivity {
         switch (roleSelectionId) {
             // Go to store dashboard
             case R.id.register_page_chef_Rb:
-                Intent storeIntent = new Intent(getApplicationContext(), StoreDashboard.class);
+                Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
                 CurrentUser.setUserId(userId);
                 CurrentUser.setUserRole(User.Role.CHEF);
                 CurrentUser.setUserEmail(email);
@@ -456,7 +456,7 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
             // Go to customer dashboard
             case R.id.register_page_customer_Rb:
-                Intent customerIntent = new Intent(getApplicationContext(), CustomerDashboard.class);
+                Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
                 CurrentUser.setUserId(userId);
                 CurrentUser.setUserRole(User.Role.CUSTOMER);
                 CurrentUser.setUserEmail(email);

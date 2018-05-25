@@ -3,6 +3,7 @@ package com.example.frank.final_project.ViewHolder;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.frank.final_project.Model.Cake;
@@ -17,6 +18,9 @@ import butterknife.ButterKnife;
  */
 
 public class MenuViewHolder extends RecyclerView.ViewHolder {
+
+    @BindView(R.id.cake_item)
+    LinearLayout mCakeItem;
 
     @BindView(R.id.menu_list_cake_container_Iv)
     ImageView mCakeImage;
@@ -39,5 +43,9 @@ public class MenuViewHolder extends RecyclerView.ViewHolder {
 
     public ImageView getCakeImageView(){
         return mCakeImage;
+    }
+
+    public LinearLayout getCakeItem(){
+        return mCakeItem;
     }
 }

@@ -13,7 +13,6 @@ import com.example.frank.final_project.Model.Contact;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.ContactListViewHolder;
-import com.example.frank.final_project.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 

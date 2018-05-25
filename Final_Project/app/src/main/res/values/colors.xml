@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="toolBarTittle">#FFFFFF</color>
+
     <color name="main_page_title">#000000</color>
 
     <color name="chat_room_customer">#80DEEA</color>
