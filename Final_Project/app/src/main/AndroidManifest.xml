@@ -36,16 +36,16 @@
 
         <activity android:name=".Activity.AddCakeActivity" />
         <activity
-            android:name=".Activity.CakeDashboardActivity"
-            android:label="@string/title_activity_cake_dashboard"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Activity.ChatActivity"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ContactActivity"
             android:label="@string/title_activity_contact"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.CakeDashboardActivity"
+            android:label="@string/title_activity_cake_dashboard"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

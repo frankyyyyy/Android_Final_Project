@@ -84,16 +84,23 @@ public class ChatActivity extends AppCompatActivity {
     public void sendMessage(){
         // Read message content
         String newMessageContent = mSendContent.getText().toString();
-        // Read time from system
-        String timeStamp = getDatetime();
-        // Build a new message
-        Message newMessage = new Message(CurrentUser.getOppositeName(), timeStamp, newMessageContent);
-        // Push message to database regarding to snapshot reference
-        String key = oppositeMessageRef.push().getKey();
-        oppositeMessageRef.child(key).setValue(newMessage);
-        selfMessageRef.child(key).setValue(newMessage);
-        // Clear input line
-        mSendContent.setText("");
+        // If input is valid, create new message and send it.
+        if(newMessageContent != null){
+            // Read time from system
+            String timeStamp = getDatetime();
+            // Build a new message
+            Message newMessage = new Message(CurrentUser.getOppositeName(), timeStamp, newMessageContent);
+            // Push message to database regarding to snapshot reference
+            String key = oppositeMessageRef.push().getKey();
+            oppositeMessageRef.child(key).setValue(newMessage);
+            selfMessageRef.child(key).setValue(newMessage);
+            // Clear input line
+            mSendContent.setText("");
+        }else{
+            // If input is not valid, show warning message.
+            Toast.makeText(getApplicationContext(), "Send empty denied.", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     /**
@@ -159,14 +166,5 @@ public class ChatActivity extends AppCompatActivity {
     private void showContents(){
         mMessageList.setVisibility(View.VISIBLE);
         mProgressBarView.setVisibility(View.GONE);
-    }
-
-
-    /**
-     *  Loading fail, return to previous activity and show error message
-     */
-    private void tryAgainWarning(){
-        finish();
-        Toast.makeText(getApplicationContext(), getString(R.string.try_again_warning), Toast.LENGTH_LONG).show();
     }
 }

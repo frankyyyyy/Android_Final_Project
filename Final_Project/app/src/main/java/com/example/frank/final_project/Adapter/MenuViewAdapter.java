@@ -2,6 +2,7 @@ package com.example.frank.final_project.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,10 +14,10 @@ import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.MenuViewHolder;
-import com.example.frank.final_project.ViewHolder.MessageListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 /**
  * Created by Frank on 2018/5/21.
@@ -40,7 +41,8 @@ public class MenuViewAdapter extends FirebaseRecyclerAdapter<Cake, MenuViewHolde
     protected void onBindViewHolder(@NonNull MenuViewHolder holder, int position, @NonNull final Cake cake) {
         holder.bind(cake);
         if(cake.getImageUrl() != null){
-            Picasso.with(context).load(cake.getImageUrl()).into(holder.getCakeImageView());
+            String[] photoUrls = cake.getImageUrl().split(" ");
+            Picasso.with(context).load(photoUrls[0]).placeholder(R.drawable.loading).error(R.drawable.cake_default_headphoto).into(holder.getCakeImageView());
         }
         holder.getCakeItem().setOnClickListener(new View.OnClickListener() {
             @Override

@@ -52,6 +52,7 @@ public class AddCakeActivity extends AppCompatActivity {
 
     @BindView(R.id.cake_size_Et)
     EditText mCakeSize;
+
     @BindView(R.id.cake_size_unit_Spinner)
     Spinner mSizeUnit;
 
@@ -201,8 +202,9 @@ public class AddCakeActivity extends AppCompatActivity {
         cakeDescription = mCakeDescription.getText().toString();
         if(allInputsAreValid()){
             // Create new cake
-            Cake newCake = new Cake();
+            final Cake newCake = new Cake();
             newCake.setName(cakeName);
+            newCake.setPhotoNum(1);
             newCake.setIngredients(cakeIngredients);
             newCake.setSize(cakeSize);
             newCake.setPrice(cakePrice);
@@ -210,13 +212,14 @@ public class AddCakeActivity extends AppCompatActivity {
             // Insert new cake
             menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU);
             final String cakeId = menuRef.push().getKey();
+            newCake.setId(cakeId);
             menuRef.child(cakeId).setValue(newCake).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful())
                     {
                         // Upload cake picture.
-                        cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU).child(cakeId);
+                        cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU).child(cakeId).child("photo_" + Integer.toString(newCake.getPhotoNum()));
                         cakePictureRef.putFile(localPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
