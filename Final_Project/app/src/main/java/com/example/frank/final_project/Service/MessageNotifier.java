@@ -90,6 +90,7 @@ public class MessageNotifier extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("service", "start");
         // Notification count
         count = 0;
         // Get user id
@@ -149,5 +150,11 @@ public class MessageNotifier extends Service {
             }
         });
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("service", "stop");
+        super.onDestroy();
     }
 }

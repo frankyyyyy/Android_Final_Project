@@ -51,8 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        // Read user id;
-        mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     /**
@@ -133,6 +131,8 @@ public class LoginActivity extends AppCompatActivity {
      * @param email
      */
     private void verifyRoleAndStartDashboard(final String email, final String password){
+        // Read user id;
+        mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
