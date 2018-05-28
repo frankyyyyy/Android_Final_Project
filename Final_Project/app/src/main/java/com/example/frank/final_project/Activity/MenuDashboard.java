@@ -57,6 +57,7 @@ public class MenuDashboard extends AppCompatActivity {
         setContentView(R.layout.activity_store_dashboard);
         ButterKnife.bind(this);
 
+        // Show loading progress bar
         showLoading();
         // Load current user Id
         mUserId = CurrentUser.getUserId();
@@ -73,10 +74,12 @@ public class MenuDashboard extends AppCompatActivity {
         // Bind store menu list
         attachMenu();
 
+        // Start message notification service if it is not activated
         if(!messageServiceRunning()){
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
             startService(messageNotifier);
         }
+        // Show contents
         showContents();
     }
 

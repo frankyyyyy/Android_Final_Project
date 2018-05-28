@@ -90,7 +90,6 @@ public class MessageNotifier extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("service", "start");
         // Notification count
         count = 0;
         // Get user id
@@ -104,20 +103,45 @@ public class MessageNotifier extends Service {
         messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                // add listener to every person
                 oppositeId = dataSnapshot.getKey();
-                for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()){
-                    Message newMessage = messageSnapshot.getValue(Message.class);
-                    newMessageKey = messageSnapshot.getKey();
-                    String senderId = newMessage.getSenderId();
-                    String senderName = newMessage.getSender();
-                    String content = newMessage.getContent();
-                    String status = newMessage.getStatus();
-                    if((status != null) && status.equals(Message.Status.UnRead.toString())){
-                        if((senderId != null) && !senderId.equals(userId)){
-                            createNotification(senderName, content);
+                messageRef.child(oppositeId).addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        // add listener to every message
+                        Message newMessage = dataSnapshot.getValue(Message.class);
+                        newMessageKey = dataSnapshot.getKey();
+                        String senderId = newMessage.getSenderId();
+                        String senderName = newMessage.getSender();
+                        String content = newMessage.getContent();
+                        String status = newMessage.getStatus();
+                        if((status != null) && status.equals(Message.Status.UnRead.toString())){
+                            if((senderId != null) && !senderId.equals(userId)){
+                                createNotification(senderName, content);
+                            }
                         }
                     }
-                }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -150,11 +174,5 @@ public class MessageNotifier extends Service {
             }
         });
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d("service", "stop");
-        super.onDestroy();
     }
 }
