@@ -35,10 +35,12 @@ public class ContactListViewAdapter extends FirebaseRecyclerAdapter<Contact, Con
     @Override
     protected void onBindViewHolder(@NonNull ContactListViewHolder holder, int position, @NonNull final Contact model) {
         holder.bind(model);
+        // Go to chat page when contact is clicked
         holder.getContactItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent chatIntent = new Intent(context, ChatActivity.class);
+                // Save chatting target info
                 CurrentUser.setOppositeId(model.getOppositeId());
                 if(model.getOppositeName() != null){
                     CurrentUser.setOppositeName(model.getOppositeName());

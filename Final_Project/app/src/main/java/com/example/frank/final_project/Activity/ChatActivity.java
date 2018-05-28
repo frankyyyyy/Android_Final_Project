@@ -34,20 +34,20 @@ import butterknife.OnClick;
 public class ChatActivity extends AppCompatActivity {
 
     @BindView(R.id.chat_toolbar)
-    Toolbar mToolbar;
+    Toolbar toolbar;
 
     @BindView(R.id.chat_page_chat_contents_progressbar_lyout)
-    LinearLayout mProgressBarView;
+    LinearLayout progressBarView;
 
     @BindView(R.id.chat_page_chat_contents_Rv)
-    RecyclerView mMessageList;
+    RecyclerView messageList;
 
     @BindView(R.id.chat_page_send_contents_Et)
-    EditText mSendContent;
+    EditText sendContent;
 
-    private DatabaseReference selfMessageRef;
-    private DatabaseReference oppositeMessageRef;
-    private FirebaseRecyclerAdapter messageListAdapter;
+    private DatabaseReference mSelfMessageRef;
+    private DatabaseReference mOppositeMessageRef;
+    private FirebaseRecyclerAdapter mMessageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,49 +56,61 @@ public class ChatActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // Setup tool bar button
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
 
         // Set back button function
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
+        // Show loading
         showLoading();
         // Read self message snapshot reference
-        selfMessageRef = selfMessageRef();
+        mSelfMessageRef = selfMessageRef();
         // Read opposite message snapshot reference
-        oppositeMessageRef = oppositeMessageRef();
+        mOppositeMessageRef = oppositeMessageRef();
         // Attach messages
         attachMessageList();
         // Show contents
         showContents();
     }
 
+    /**
+     *  Write message into database when send button is clicked
+     */
     @OnClick(R.id.chat_page_send_Btn)
     public void sendMessage(){
         // Read message content
-        String newMessageContent = mSendContent.getText().toString();
+        String newMessageContent = sendContent.getText().toString();
         // If input is valid, create new message and send it.
         if(newMessageContent != null){
             // Read time from system
             String timeStamp = getDatetime();
             // Build a new message
-            Message newMessage = new Message(CurrentUser.getOppositeName(), timeStamp, newMessageContent);
+            Message newMessage = new Message();
+            newMessage.setSenderId(CurrentUser.getUserId());
+            if(CurrentUser.getUserName() != null) {
+                newMessage.setSender(CurrentUser.getUserName());
+            }
+            newMessage.setContent(newMessageContent);
+            newMessage.setTime(timeStamp);
             // Push message to database regarding to snapshot reference
-            String key = oppositeMessageRef.push().getKey();
-            oppositeMessageRef.child(key).setValue(newMessage);
-            selfMessageRef.child(key).setValue(newMessage);
+            String key = mOppositeMessageRef.push().getKey();
+            newMessage.setStatus(Message.Status.UnRead.toString());
+            mOppositeMessageRef.child(key).setValue(newMessage);
+            newMessage.setStatus(Message.Status.Read.toString());
+            mSelfMessageRef.child(key).setValue(newMessage);
             // Clear input line
-            mSendContent.setText("");
+            sendContent.setText("");
         }else{
             // If input is not valid, show warning message.
-            Toast.makeText(getApplicationContext(), "Send empty denied.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.message_empty_deny), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -139,16 +151,16 @@ public class ChatActivity extends AppCompatActivity {
     private void attachMessageList(){
         FirebaseRecyclerOptions<Message> options =
                 new FirebaseRecyclerOptions.Builder<Message>()
-                        .setQuery(oppositeMessageRef, Message.class)
+                        .setQuery(mOppositeMessageRef, Message.class)
                         .setLifecycleOwner(this)
                         .build();
-        messageListAdapter = new MessageListViewAdapter(options, this);
-        mMessageList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mMessageList.setHasFixedSize(true);
+        mMessageListAdapter = new MessageListViewAdapter(options, this);
+        messageList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        messageList.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mMessageList.setLayoutManager(mLayoutManager);
-        mMessageList.setItemAnimator(new DefaultItemAnimator());
-        mMessageList.setAdapter(messageListAdapter);
+        messageList.setLayoutManager(mLayoutManager);
+        messageList.setItemAnimator(new DefaultItemAnimator());
+        messageList.setAdapter(mMessageListAdapter);
     }
 
 
@@ -156,15 +168,15 @@ public class ChatActivity extends AppCompatActivity {
      *  Show loading progress bar
      */
     private void showLoading(){
-        mMessageList.setVisibility(View.GONE);
-        mProgressBarView.setVisibility(View.VISIBLE);
+        messageList.setVisibility(View.GONE);
+        progressBarView.setVisibility(View.VISIBLE);
     }
 
     /**
      *  Show contents
      */
     private void showContents(){
-        mMessageList.setVisibility(View.VISIBLE);
-        mProgressBarView.setVisibility(View.GONE);
+        messageList.setVisibility(View.VISIBLE);
+        progressBarView.setVisibility(View.GONE);
     }
 }

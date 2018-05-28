@@ -3,6 +3,7 @@ package com.example.frank.final_project.Model;
 public class CurrentUser {
 
     private static String userId;
+    private static String userName;
     private static String oppositeId;
     private static String oppositeName;
     private static Cake currentCake;
@@ -68,5 +69,13 @@ public class CurrentUser {
 
     public static void setCurrentCake(Cake currentCake) {
         CurrentUser.currentCake = currentCake;
+    }
+
+    public static String getUserName() {
+        return userName;
+    }
+
+    public static void setUserName(String userName) {
+        CurrentUser.userName = userName;
     }
 }

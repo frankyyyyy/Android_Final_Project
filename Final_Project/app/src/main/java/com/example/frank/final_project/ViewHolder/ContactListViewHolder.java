@@ -14,25 +14,33 @@ import butterknife.ButterKnife;
 public class ContactListViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.contact_name_Tv)
-    TextView mContactName;
+    TextView contactName;
 
     @BindView(R.id.contact_item)
-    LinearLayout mContactItem;
+    LinearLayout contactItem;
 
     public ContactListViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
+    /**
+     * Bind attributes to views
+     * @param contact
+     */
     public void bind(Contact contact){
         if(contact.getOppositeName() != null){
-            mContactName.setText(contact.getOppositeName());
+            contactName.setText(contact.getOppositeName());
         }else{
-            mContactName.setText(contact.getOppositeId());
+            contactName.setText(contact.getOppositeId());
         }
     }
 
+    /**
+     *  Return contact view to adapter
+     * @return contactItem
+     */
     public LinearLayout getContactItem(){
-        return mContactItem;
+        return contactItem;
     }
 }

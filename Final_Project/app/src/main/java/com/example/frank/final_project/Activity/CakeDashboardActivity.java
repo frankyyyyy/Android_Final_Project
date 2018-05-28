@@ -2,12 +2,10 @@ package com.example.frank.final_project.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,11 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,32 +48,32 @@ import butterknife.OnClick;
 public class CakeDashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.cake_dashboard_toolbar)
-    Toolbar mToolbar;
+    Toolbar toolbar;
 
     @BindView(R.id.cake_dashboard_name_Tv)
-    TextView mCakeName;
+    TextView cakeName;
 
     @BindView(R.id.cake_details_Lyout)
-    LinearLayout mCakeDetailsLayout;
+    LinearLayout cakeDetailsLayout;
 
     @BindView(R.id.add_cake_photo)
-    FloatingActionButton mAddCakePhotoBtn;
+    FloatingActionButton addCakePhotoBtn;
 
     @BindView(R.id.add_cake_Pb)
-    ProgressBar mProgressBar;
+    ProgressBar progressBar;
 
     @BindViews({R.id.cake_dashboard_size_Tv, R.id.cake_dashboard_price_Tv, R.id.cake_dashboard_ingredients_Tv, R.id.cake_dashboard_description_Tv})
-    List<TextView> mCakeDetails;
+    List<TextView> cakeDetails;
 
     @BindView(R.id.cake_dashboard_Rv)
-    RecyclerView mCakePicturesList;
+    RecyclerView cakePicturesList;
 
-    private ArrayList<String> cakePictures;
-    private Cake cake;
-    private Uri localPictureUri;
-    private String fileName;
+    private ArrayList<String> mCakePictures;
+    private Cake mCake;
+    private Uri mLocalPictureUri;
+    private String mFileName;
     private LinearLayoutManager mLayoutManager;
-    private CakePictureAdapter photoAdapter;
+    private CakePictureAdapter mPhotoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,27 +82,30 @@ public class CakeDashboardActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // Setup tool bar button
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
         setBackButtonFunction();
 
-        // Customer can not add photo in cake details
+        // Customer can not add photo in mCake details
         if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
-            mAddCakePhotoBtn.setVisibility(View.GONE);
+            addCakePhotoBtn.setVisibility(View.GONE);
         }
 
-
-        cake = CurrentUser.getCurrentCake();
-
+        // Read current cake
+        mCake = CurrentUser.getCurrentCake();
+        // Attach mCake info into list demonstration
         attachCakeInfo();
-
+        // Attach photo from database to performance
         attachPhotos();
 
 
     }
 
+    /**
+     *  Open local system to choose a picture file as upload photo
+     */
     @OnClick(R.id.add_cake_photo)
     public void addCakePhoto(){
         openSystemFileSelection();
@@ -119,7 +116,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
      */
     private void openSystemFileSelection() {
         Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        fileIntent.setType("image/*");
+        fileIntent.setType(Constant.FILE_TYPE);
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(fileIntent, 1234);
     }
@@ -136,8 +133,8 @@ public class CakeDashboardActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1234:
                 if (resultCode == RESULT_OK) {
-                    localPictureUri = data.getData();
-                    fileName = localPictureUri.getLastPathSegment();
+                    mLocalPictureUri = data.getData();
+                    mFileName = mLocalPictureUri.getLastPathSegment();
                     showConfirmDialog();
                 }
                 break;
@@ -149,7 +146,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
      */
     private void showConfirmDialog() {
         ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
-        confirmDialogFragment.show(getString(R.string.exit_tittle), "You chose file: " + fileName,
+        confirmDialogFragment.show(getString(R.string.exit_tittle), getString(R.string.cake_choose_tittle) + mFileName,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -162,28 +159,31 @@ public class CakeDashboardActivity extends AppCompatActivity {
                 }, getFragmentManager());
     }
 
+    /**
+     * Save photo info into database and upload photo into storage
+     */
     private void savePhoto(){
         showLoading();
-        StorageReference cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.STORE).child(Constant.MENU).child(cake.getId()).child("photo_" + Integer.toString(cake.getPhotoNum()));
-        cakePictureRef.putFile(localPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        StorageReference cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.STORE).child(Constant.MENU).child(mCake.getId()).child(Constant.CAKE_PHOTO_ID + Integer.toString(mCake.getPhotoNum()+1));
+        cakePictureRef.putFile(mLocalPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful())
                 {
-                    // Save cake picture link uri in cake database
+                    // Save mCake picture link uri in mCake database
                     final String cakeNewPictureUri = task.getResult().getDownloadUrl().toString();
                     String currentCakeUri = CurrentUser.getCurrentCake().getImageUrl();
                     DatabaseReference menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.STORE).child(Constant.MENU);
-                    menuRef.child(cake.getId()).child(Constant.CAKE_IMAGEURI).setValue(currentCakeUri + " " + cakeNewPictureUri);
-                    menuRef.child(cake.getId()).child(Constant.CAKE_PHOTO_NUM).setValue(cake.getPhotoNum()+1);
-                    menuRef.child(cake.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    menuRef.child(mCake.getId()).child(Constant.CAKE_IMAGEURI).setValue(currentCakeUri + " " + cakeNewPictureUri);
+                    menuRef.child(mCake.getId()).child(Constant.CAKE_PHOTO_NUM).setValue(mCake.getPhotoNum()+1);
+                    menuRef.child(mCake.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             CurrentUser.setCurrentCake(dataSnapshot.getValue(Cake.class));
-                            cakePictures.add(cakeNewPictureUri);
-                            photoAdapter.notifyDataSetChanged();
+                            mCakePictures.add(cakeNewPictureUri);
+                            mPhotoAdapter.notifyDataSetChanged();
                             showContents();
-                            Toast.makeText(getApplicationContext(), "New photo added.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.cake_add_picture_add_confirm), Toast.LENGTH_LONG).show();
                         }
 
                         @Override
@@ -197,22 +197,28 @@ public class CakeDashboardActivity extends AppCompatActivity {
                 {
                     showContents();
                     String message = task.getException().getMessage();
-                    Toast.makeText(getApplicationContext(), "Error occured: " + message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    /**
+     *  Attach mCake info into list demonstration
+     */
     private void attachCakeInfo() {
-        mCakeName.setText(cake.getName());
-        mCakeDetails.get(0).setText(cake.getSize());
-        mCakeDetails.get(1).setText(Double.toString(cake.getPrice()));
-        mCakeDetails.get(2).setText(cake.getIngredients());
-        mCakeDetails.get(3).setText(cake.getDescription());
+        cakeName.setText(mCake.getName());
+        cakeDetails.get(0).setText(mCake.getSize());
+        cakeDetails.get(1).setText(Double.toString(mCake.getPrice()));
+        cakeDetails.get(2).setText(mCake.getIngredients());
+        cakeDetails.get(3).setText(mCake.getDescription());
     }
 
+    /**
+     * Set back button function for tool bar
+     */
     private void setBackButtonFunction(){
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -220,51 +226,43 @@ public class CakeDashboardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     *  Attach photo from database to performance
+     */
     private void attachPhotos(){
-        String cakeImageUri = cake.getImageUrl();
-        cakePictures = new ArrayList<>();
+        String cakeImageUri = mCake.getImageUrl();
+        mCakePictures = new ArrayList<>();
         if(cakeImageUri != null){
-            String[] temp = cake.getImageUrl().split(" ");
+            String[] temp = mCake.getImageUrl().split(" ");
             for(String x : temp){
-                cakePictures.add(x);
+                mCakePictures.add(x);
             }
-            photoAdapter = new CakePictureAdapter(cakePictures, this);
-            mCakePicturesList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+            mPhotoAdapter = new CakePictureAdapter(mCakePictures, this);
+            cakePicturesList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
             mLayoutManager = new LinearLayoutManager(getApplicationContext());
             mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            mCakePicturesList.setLayoutManager(mLayoutManager);
-            mCakePicturesList.setItemAnimator(new DefaultItemAnimator());
-            mCakePicturesList.setAdapter(photoAdapter);
+            cakePicturesList.setLayoutManager(mLayoutManager);
+            cakePicturesList.setItemAnimator(new DefaultItemAnimator());
+            cakePicturesList.setAdapter(mPhotoAdapter);
         }
     }
-
-//    @Override
-//    protected void onResume() {
-//        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-//            mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-//        }else{
-//            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        }
-//        attachCakeInfo();
-//        super.onResume();
-//    }
 
     /**
      *  Show loading progress bar
      */
     private void showLoading(){
-        mCakeDetailsLayout.setVisibility(View.GONE);
-        mAddCakePhotoBtn.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        cakeDetailsLayout.setVisibility(View.GONE);
+        addCakePhotoBtn.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
      *  Show contents
      */
     private void showContents(){
-        mCakeDetailsLayout.setVisibility(View.VISIBLE);
-        mAddCakePhotoBtn.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
+        cakeDetailsLayout.setVisibility(View.VISIBLE);
+        addCakePhotoBtn.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
 }

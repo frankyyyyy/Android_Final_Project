@@ -41,68 +41,61 @@ import butterknife.OnClick;
 public class RegisterActivity extends AppCompatActivity {
 
     @BindView(R.id.register_page_register_Pb)
-    ProgressBar mProgressBar;
+    ProgressBar progressBar;
 
     @BindView(R.id.register_page_register_form)
-    LinearLayout mRegisterForm;
+    LinearLayout registerForm;
 
     @BindView(R.id.register_page_email_Et)
-    EditText mEmail;
+    EditText email;
 
     @BindView(R.id.register_page_password_Et)
-    EditText mPassword;
+    EditText password;
 
     @BindView(R.id.register_page_password_confirm_Et)
-    EditText mConfirmPassword;
+    EditText confirmPassword;
 
     @BindView(R.id.register_page_name_Et)
-    EditText mName;
+    EditText name;
 
     @BindView(R.id.register_page_phoneNum_Et)
-    EditText mPhoneNum;
+    EditText phoneNum;
 
     @BindView(R.id.register_page_role_Rg)
-    RadioGroup mRoleSelection;
+    RadioGroup roleSelection;
 
     @BindView(R.id.register_page_chef_layout)
-    LinearLayout mChefLayout;
+    LinearLayout chefLayout;
 
     @BindView(R.id.register_page_store_name_Et)
-    EditText mStoreName;
+    EditText storeName;
 
     @BindView(R.id.register_page_businessStyle_Rg)
     RadioGroup businessStyleSelection;
 
     @BindView(R.id.register_page_retailAddress_Et)
-    EditText mRetailAddress;
+    EditText retailAddress;
 
     @BindView(R.id.register_page_certificate_filename_Tv)
-    TextView mCertificateName;
+    TextView certificateName;
 
     @BindView(R.id.register_page_postalAddress_Et)
-    EditText mPostalAddress;
+    EditText postalAddress;
 
     @BindView(R.id.register_page_agreement_Cb)
-    CheckBox mAgreement;
+    CheckBox agreement;
 
-    private String userId;
-    private String email;
-    private String password;
-    private String confirmPassword;
-    private String name;
-    private String phoneNum;
-    private int roleSelectionId;
-    private String storeName;
-    private String retailAddress;
-    private String postalAddress;
-
-    private Boolean createVerifyAccountSuccessful = false;
-    private Boolean createUserSuccessful = false;
-    private Boolean connectionSuccessful = false;
-    private Boolean uploadCertificateSuccessful = false;
-
-    private String[] chefIds;
-    private Uri certificateUri;
+    private String mUserId;
+    private String mEmail;
+    private String mPassword;
+    private String mConfirmPassword;
+    private String mName;
+    private String mPhoneNum;
+    private int mRoleSelectionId;
+    private String mStoreName;
+    private String mRetailAddress;
+    private String mPostalAddress;
+    private Uri mCertificateUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,16 +115,16 @@ public class RegisterActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.register_page_chef_Rb:
                 if (isChanged) {
-                    mChefLayout.setVisibility(View.VISIBLE);
-                    mPostalAddress.setVisibility(View.GONE);
-                    mAgreement.setVisibility(View.VISIBLE);
+                    chefLayout.setVisibility(View.VISIBLE);
+                    postalAddress.setVisibility(View.GONE);
+                    agreement.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.register_page_customer_Rb:
                 if (isChanged) {
-                    mChefLayout.setVisibility(View.GONE);
-                    mPostalAddress.setVisibility(View.VISIBLE);
-                    mAgreement.setVisibility(View.VISIBLE);
+                    chefLayout.setVisibility(View.GONE);
+                    postalAddress.setVisibility(View.VISIBLE);
+                    agreement.setVisibility(View.VISIBLE);
                 }
                 break;
             default:
@@ -148,14 +141,16 @@ public class RegisterActivity extends AppCompatActivity {
     @OnCheckedChanged({R.id.register_page_individual_Rb, R.id.register_page_retail_Rb})
     public void businessStyleOnCheckedChangeListener(CompoundButton view, boolean isChanged) {
         switch (view.getId()) {
+            // Individual business chose
             case R.id.register_page_individual_Rb:
                 if (isChanged) {
-                    mRetailAddress.setVisibility(View.GONE);
+                    retailAddress.setVisibility(View.GONE);
                 }
                 break;
+            // Retail business chose
             case R.id.register_page_retail_Rb:
                 if (isChanged) {
-                    mRetailAddress.setVisibility(View.VISIBLE);
+                    retailAddress.setVisibility(View.VISIBLE);
                 }
                 break;
             default:
@@ -167,15 +162,15 @@ public class RegisterActivity extends AppCompatActivity {
      * Read inputs from front end
      */
     private void readInputs() {
-        email = mEmail.getText().toString();
-        password = mPassword.getText().toString();
-        confirmPassword = mConfirmPassword.getText().toString();
-        name = mName.getText().toString();
-        phoneNum = mPhoneNum.getText().toString();
-        roleSelectionId = mRoleSelection.getCheckedRadioButtonId();
-        storeName = mStoreName.getText().toString();
-        retailAddress = mRetailAddress.getText().toString();
-        postalAddress = mPostalAddress.getText().toString();
+        mEmail = email.getText().toString();
+        mPassword = password.getText().toString();
+        mConfirmPassword = confirmPassword.getText().toString();
+        mName = name.getText().toString();
+        mPhoneNum = phoneNum.getText().toString();
+        mRoleSelectionId = roleSelection.getCheckedRadioButtonId();
+        mStoreName = storeName.getText().toString();
+        mRetailAddress = retailAddress.getText().toString();
+        mPostalAddress = postalAddress.getText().toString();
     }
 
     /**
@@ -214,7 +209,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void openSystemFileSelection() {
         Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        fileIntent.setType("image/*");
+        fileIntent.setType(Constant.FILE_TYPE);
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(fileIntent, 1234);
     }
@@ -231,8 +226,8 @@ public class RegisterActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1234:
                 if (resultCode == RESULT_OK) {
-                    certificateUri = data.getData();
-                    mCertificateName.setText(certificateUri.getLastPathSegment());
+                    mCertificateUri = data.getData();
+                    certificateName.setText(mCertificateUri.getLastPathSegment());
                 }
                 break;
         }
@@ -244,31 +239,31 @@ public class RegisterActivity extends AppCompatActivity {
      * @return areValid
      */
     private boolean allInputsAreValid() {
-        // Check email input validity
-        if (!Utils.emailInputIsLegal(email)) {
-            mEmail.setError(getString(R.string.login_page_email_error));
+        // Check mEmail input validity
+        if (!Utils.emailInputIsLegal(mEmail)) {
+            email.setError(getString(R.string.login_page_email_error));
         }
-        // Check password input validity
-        else if (!Utils.passwordInputIsLegal(password)) {
-            mPassword.setError(getString(R.string.login_page_password_error));
+        // Check mPassword input validity
+        else if (!Utils.passwordInputIsLegal(mPassword)) {
+            password.setError(getString(R.string.login_page_password_error));
         }
-        // Check if password is confirmed
-        else if(!Utils.confirmPassword(password, confirmPassword)){
-            mConfirmPassword.setError(getString(R.string.register_page_password_confirm_error));
+        // Check if mPassword is confirmed
+        else if(!Utils.confirmPassword(mPassword, mConfirmPassword)){
+            confirmPassword.setError(getString(R.string.register_page_password_confirm_error));
         }
-        // Check name input validity
-        else if ((!name.isEmpty()) && !Utils.nameInputIsLegal(name)) {
-            mName.setError(getString(R.string.register_page_name_error));
+        // Check mName input validity
+        else if ((!mName.isEmpty()) && !Utils.nameInputIsLegal(mName)) {
+            name.setError(getString(R.string.register_page_name_error));
         }
         // Check phone input validity
-        else if ((!phoneNum.isEmpty()) && !Utils.phoneNumInputIsLegal(phoneNum)) {
-            mPhoneNum.setError(getString(R.string.register_page_phoneNum_error));
+        else if ((!mPhoneNum.isEmpty()) && !Utils.phoneNumInputIsLegal(mPhoneNum)) {
+            phoneNum.setError(getString(R.string.register_page_phoneNum_error));
         }
-        else if(storeName.isEmpty()){
-            mStoreName.setError(getString(R.string.register_page_store_name_error));
+        else if(mStoreName.isEmpty()){
+            storeName.setError(getString(R.string.register_page_store_name_error));
         }
         // Check agreement checkbox
-        else if (!mAgreement.isChecked()) {
+        else if (!agreement.isChecked()) {
             Toast.makeText(this, getString(R.string.register_page_agreement_error), Toast.LENGTH_LONG).show();
         } else {
             return true;
@@ -282,13 +277,13 @@ public class RegisterActivity extends AppCompatActivity {
     private void createVerifyAccount(){
         // Show progress bar
         showLoading();
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Register successful, show message and go on creating user data snapshot
                 if (task.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_verify_account_creation_success), Toast.LENGTH_LONG).show();
-                    userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     createUserData();
                 }
                 // Register failed, show error message
@@ -304,23 +299,23 @@ public class RegisterActivity extends AppCompatActivity {
      *  Show loading progress bar
      */
     private void showLoading(){
-        mRegisterForm.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        registerForm.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
      *  Show contents
      */
     private void showContents(){
-        mRegisterForm.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
+        registerForm.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     /**
      * Create a snapshot in database to store user data
      */
     private void createUserData(){
-        switch (roleSelectionId) {
+        switch (mRoleSelectionId) {
             // Register a new chef
             case R.id.register_page_chef_Rb:
                 createChef();
@@ -339,10 +334,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void createChef() {
         Chef chef = new Chef();
-        chef.setId(userId);
-        if (name != null) chef.setName(name);
-        if (phoneNum != null) chef.setPhone(phoneNum);
-        DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId);
+        chef.setId(mUserId);
+        if (mName != null) chef.setName(mName);
+        if (mPhoneNum != null) chef.setPhone(mPhoneNum);
+        DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId);
         chefRef.setValue(chef).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -366,11 +361,11 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void createCustomer() {
         Customer customer = new Customer();
-        customer.setId(userId);
-        if (name != null) customer.setName(name);
-        if (phoneNum != null) customer.setPhone(phoneNum);
-        if (postalAddress != null) customer.setPostalAddress(postalAddress);
-        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId);
+        customer.setId(mUserId);
+        if (mName != null) customer.setName(mName);
+        if (mPhoneNum != null) customer.setPhone(mPhoneNum);
+        if (mPostalAddress != null) customer.setPostalAddress(mPostalAddress);
+        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId);
         customerRef.setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -393,10 +388,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void createStore() {
         Store store = new Store();
-        store.setName(storeName);
+        store.setName(mStoreName);
         if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
-                && retailAddress != null) store.setAddress(retailAddress);
-        DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE);
+                && mRetailAddress != null) store.setAddress(mRetailAddress);
+        DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE);
         storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -419,8 +414,8 @@ public class RegisterActivity extends AppCompatActivity {
      * Upload certificate to database storage
      */
     private void uploadCertificate(){
-        StorageReference chefRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.CERTIFICATE);
-        chefRef.putFile(certificateUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        StorageReference chefRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.CERTIFICATE);
+        chefRef.putFile(mCertificateUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 // Upload certificate successful, open dashboard
@@ -441,14 +436,11 @@ public class RegisterActivity extends AppCompatActivity {
      *  Open dashboard page due to user Role
      */
     private void openDashboard(){
-        switch (roleSelectionId) {
+        switch (mRoleSelectionId) {
             // Go to store dashboard
             case R.id.register_page_chef_Rb:
+                loadNewUserInfo(User.Role.CHEF);
                 Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
-                CurrentUser.setUserId(userId);
-                CurrentUser.setUserRole(User.Role.CHEF);
-                CurrentUser.setUserEmail(email);
-                CurrentUser.setUserPassword(password);
                 startActivity(storeIntent);
                 finish();
                 // Show welcome message
@@ -456,11 +448,8 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
             // Go to customer dashboard
             case R.id.register_page_customer_Rb:
+                loadNewUserInfo(User.Role.CUSTOMER);
                 Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
-                CurrentUser.setUserId(userId);
-                CurrentUser.setUserRole(User.Role.CUSTOMER);
-                CurrentUser.setUserEmail(email);
-                CurrentUser.setUserPassword(password);
                 startActivity(customerIntent);
                 finish();
                 // Show welcome message
@@ -469,5 +458,17 @@ public class RegisterActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    /**
+     * Load user info as
+     * @param role
+     */
+    private void loadNewUserInfo(User.Role role){
+        CurrentUser.setUserId(mUserId);
+        CurrentUser.setUserName(mName);
+        CurrentUser.setUserRole(role);
+        CurrentUser.setUserEmail(mEmail);
+        CurrentUser.setUserPassword(mPassword);
     }
 }

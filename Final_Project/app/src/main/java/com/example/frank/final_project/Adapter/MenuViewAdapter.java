@@ -40,10 +40,12 @@ public class MenuViewAdapter extends FirebaseRecyclerAdapter<Cake, MenuViewHolde
     @Override
     protected void onBindViewHolder(@NonNull MenuViewHolder holder, int position, @NonNull final Cake cake) {
         holder.bind(cake);
+        // Read cake picture and bind as head photo of cake
         if(cake.getImageUrl() != null){
             String[] photoUrls = cake.getImageUrl().split(" ");
             Picasso.with(context).load(photoUrls[0]).placeholder(R.drawable.loading).error(R.drawable.cake_default_headphoto).into(holder.getCakeImageView());
         }
+        // Go to cake detail page when cake item is clicked
         holder.getCakeItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -18,7 +18,7 @@ public class Customer extends User {
 
     }
 
-    public Customer(String Id, String name, String phone, List<String> chefIds, String postalAddress, Contact contact) {
+    public Customer(String Id, String name, String phone, String postalAddress, Contact contact) {
         super(Id, name, phone);
         this.postalAddress = postalAddress;
         this.contact = contact;

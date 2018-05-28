@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.R;
-import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,32 +19,44 @@ import butterknife.ButterKnife;
 public class MenuViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.cake_item)
-    LinearLayout mCakeItem;
+    LinearLayout cakeItem;
 
     @BindView(R.id.menu_list_cake_container_Iv)
-    ImageView mCakeImage;
+    ImageView cakeImage;
 
     @BindView(R.id.menu_list_cake_container_cakeName_Tv)
-    TextView mCakeName;
+    TextView cakeName;
 
-    @BindView(R.id.menu_list_cake_container_cakeDescription_Tv)
-    TextView mCakeDescription;
+    @BindView(R.id.menu_list_cake_container_price_Tv)
+    TextView cakePrice;
 
     public MenuViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
+    /**
+     * Bind attributes to views
+     * @param cake
+     */
     public void bind(Cake cake){
-        mCakeName.setText(cake.getName());
-        mCakeDescription.setText(cake.getDescription());
+        cakeName.setText(cake.getName());
+        cakePrice.setText(Double.toString(cake.getPrice()) + " AUD");
     }
 
+    /**
+     *  Return cake image view to adapter
+     * @return cakeImage
+     */
     public ImageView getCakeImageView(){
-        return mCakeImage;
+        return cakeImage;
     }
 
+    /**
+     *  Return cake view to adapter
+     * @return cakeItem
+     */
     public LinearLayout getCakeItem(){
-        return mCakeItem;
+        return cakeItem;
     }
 }

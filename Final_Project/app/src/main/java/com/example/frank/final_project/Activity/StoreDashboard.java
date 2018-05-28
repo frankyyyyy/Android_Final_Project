@@ -1,36 +1,30 @@
 package com.example.frank.final_project.Activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.example.frank.final_project.Adapter.StoreListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.Chef;
-import com.example.frank.final_project.Model.Customer;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,12 +32,12 @@ import butterknife.ButterKnife;
 public class StoreDashboard extends AppCompatActivity {
 
     @BindView(R.id.customer_dashboard_page_Pb)
-    ProgressBar mProgressBarView;
+    ProgressBar progressBarView;
 
     @BindView(R.id.customer_dashboard_page_chefList_Rv)
-    RecyclerView mChefList;
+    RecyclerView chefList;
 
-    private DatabaseReference chefRef;
+    private DatabaseReference mChefRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +48,39 @@ public class StoreDashboard extends AppCompatActivity {
         // Show loading progress bar
         showLoading();
         // Read chef snapshot reference
-        chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF);
+        mChefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF);
         // Attach chefs
         attachChefList();
+
+        // Start message service if it is not running
+        if(!messageServiceRunning()){
+            Intent messageNotifier = new Intent(this, MessageNotifier.class);
+            startService(messageNotifier);
+        }
         // Show contents
         showContents();
-        // Start message service
-//        startMessageService();
     }
 
+    /**
+     *  Check if the message notifier service is running
+     * @return result
+     */
+    private boolean messageServiceRunning() {
+        ActivityManager myManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager.getRunningServices(30);
+        for(ActivityManager.RunningServiceInfo service: runningService){
+            if(service.service.getClassName().toString().equals(Constant.MESSAGE_NOTIFIER_SERVICE)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *  On menu created
+     * @param menu
+     * @return result
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -70,13 +88,14 @@ public class StoreDashboard extends AppCompatActivity {
         return true;
     }
 
+    /**
+     *  On menu item selected
+     * @param item
+     * @return result
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.menu_message:
                 Intent contactIntent = new Intent(this, ContactActivity.class);
@@ -90,24 +109,16 @@ public class StoreDashboard extends AppCompatActivity {
      *  Show loading progress bar
      */
     private void showLoading(){
-        mChefList.setVisibility(View.GONE);
-        mProgressBarView.setVisibility(View.VISIBLE);
+        chefList.setVisibility(View.GONE);
+        progressBarView.setVisibility(View.VISIBLE);
     }
 
     /**
      *  Show chef list contents
      */
     private void showContents(){
-        mChefList.setVisibility(View.VISIBLE);
-        mProgressBarView.setVisibility(View.GONE);
-    }
-
-    /**
-     *  Start message notification service
-     */
-    private void startMessageService() {
-        Intent messageNotifier = new Intent(this, MessageNotifier.class);
-        startService(messageNotifier);
+        chefList.setVisibility(View.VISIBLE);
+        progressBarView.setVisibility(View.GONE);
     }
 
     /**
@@ -116,16 +127,16 @@ public class StoreDashboard extends AppCompatActivity {
     private void attachChefList(){
         FirebaseRecyclerOptions<Chef> options =
                 new FirebaseRecyclerOptions.Builder<Chef>()
-                        .setQuery(chefRef, Chef.class)
+                        .setQuery(mChefRef, Chef.class)
                         .setLifecycleOwner(this)
                         .build();
         FirebaseRecyclerAdapter chefListAdapter = new StoreListViewAdapter(options, this);
-        mChefList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mChefList.setHasFixedSize(true);
+        chefList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        chefList.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mChefList.setLayoutManager(mLayoutManager);
-        mChefList.setItemAnimator(new DefaultItemAnimator());
-        mChefList.setAdapter(chefListAdapter);
+        chefList.setLayoutManager(mLayoutManager);
+        chefList.setItemAnimator(new DefaultItemAnimator());
+        chefList.setAdapter(chefListAdapter);
     }
 
 }

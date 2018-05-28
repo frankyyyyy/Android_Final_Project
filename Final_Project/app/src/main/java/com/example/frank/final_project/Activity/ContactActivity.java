@@ -1,8 +1,6 @@
 package com.example.frank.final_project.Activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,7 +20,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,12 +27,12 @@ import butterknife.ButterKnife;
 public class ContactActivity extends AppCompatActivity {
 
     @BindView(R.id.contact_toolbar)
-    Toolbar mToolbar;
+    Toolbar toolbar;
 
     @BindView(R.id.contact_list_Rv)
-    RecyclerView mContactList;
+    RecyclerView contactList;
 
-    private DatabaseReference contactRef;
+    private DatabaseReference mContactRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,48 +40,46 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
         ButterKnife.bind(this);
 
-
         // Setup tool bar button
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
 
         // Set back button function
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
-
-
+        // Read current user role
         if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
-            contactRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.CONTACT);
+            mContactRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.CONTACT);
         }else{
-            contactRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.CONTACT);
+            mContactRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.CONTACT);
         }
 
-
-        attachMenu();
+        // Attach contact info to demonstration list
+        attachContact();
     }
 
     /**
-     *  Attach cake info to list
+     *  Attach contact info to list
      */
-    private void attachMenu() {
+    private void attachContact() {
         FirebaseRecyclerOptions<Contact> options =
                 new FirebaseRecyclerOptions.Builder<Contact>()
-                        .setQuery(contactRef, Contact.class)
+                        .setQuery(mContactRef, Contact.class)
                         .setLifecycleOwner(this)
                         .build();
         FirebaseRecyclerAdapter contactListViewAdapter = new ContactListViewAdapter(options, this);
-        mContactList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mContactList.setHasFixedSize(true);
+        contactList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        contactList.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mContactList.setLayoutManager(mLayoutManager);
-        mContactList.setItemAnimator(new DefaultItemAnimator());
-        mContactList.setAdapter(contactListViewAdapter);
+        contactList.setLayoutManager(mLayoutManager);
+        contactList.setItemAnimator(new DefaultItemAnimator());
+        contactList.setAdapter(contactListViewAdapter);
     }
 }

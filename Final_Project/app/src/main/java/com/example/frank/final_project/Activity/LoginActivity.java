@@ -12,7 +12,9 @@ import android.widget.Toast;
 
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Constant.Utils;
+import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.Model.CurrentUser;
+import com.example.frank.final_project.Model.Customer;
 import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,22 +33,26 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.login_page_login_progress)
-    ProgressBar mProgressBar;
+    ProgressBar progressBar;
 
     @BindView(R.id.login_page_login_form)
-    LinearLayout mLoginForm;
+    LinearLayout loginForm;
 
     @BindView(R.id.login_page_email_Et)
-    EditText mEmail;
+    EditText email;
 
     @BindView(R.id.login_page_password_Et)
-    EditText mPassword;
+    EditText password;
+
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        // Read user id;
+        mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     /**
@@ -59,8 +65,8 @@ public class LoginActivity extends AppCompatActivity {
             // Open login page
             case R.id.login_page_sign_in_Btn:
                 // Read input from front end
-                String email = mEmail.getText().toString();
-                String password = mPassword.getText().toString();
+                String email = this.email.getText().toString();
+                String password = this.password.getText().toString();
                 // Check inputs validation
                 if(allInputsAreValid(email, password)) {
                     // Attempt to login
@@ -85,11 +91,11 @@ public class LoginActivity extends AppCompatActivity {
     private boolean allInputsAreValid(String email, String password){
         // Check email input validity
         if(!Utils.emailInputIsLegal(email)){
-            mEmail.setError(getString(R.string.login_page_email_error));
+            this.email.setError(getString(R.string.login_page_email_error));
         }
         // Check password input validity
         else if(!Utils.passwordInputIsLegal(password)){
-            mPassword.setError(getString(R.string.login_page_password_error));
+            this.password.setError(getString(R.string.login_page_password_error));
         }
         else{
             return true;
@@ -127,41 +133,52 @@ public class LoginActivity extends AppCompatActivity {
      * @param email
      */
     private void verifyRoleAndStartDashboard(final String email, final String password){
-        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     // user is a chef, go to store dashboard
-                    Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
-                    CurrentUser.setUserId(userId);
-                    CurrentUser.setUserRole(User.Role.CHEF);
-                    CurrentUser.setUserEmail(email);
-                    CurrentUser.setUserPassword(password);
-//                    // Pass role identity
-//                    storeIntent.putExtra(Constant.CHEF, Constant.CHEF);
-//                    // Pass user email and password
-//                    storeIntent.putExtra(Constant.EMAIL, email);
-//                    storeIntent.putExtra(Constant.PASSWORD, password);
-                    // Start store dashboard
-                    startActivity(storeIntent);
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.login_page_login_success) + ": " + email, Toast.LENGTH_LONG).show();
-                    finish();
+                    FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // Read chef data
+                            Chef chef = dataSnapshot.getValue(Chef.class);
+                            // Save chef as local user
+                            CurrentUser.setUserId(mUserId);
+                            if(chef.getName() != null){
+                                CurrentUser.setUserName(chef.getName());
+                            }
+                            CurrentUser.setUserRole(User.Role.CHEF);
+                            CurrentUser.setUserEmail(email);
+                            CurrentUser.setUserPassword(password);
+                            // Start store dashboard
+                            Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
+                            startActivity(storeIntent);
+                            Toast.makeText(getApplicationContext(),
+                                    getString(R.string.login_page_login_success) + email, Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 } else {
                     // user is a customer
-                    Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
-                    CurrentUser.setUserId(userId);
+                    Customer customer = dataSnapshot.getValue(Customer.class);
+                    // Save customer as local user
+                    CurrentUser.setUserId(mUserId);
+                    if(customer.getName() != null){
+                        CurrentUser.setUserName(customer.getName());
+                    }
                     CurrentUser.setUserRole(User.Role.CUSTOMER);
                     CurrentUser.setUserEmail(email);
                     CurrentUser.setUserPassword(password);
-//                    // Pass user email and password
-//                    customerIntent.putExtra(Constant.EMAIL, email);
-//                    customerIntent.putExtra(Constant.PASSWORD, password);
                     // Start customer dashboard
+                    Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
                     startActivity(customerIntent);
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.login_page_login_success) + ": " + email, Toast.LENGTH_LONG).show();
+                            getString(R.string.login_page_login_success) + email, Toast.LENGTH_LONG).show();
                     finish();
                 }
             }
@@ -177,15 +194,15 @@ public class LoginActivity extends AppCompatActivity {
      *  Show loading progress bar
      */
     private void showLoading(){
-        mLoginForm.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        loginForm.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
      *  Show sumbit form contents
      */
     private void showContents(){
-        mLoginForm.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
+        loginForm.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 }

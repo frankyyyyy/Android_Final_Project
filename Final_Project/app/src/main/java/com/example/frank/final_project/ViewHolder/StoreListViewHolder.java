@@ -35,12 +35,20 @@ public class StoreListViewHolder extends RecyclerView.ViewHolder{
         ButterKnife.bind(this, itemView);
     }
 
+    /**
+     * Bind attributes to views
+     * @param chef
+     */
     public void bind(Chef chef){
         storeName.setText(chef.getStore().getName());
         chefName.setText(chef.getName());
         storeRate.setRating(chef.getStore().getRate());
     }
 
+    /**
+     *  Return store view to adapter
+     * @return storeItem
+     */
     public LinearLayout getStoreItem(){
         return storeItem;
     }

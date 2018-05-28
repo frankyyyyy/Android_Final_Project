@@ -3,7 +3,6 @@ package com.example.frank.final_project.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Constant.Constant;
-import com.example.frank.final_project.Constant.Utils;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.R;
@@ -39,54 +37,54 @@ import butterknife.OnClick;
 public class AddCakeActivity extends AppCompatActivity {
 
     @BindView(R.id.add_cake_Pv)
-    ProgressBar mProgressBarView;
+    ProgressBar progressBarView;
 
     @BindView(R.id.add_cake_form_view)
-    LinearLayout mAddCakeForm;
+    LinearLayout addCakeForm;
 
     @BindView(R.id.add_cake_name_Et)
-    EditText mCakeName;
+    EditText cakeName;
 
     @BindViews({R.id.ingredients_alcohol, R.id.ingredients_egg, R.id.ingredients_gluten, R.id.ingredients_milk, R.id.ingredients_nuts, R.id.ingredients_sugar})
-    List<CheckBox> mIngredientList;
+    List<CheckBox> ingredientList;
 
     @BindView(R.id.cake_size_Et)
-    EditText mCakeSize;
+    EditText cakeSize;
 
     @BindView(R.id.cake_size_unit_Spinner)
-    Spinner mSizeUnit;
+    Spinner sizeUnit;
 
     @BindView(R.id.cake_price_Et)
-    EditText mCakePrice;
+    EditText cakePrice;
 
     @BindView(R.id.add_cake_description_Et)
-    EditText mCakeDescription;
+    EditText cakeDescription;
 
-    private String cakeName;
-    private String cakeIngredients;
-    private String cakeSize;
-    private double cakePrice;
-    private String cakeDescription;
-    private String cakePictureUri;
+    private String mCakeName;
+    private String mCakeIngredients;
+    private String mCakeSize;
+    private double mCakePrice;
+    private String mCakeDescription;
+    private String mCakePictureUri;
 
-    private String userId;
-    private Uri localPictureUri;
-    private DatabaseReference menuRef;
-    private StorageReference cakePictureRef;
+    private String mUserId;
+    private Uri mLocalPictureUri;
+    private DatabaseReference mMenuRef;
+    private StorageReference mCakePictureRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cake);
         ButterKnife.bind(this);
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // Read current user id
+        mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 
-
-
-
-
+    /**
+     * Choose a picture file from system and upload
+     */
     @OnClick(R.id.add_cake_picture_Iv)
     public void addPicture(){
         openSystemFileSelection();
@@ -97,7 +95,7 @@ public class AddCakeActivity extends AppCompatActivity {
      */
     private void openSystemFileSelection() {
         Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        fileIntent.setType("image/*");
+        fileIntent.setType(Constant.FILE_TYPE);
         fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(fileIntent, 666);
     }
@@ -114,20 +112,17 @@ public class AddCakeActivity extends AppCompatActivity {
         switch (requestCode) {
             case 666:
                 if (resultCode == RESULT_OK) {
-                    localPictureUri = data.getData();
+                    mLocalPictureUri = data.getData();
                 }
                 break;
         }
     }
 
 
-
-
-
-
-
-
-
+    /**
+     * On click of submit and cancel functions
+     * @param view
+     */
     @OnClick({R.id.add_cake_submit_Btn, R.id.add_cake_cancel_Btn})
     public void onClick(View view){
         switch (view.getId()){
@@ -147,7 +142,7 @@ public class AddCakeActivity extends AppCompatActivity {
      */
     private void showCancelWarningDialog() {
         ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
-        confirmDialogFragment.show(getString(R.string.exit_tittle), "You want to leave with saving.",
+        confirmDialogFragment.show(getString(R.string.exit_tittle), getString(R.string.cake_add_cancel_warning),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -165,7 +160,7 @@ public class AddCakeActivity extends AppCompatActivity {
      */
     private void showSubmitWarningDialog() {
         ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
-        confirmDialogFragment.show(getString(R.string.exit_tittle), "You want to submit.",
+        confirmDialogFragment.show(getString(R.string.exit_tittle), getString(R.string.cake_add_submit_warning),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -179,59 +174,55 @@ public class AddCakeActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
+    /**
+     * Write new cake info into database
+     */
     private void addNewCakeToDatabase() {
         showLoading();
         // Read data from form
-        cakeName = mCakeName.getText().toString();
-        for (CheckBox ingredient: mIngredientList) {
+        mCakeName = cakeName.getText().toString();
+        for (CheckBox ingredient: ingredientList) {
             if(ingredient.isChecked()){
-                cakeIngredients = (cakeIngredients == null) ?
+                mCakeIngredients = (mCakeIngredients == null) ?
                         ingredient.getText().toString() :
-                        cakeIngredients + " " + ingredient.getText().toString();
+                        mCakeIngredients + " " + ingredient.getText().toString();
             }
         }
-        cakePrice = Double.parseDouble(mCakePrice.getText().toString());
-        cakeSize = mCakeSize.getText().toString() + mSizeUnit.getSelectedItem().toString();
-        cakeDescription = mCakeDescription.getText().toString();
+        mCakePrice = Double.parseDouble(cakePrice.getText().toString());
+        mCakeSize = cakeSize.getText().toString() + sizeUnit.getSelectedItem().toString();
+        mCakeDescription = cakeDescription.getText().toString();
         if(allInputsAreValid()){
             // Create new cake
             final Cake newCake = new Cake();
-            newCake.setName(cakeName);
+            newCake.setName(mCakeName);
             newCake.setPhotoNum(1);
-            newCake.setIngredients(cakeIngredients);
-            newCake.setSize(cakeSize);
-            newCake.setPrice(cakePrice);
-            newCake.setDescription(cakeDescription);
+            newCake.setIngredients(mCakeIngredients);
+            newCake.setSize(mCakeSize);
+            newCake.setPrice(mCakePrice);
+            newCake.setDescription(mCakeDescription);
             // Insert new cake
-            menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU);
-            final String cakeId = menuRef.push().getKey();
+            mMenuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE).child(Constant.MENU);
+            final String cakeId = mMenuRef.push().getKey();
             newCake.setId(cakeId);
-            menuRef.child(cakeId).setValue(newCake).addOnCompleteListener(new OnCompleteListener<Void>() {
+            mMenuRef.child(cakeId).setValue(newCake).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful())
                     {
                         // Upload cake picture.
-                        cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(userId).child(Constant.STORE).child(Constant.MENU).child(cakeId).child("photo_" + Integer.toString(newCake.getPhotoNum()));
-                        cakePictureRef.putFile(localPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        mCakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE).child(Constant.MENU).child(cakeId).child(Constant.CAKE_PHOTO_ID + Integer.toString(newCake.getPhotoNum()));
+                        mCakePictureRef.putFile(mLocalPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if(task.isSuccessful())
                                 {
                                     // Save cake picture link uri in cake database
-                                    cakePictureUri = task.getResult().getDownloadUrl().toString();
-                                    menuRef.child(cakeId).child(Constant.CAKE_IMAGEURI).setValue(cakePictureUri).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    mCakePictureUri = task.getResult().getDownloadUrl().toString();
+                                    mMenuRef.child(cakeId).child(Constant.CAKE_IMAGEURI).setValue(mCakePictureUri).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             finish();
-                                            Toast.makeText(getApplicationContext(), "New cake has been added to menu.", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), getString(R.string.cake_add_success), Toast.LENGTH_LONG).show();
                                         }
                                     });
                                 }
@@ -239,7 +230,7 @@ public class AddCakeActivity extends AppCompatActivity {
                                 {
                                     showContents();
                                     String message = task.getException().getMessage();
-                                    Toast.makeText(AddCakeActivity.this, "Error occured: " + message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddCakeActivity.this, getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -249,7 +240,7 @@ public class AddCakeActivity extends AppCompatActivity {
                     {
                         showContents();
                         String message = task.getException().getMessage();
-                        Toast.makeText(AddCakeActivity.this, "Error occured: " + message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddCakeActivity.this, getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -263,20 +254,20 @@ public class AddCakeActivity extends AppCompatActivity {
      */
     private boolean allInputsAreValid() {
         // Check name input validity
-        if (cakeName == null) {
-            mCakeName.setError("Need a cake name.");
+        if (mCakeName == null) {
+            cakeName.setError(getString(R.string.cake_add_name_error));
         }
         // Check size input validity
-        else if (mCakeSize.getText().toString() == null) {
-            Toast.makeText(AddCakeActivity.this, "Cake size required", Toast.LENGTH_SHORT).show();
+        else if (cakeSize.getText().toString() == null) {
+            Toast.makeText(AddCakeActivity.this, getString(R.string.cake_add_size_error), Toast.LENGTH_SHORT).show();
         }
         // Check price input validity
-        else if((Double)cakePrice == null){
-            Toast.makeText(AddCakeActivity.this, "Cake prize required", Toast.LENGTH_SHORT).show();
+        else if((Double) mCakePrice == null){
+            Toast.makeText(AddCakeActivity.this, getString(R.string.cake_add_size_error), Toast.LENGTH_SHORT).show();
         }
         // Check picture input validity
-        else if (localPictureUri == null) {
-            Toast.makeText(AddCakeActivity.this, "Cake picture required", Toast.LENGTH_SHORT).show();
+        else if (mLocalPictureUri == null) {
+            Toast.makeText(AddCakeActivity.this, getString(R.string.cake_add_picture_error), Toast.LENGTH_SHORT).show();
         } else {
             return true;
         }
@@ -287,15 +278,15 @@ public class AddCakeActivity extends AppCompatActivity {
      *  Show loading progress bar
      */
     private void showLoading(){
-        mAddCakeForm.setVisibility(View.GONE);
-        mProgressBarView.setVisibility(View.VISIBLE);
+        addCakeForm.setVisibility(View.GONE);
+        progressBarView.setVisibility(View.VISIBLE);
     }
 
     /**
      *  Show contents
      */
     private void showContents(){
-        mAddCakeForm.setVisibility(View.VISIBLE);
-        mProgressBarView.setVisibility(View.GONE);
+        addCakeForm.setVisibility(View.VISIBLE);
+        progressBarView.setVisibility(View.GONE);
     }
 }

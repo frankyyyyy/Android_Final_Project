@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.example.frank.final_project.R;
+import com.example.frank.final_project.ViewHolder.CakePictureViewHolder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CakePictureAdapter extends RecyclerView.Adapter<CakePictureAdapter.ViewHolder> {
+public class CakePictureAdapter extends RecyclerView.Adapter<CakePictureViewHolder> {
 
 
     private ArrayList<String> pictureUris;
@@ -33,36 +34,20 @@ public class CakePictureAdapter extends RecyclerView.Adapter<CakePictureAdapter.
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CakePictureViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_cake, parent, false);
-        return new ViewHolder(itemView);
+        return new CakePictureViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CakePictureViewHolder holder, int position) {
         Picasso.with(context).load(pictureUris.get(position)).placeholder(R.drawable.loading).error(R.drawable.loading_error_404).into(holder.getCakeItem());
     }
 
     @Override
     public int getItemCount() {
         return pictureUris.size();
-    }
-
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.cake_item)
-        ImageView mCakeItem;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public ImageView getCakeItem(){
-            return mCakeItem;
-        }
     }
 
 }

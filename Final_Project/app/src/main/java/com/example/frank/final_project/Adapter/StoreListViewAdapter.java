@@ -44,13 +44,15 @@ public class StoreListViewAdapter extends FirebaseRecyclerAdapter<Chef, StoreLis
         holder.getStoreItem().setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // Go to store dashboard
-                Intent storeIntent = new Intent(context, MenuDashboard.class);
+                // Save chef info as opposite
                 CurrentUser.setOppositeId(chefId);
                 if(chefName != null){
                     CurrentUser.setOppositeName(chefName);
                 }
+                // Go to store dashboard
+                Intent storeIntent = new Intent(context, MenuDashboard.class);
                 context.startActivity(storeIntent);
+                // Stop previous activity
                 Activity mainActivity = (Activity) context;
                 mainActivity.finish();
             }
