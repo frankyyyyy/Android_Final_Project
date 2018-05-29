@@ -259,7 +259,7 @@ public class RegisterActivity extends AppCompatActivity {
         else if ((!mPhoneNum.isEmpty()) && !Utils.phoneNumInputIsLegal(mPhoneNum)) {
             phoneNum.setError(getString(R.string.register_page_phoneNum_error));
         }
-        else if(mStoreName.isEmpty()){
+        else if(mStoreName.isEmpty() && (mRoleSelectionId == R.id.register_page_chef_Rb)){
             storeName.setError(getString(R.string.register_page_store_name_error));
         }
         // Check agreement checkbox

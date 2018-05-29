@@ -26,10 +26,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageNotifier extends Service {
 
     private DatabaseReference messageRef;
+    private ChildEventListener messageListener;
+    private ArrayList<ChildEventListener> listenerList;
+    private ChildEventListener messageDetailsListener;
     private String userId;
     private String oppositeId;
     private NotificationManager mNotificationManager;
@@ -41,6 +48,13 @@ public class MessageNotifier extends Service {
     private int count;
 
     public MessageNotifier() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Notification count
+        count = 0;
     }
 
     @Override
@@ -90,8 +104,6 @@ public class MessageNotifier extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Notification count
-        count = 0;
         // Get user id
         userId = CurrentUser.getUserId();
         // Get user message reference
@@ -100,12 +112,12 @@ public class MessageNotifier extends Service {
                 messageRef.child(Constant.CUSTOMER).child(userId).child(Constant.MESSAGES) :
                 messageRef.child(Constant.CHEF).child(userId).child(Constant.MESSAGES);
         // Add listener on new message
-        messageRef.addChildEventListener(new ChildEventListener() {
+        messageListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 // add listener to every person
                 oppositeId = dataSnapshot.getKey();
-                messageRef.child(oppositeId).addChildEventListener(new ChildEventListener() {
+                messageDetailsListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         // add listener to every message
@@ -141,7 +153,8 @@ public class MessageNotifier extends Service {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                };
+                messageRef.child(oppositeId).addChildEventListener(messageDetailsListener);
             }
 
             @Override
@@ -163,7 +176,8 @@ public class MessageNotifier extends Service {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        messageRef.addChildEventListener(messageListener);
         // Add listener to user login status. Stop service when user sign out.
         FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -174,5 +188,24 @@ public class MessageNotifier extends Service {
             }
         });
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    messageRef.child(snapshot.getKey()).removeEventListener(messageDetailsListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        messageRef.removeEventListener(messageListener);
+        super.onDestroy();
     }
 }

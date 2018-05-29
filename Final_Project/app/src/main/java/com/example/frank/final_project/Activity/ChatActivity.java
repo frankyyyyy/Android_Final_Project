@@ -1,5 +1,9 @@
 package com.example.frank.final_project.Activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,13 +23,19 @@ import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
+import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -151,7 +161,7 @@ public class ChatActivity extends AppCompatActivity {
     private void attachMessageList(){
         FirebaseRecyclerOptions<Message> options =
                 new FirebaseRecyclerOptions.Builder<Message>()
-                        .setQuery(mOppositeMessageRef, Message.class)
+                        .setQuery(mSelfMessageRef, Message.class)
                         .setLifecycleOwner(this)
                         .build();
         mMessageListAdapter = new MessageListViewAdapter(options, this);
@@ -162,7 +172,6 @@ public class ChatActivity extends AppCompatActivity {
         messageList.setItemAnimator(new DefaultItemAnimator());
         messageList.setAdapter(mMessageListAdapter);
     }
-
 
     /**
      *  Show loading progress bar
