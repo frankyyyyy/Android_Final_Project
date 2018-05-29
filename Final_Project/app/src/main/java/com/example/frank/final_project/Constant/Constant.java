@@ -25,6 +25,8 @@ public class Constant {
 
     //message
     public static final String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
+    public static final String CHANNEL = "mChannel";
+    public static final String CHANNEL_1 = "mChannel_1";
 
     // Cake
     public static final String CAKE_IMAGEURI = "imageUrl";

@@ -5,15 +5,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.CurrentUser;
@@ -28,23 +24,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MessageNotifier extends Service {
 
-    private DatabaseReference messageRef;
-    private ChildEventListener messageListener;
-    private ArrayList<ChildEventListener> listenerList;
-    private ChildEventListener messageDetailsListener;
-    private String userId;
-    private String oppositeId;
+    private DatabaseReference mMessageRef;
+    private ChildEventListener mMessageListener;
+    private ChildEventListener mMessageDetailsListener;
+    private String mUserId;
+    private String mOppositeId;
     private NotificationManager mNotificationManager;
-    private NotificationCompat.Builder builder;
-    private String name = "mChannel";
-    private String id = "mChannel_1";
+    private NotificationCompat.Builder mBuilder;
 
-    private String newMessageKey;
+    private String mNewMessageKey;
     private int count;
 
     public MessageNotifier() {
@@ -73,62 +63,62 @@ public class MessageNotifier extends Service {
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         }
 
-        // Check the running environment to decide the builder function version
+        // Check the running environment to decide the mBuilder function version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = mNotificationManager.getNotificationChannel(id);
+            NotificationChannel mChannel = mNotificationManager.getNotificationChannel(Constant.CHANNEL_1);
             if (mChannel == null) {
-                mChannel = new NotificationChannel(id, name, importance);
+                mChannel = new NotificationChannel(Constant.CHANNEL_1, Constant.CHANNEL, importance);
                 mNotificationManager.createNotificationChannel(mChannel);
             }
-            builder = new NotificationCompat.Builder(this, id);
+            mBuilder = new NotificationCompat.Builder(this, Constant.CHANNEL_1);
         } else {
-            builder = new NotificationCompat.Builder(this);
+            mBuilder = new NotificationCompat.Builder(this);
         }
 
         // Input attributes into notification
-        builder.setSmallIcon(R.drawable.notification_icon);
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_page_logo));
-        builder.setAutoCancel(true);
-        builder.setOngoing(false);
-        builder.setShowWhen(true);
-        builder.setContentTitle(senderName);
-        builder.setContentText(content);
-        builder.setDefaults(Notification.DEFAULT_ALL);
-        Notification notification = builder.build();
+        mBuilder.setSmallIcon(R.drawable.notification_icon);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_page_logo));
+        mBuilder.setAutoCancel(true);
+        mBuilder.setOngoing(false);
+        mBuilder.setShowWhen(true);
+        mBuilder.setContentTitle(senderName);
+        mBuilder.setContentText(content);
+        mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        Notification notification = mBuilder.build();
         count++;
         mNotificationManager.notify(count, notification);
         // Set message status to read
-        messageRef.child(oppositeId).child(newMessageKey).child(Constant.STATUS).setValue(Message.Status.Read.toString());
+        mMessageRef.child(mOppositeId).child(mNewMessageKey).child(Constant.STATUS).setValue(Message.Status.Read.toString());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Get user id
-        userId = CurrentUser.getUserId();
+        mUserId = CurrentUser.getUserId();
         // Get user message reference
-        messageRef = FirebaseDatabase.getInstance().getReference();
-        messageRef = (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
-                messageRef.child(Constant.CUSTOMER).child(userId).child(Constant.MESSAGES) :
-                messageRef.child(Constant.CHEF).child(userId).child(Constant.MESSAGES);
+        mMessageRef = FirebaseDatabase.getInstance().getReference();
+        mMessageRef = (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
+                mMessageRef.child(Constant.CUSTOMER).child(mUserId).child(Constant.MESSAGES) :
+                mMessageRef.child(Constant.CHEF).child(mUserId).child(Constant.MESSAGES);
         // Add listener on new message
-        messageListener = new ChildEventListener() {
+        mMessageListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 // add listener to every person
-                oppositeId = dataSnapshot.getKey();
-                messageDetailsListener = new ChildEventListener() {
+                mOppositeId = dataSnapshot.getKey();
+                mMessageDetailsListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         // add listener to every message
                         Message newMessage = dataSnapshot.getValue(Message.class);
-                        newMessageKey = dataSnapshot.getKey();
+                        mNewMessageKey = dataSnapshot.getKey();
                         String senderId = newMessage.getSenderId();
                         String senderName = newMessage.getSender();
                         String content = newMessage.getContent();
                         String status = newMessage.getStatus();
                         if((status != null) && status.equals(Message.Status.UnRead.toString())){
-                            if((senderId != null) && !senderId.equals(userId)){
+                            if((senderId != null) && !senderId.equals(mUserId)){
                                 createNotification(senderName, content);
                             }
                         }
@@ -154,7 +144,7 @@ public class MessageNotifier extends Service {
 
                     }
                 };
-                messageRef.child(oppositeId).addChildEventListener(messageDetailsListener);
+                mMessageRef.child(mOppositeId).addChildEventListener(mMessageDetailsListener);
             }
 
             @Override
@@ -177,7 +167,7 @@ public class MessageNotifier extends Service {
 
             }
         };
-        messageRef.addChildEventListener(messageListener);
+        mMessageRef.addChildEventListener(mMessageListener);
         // Add listener to user login status. Stop service when user sign out.
         FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -192,11 +182,12 @@ public class MessageNotifier extends Service {
 
     @Override
     public void onDestroy() {
-        messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Remove listener on every chat target
+        mMessageRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    messageRef.child(snapshot.getKey()).removeEventListener(messageDetailsListener);
+                    mMessageRef.child(snapshot.getKey()).removeEventListener(mMessageDetailsListener);
                 }
             }
 
@@ -205,7 +196,8 @@ public class MessageNotifier extends Service {
 
             }
         });
-        messageRef.removeEventListener(messageListener);
+        // Remove listener on message snapshot
+        mMessageRef.removeEventListener(mMessageListener);
         super.onDestroy();
     }
 }
