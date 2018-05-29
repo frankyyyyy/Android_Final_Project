@@ -95,6 +95,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
 
         // Read current cake
         mCake = CurrentUser.getCurrentCake();
+        this.setTitle(mCake.getName());
         // Attach mCake info into list demonstration
         attachCakeInfo();
         // Attach photo from database to performance

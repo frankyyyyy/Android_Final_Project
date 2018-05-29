@@ -3,20 +3,26 @@ package com.example.frank.final_project.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.frank.final_project.Adapter.ContactListViewAdapter;
+import com.example.frank.final_project.Adapter.MessageListViewAdapter;
 import com.example.frank.final_project.Adapter.StoreListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.Chef;
+import com.example.frank.final_project.Model.Contact;
+import com.example.frank.final_project.Model.CurrentUser;
+import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -29,7 +35,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StoreDashboard extends AppCompatActivity {
+public class StoreDashboardActivity extends AppCompatActivity {
+
+    @BindView(R.id.store_dashboard_toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.customer_dashboard_page_Pb)
     ProgressBar progressBarView;
@@ -42,8 +51,10 @@ public class StoreDashboard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_dashboard);
+        setContentView(R.layout.activity_store_dashboard);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
 
         // Show loading progress bar
         showLoading();
@@ -61,6 +72,8 @@ public class StoreDashboard extends AppCompatActivity {
         showContents();
     }
 
+
+
     /**
      *  Check if the message notifier service is running
      * @return result
@@ -77,6 +90,7 @@ public class StoreDashboard extends AppCompatActivity {
     }
 
     /**
+     *
      *  On menu created
      * @param menu
      * @return result
@@ -121,22 +135,19 @@ public class StoreDashboard extends AppCompatActivity {
         progressBarView.setVisibility(View.GONE);
     }
 
-    /**
-     *  Attach chef info to list
-     */
-    private void attachChefList(){
+    private void attachChefList() {
         FirebaseRecyclerOptions<Chef> options =
                 new FirebaseRecyclerOptions.Builder<Chef>()
                         .setQuery(mChefRef, Chef.class)
                         .setLifecycleOwner(this)
                         .build();
-        FirebaseRecyclerAdapter chefListAdapter = new StoreListViewAdapter(options, this);
+        FirebaseRecyclerAdapter storeListViewAdapter = new StoreListViewAdapter(options, this);
         chefList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         chefList.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         chefList.setLayoutManager(mLayoutManager);
         chefList.setItemAnimator(new DefaultItemAnimator());
-        chefList.setAdapter(chefListAdapter);
+        chefList.setAdapter(storeListViewAdapter);
     }
 
 }

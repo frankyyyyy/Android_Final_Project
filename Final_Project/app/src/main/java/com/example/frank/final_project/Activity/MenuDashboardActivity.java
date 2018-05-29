@@ -37,15 +37,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MenuDashboard extends AppCompatActivity {
+public class MenuDashboardActivity extends AppCompatActivity {
 
-    @BindView(R.id.store_dashboard_page_menu_Rv)
+    @BindView(R.id.menu_dashboard_page_menu_Rv)
     RecyclerView menuList;
 
-    @BindView(R.id.store_dashboard_page_Pb)
+    @BindView(R.id.menu_dashboard_page_Pb)
     ProgressBar progressbarView;
 
-    @BindView(R.id.store_dashboard_page_float_Btn)
+    @BindView(R.id.menu_dashboard_page_float_Btn)
     FloatingActionButton floatBtn;
 
     private String mUserId;
@@ -54,7 +54,7 @@ public class MenuDashboard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_store_dashboard);
+        setContentView(R.layout.activity_menu_dashboard);
         ButterKnife.bind(this);
 
         // Show loading progress bar
@@ -73,7 +73,8 @@ public class MenuDashboard extends AppCompatActivity {
         }
         // Bind store menu list
         attachMenu();
-
+        // Set store name as tittle
+        this.setTitle(CurrentUser.getStoreName());
         // Start message notification service if it is not activated
         if(!messageServiceRunning()){
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
@@ -130,7 +131,7 @@ public class MenuDashboard extends AppCompatActivity {
     /**
      * Float button on click function
      */
-    @OnClick(R.id.store_dashboard_page_float_Btn)
+    @OnClick(R.id.menu_dashboard_page_float_Btn)
     public void onClickFloatBtn(){
         // Provide chat service to customer user
         if(CurrentUser.getUserRole() == User.Role.CUSTOMER){

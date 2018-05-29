@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
                             CurrentUser.setUserEmail(email);
                             CurrentUser.setUserPassword(password);
                             // Start store dashboard
-                            Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
+                            Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
                             startActivity(storeIntent);
                             Toast.makeText(getApplicationContext(),
                                     getString(R.string.login_page_login_success) + email, Toast.LENGTH_LONG).show();
@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                     CurrentUser.setUserEmail(email);
                     CurrentUser.setUserPassword(password);
                     // Start customer dashboard
-                    Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
+                    Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
                     startActivity(customerIntent);
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.login_page_login_success) + email, Toast.LENGTH_LONG).show();

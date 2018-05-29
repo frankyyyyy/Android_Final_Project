@@ -1,6 +1,5 @@
 package com.example.frank.final_project.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.frank.final_project.Activity.MenuDashboard;
+import com.example.frank.final_project.Activity.MenuDashboardActivity;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
@@ -49,12 +48,10 @@ public class StoreListViewAdapter extends FirebaseRecyclerAdapter<Chef, StoreLis
                 if(chefName != null){
                     CurrentUser.setOppositeName(chefName);
                 }
+                CurrentUser.setStoreName(chef.getStore().getName());
                 // Go to store dashboard
-                Intent storeIntent = new Intent(context, MenuDashboard.class);
+                Intent storeIntent = new Intent(context, MenuDashboardActivity.class);
                 context.startActivity(storeIntent);
-                // Stop previous activity
-                Activity mainActivity = (Activity) context;
-                mainActivity.finish();
             }
         });
     }

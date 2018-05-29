@@ -23,11 +23,8 @@
             android:name=".Activity.RegisterActivity"
             android:label="@string/register_page_tittle" />
         <activity
-            android:name=".Activity.StoreDashboard"
-            android:label="@string/customer_dashboard_page_tittle" />
-        <activity
-            android:name=".Activity.MenuDashboard"
-            android:label="@string/store_dashboard_page_tittle" />
+            android:name=".Activity.MenuDashboardActivity"
+            android:label="@string/title_activity_menu_dashboard" />
 
         <service
             android:name=".Service.MessageNotifier"
@@ -35,18 +32,19 @@
             android:exported="true" />
 
         <activity android:name=".Activity.AddCakeActivity" />
+        <activity android:name=".Activity.CakeDashboardActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ChatActivity"
-            android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.ContactActivity"
             android:label="@string/title_activity_contact"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.CakeDashboardActivity"
-            android:label="@string/title_activity_cake_dashboard"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".Activity.StoreDashboardActivity"
+            android:label="@string/title_activity_store_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

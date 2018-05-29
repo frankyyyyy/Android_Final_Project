@@ -77,8 +77,9 @@
     <string name="login_page_login_success">Welcome back:</string>
 
     //Dashboard
-    <string name="customer_dashboard_page_tittle">Stores</string>
-    <string name="store_dashboard_page_tittle">Menu</string>
+    <string name="title_activity_menu_dashboard">Menu</string>
+    <string name="title_activity_store_dashboard">Stores</string>
+    <string name="title_activity_contact">Contacts</string>
 
     //Chat
     <string name="chat_page_send_button">Send</string>
@@ -122,14 +123,10 @@
 
     <string name="cake_add_picture_add_confirm">New photo added.</string>
 
-    <string name="title_activity_cake_dashboard">CakeDashboardActivity</string>
-    <string name="title_activity_chat">ChatActivity</string>
-    <string name="title_activity_contact">ContactActivity</string>
-
     <string name="cake_choose_tittle">You chose file:</string>
-
 
     // Chat
     <string name="message_empty_deny">Send empty denied.</string>
+
 
 </resources>

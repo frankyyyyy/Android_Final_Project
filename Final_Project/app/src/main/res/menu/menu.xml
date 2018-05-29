@@ -4,6 +4,7 @@
     <item
         android:id="@+id/menu_message"
         android:orderInCategory="1"
+        android:icon="@drawable/chat"
         android:title="@string/message"
         app:showAsAction="always" />
     <!--<item-->

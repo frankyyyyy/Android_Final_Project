@@ -87,8 +87,18 @@ public class ChatActivity extends AppCompatActivity {
         mOppositeMessageRef = oppositeMessageRef();
         // Attach messages
         attachMessageList();
+        // Set tittle for chatting target
+        setTitleForChatTarget();
         // Show contents
         showContents();
+    }
+
+    private void setTitleForChatTarget(){
+        if(CurrentUser.getOppositeName() != null){
+            this.setTitle(CurrentUser.getOppositeName());
+        }else{
+            this.setTitle(CurrentUser.getOppositeId());
+        }
     }
 
     /**

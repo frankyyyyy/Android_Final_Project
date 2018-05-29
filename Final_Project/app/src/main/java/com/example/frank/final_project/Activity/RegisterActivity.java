@@ -440,7 +440,7 @@ public class RegisterActivity extends AppCompatActivity {
             // Go to store dashboard
             case R.id.register_page_chef_Rb:
                 loadNewUserInfo(User.Role.CHEF);
-                Intent storeIntent = new Intent(getApplicationContext(), MenuDashboard.class);
+                Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
                 startActivity(storeIntent);
                 finish();
                 // Show welcome message
@@ -449,7 +449,7 @@ public class RegisterActivity extends AppCompatActivity {
             // Go to customer dashboard
             case R.id.register_page_customer_Rb:
                 loadNewUserInfo(User.Role.CUSTOMER);
-                Intent customerIntent = new Intent(getApplicationContext(), StoreDashboard.class);
+                Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
                 startActivity(customerIntent);
                 finish();
                 // Show welcome message

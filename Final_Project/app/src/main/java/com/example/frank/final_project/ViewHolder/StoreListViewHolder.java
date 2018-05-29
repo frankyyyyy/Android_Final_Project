@@ -12,11 +12,7 @@ import com.example.frank.final_project.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Frank on 2018/5/17.
- */
-
-public class StoreListViewHolder extends RecyclerView.ViewHolder{
+public class StoreListViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.chef_list_storeName_Tv)
     TextView storeName;
@@ -25,31 +21,22 @@ public class StoreListViewHolder extends RecyclerView.ViewHolder{
     TextView chefName;
 
     @BindView(R.id.chef_list_storeRate_Rb)
-    RatingBar storeRate;
+    RatingBar ratingBar;
 
-    @BindView(R.id.chef_item)
+    @BindView(R.id.store_item)
     LinearLayout storeItem;
 
     public StoreListViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+
     }
 
-    /**
-     * Bind attributes to views
-     * @param chef
-     */
     public void bind(Chef chef){
         storeName.setText(chef.getStore().getName());
         chefName.setText(chef.getName());
-        storeRate.setRating(chef.getStore().getRate());
+        ratingBar.setRating(chef.getStore().getRate());
     }
 
-    /**
-     *  Return store view to adapter
-     * @return storeItem
-     */
-    public LinearLayout getStoreItem(){
-        return storeItem;
-    }
+    public LinearLayout getStoreItem() { return storeItem;}
 }

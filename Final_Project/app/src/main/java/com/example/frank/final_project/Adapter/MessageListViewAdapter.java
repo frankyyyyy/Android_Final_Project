@@ -11,13 +11,14 @@ import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.MessageListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by Frank on 2018/5/18.
  */
 
 public class MessageListViewAdapter extends FirebaseRecyclerAdapter<Message, MessageListViewHolder> {
+    private Context context;
+
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
      * {@link FirebaseRecyclerOptions} for configuration options.
@@ -26,6 +27,7 @@ public class MessageListViewAdapter extends FirebaseRecyclerAdapter<Message, Mes
      */
     public MessageListViewAdapter(@NonNull FirebaseRecyclerOptions<Message> options, Context context) {
         super(options);
+        this.context = context;
     }
 
     @Override

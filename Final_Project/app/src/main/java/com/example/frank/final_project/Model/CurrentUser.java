@@ -6,6 +6,7 @@ public class CurrentUser {
     private static String userName;
     private static String oppositeId;
     private static String oppositeName;
+    private static String storeName;
     private static Cake currentCake;
     private static User.Role userRole;
     private static String userEmail;
@@ -77,5 +78,13 @@ public class CurrentUser {
 
     public static void setUserName(String userName) {
         CurrentUser.userName = userName;
+    }
+
+    public static String getStoreName() {
+        return storeName;
+    }
+
+    public static void setStoreName(String storeName) {
+        CurrentUser.storeName = storeName;
     }
 }

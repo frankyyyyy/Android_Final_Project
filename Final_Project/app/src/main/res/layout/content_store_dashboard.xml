@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.StoreDashboard">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activity.StoreDashboardActivity"
+    tools:showIn="@layout/activity_store_dashboard">
 
     <ProgressBar
         android:id="@+id/customer_dashboard_page_Pb"
@@ -16,6 +19,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/customer_dashboard_page_chefList_Rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
