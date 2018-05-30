@@ -1,12 +1,8 @@
 package com.example.frank.final_project.Activity;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.provider.ContactsContract;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.MessageListViewAdapter;
@@ -23,19 +19,13 @@ import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
-import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,8 +36,8 @@ public class ChatActivity extends AppCompatActivity {
     @BindView(R.id.chat_toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.chat_page_chat_contents_progressbar_lyout)
-    LinearLayout progressBarView;
+    @BindView(R.id.chat_page_chat_contents_progressbar)
+    ProgressBar progressBar;
 
     @BindView(R.id.chat_page_chat_contents_Rv)
     RecyclerView messageList;
@@ -188,7 +178,7 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void showLoading(){
         messageList.setVisibility(View.GONE);
-        progressBarView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -196,6 +186,6 @@ public class ChatActivity extends AppCompatActivity {
      */
     private void showContents(){
         messageList.setVisibility(View.VISIBLE);
-        progressBarView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 }

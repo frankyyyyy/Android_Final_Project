@@ -8,19 +8,19 @@ import java.util.List;
 
 public class Store {
 
-    public enum SaleType {Individual, Retail};
+    public enum SaleType {Individual, Retail}
 
     private String name;
     private float rate;
     private boolean status;
-    private SaleType saleType;
+    private String saleType;
     private String address;
 
     public Store(){
 
     }
 
-    public Store(String name, float rate, boolean status, SaleType saleType, String address){
+    public Store(String name, float rate, boolean status, String saleType, String address){
         this.name = name;
         this.rate = rate;
         this.status = status;
@@ -52,11 +52,11 @@ public class Store {
         this.status = status;
     }
 
-    public SaleType getSaltType() {
+    public String getSaltType() {
         return saleType;
     }
 
-    public void setSaltType(SaleType saleType) {
+    public void setSaltType(String saleType) {
         this.saleType = saleType;
     }
 

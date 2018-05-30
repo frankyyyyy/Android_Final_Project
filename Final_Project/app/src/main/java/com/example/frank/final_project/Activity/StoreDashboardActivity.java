@@ -1,6 +1,7 @@
 package com.example.frank.final_project.Activity;
 
 import android.app.ActivityManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -115,6 +116,8 @@ public class StoreDashboardActivity extends AppCompatActivity {
                 Intent contactIntent = new Intent(this, ContactActivity.class);
                 startActivity(contactIntent);
                 return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

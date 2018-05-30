@@ -97,6 +97,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String mPostalAddress;
     private Uri mCertificateUri;
 
+    private Store mNewStore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -259,8 +261,13 @@ public class RegisterActivity extends AppCompatActivity {
         else if ((!mPhoneNum.isEmpty()) && !Utils.phoneNumInputIsLegal(mPhoneNum)) {
             phoneNum.setError(getString(R.string.register_page_phoneNum_error));
         }
+        // Check store name validity
         else if(mStoreName.isEmpty() && (mRoleSelectionId == R.id.register_page_chef_Rb)){
             storeName.setError(getString(R.string.register_page_store_name_error));
+        }
+        // Check store address validity
+        else if((mRoleSelectionId == R.id.register_page_chef_Rb) && mRetailAddress.isEmpty() && (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb)){
+            retailAddress.setError(getString(R.string.register_page_retail_address_error));
         }
         // Check agreement checkbox
         else if (!agreement.isChecked()) {
@@ -353,7 +360,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-        createStore();
     }
 
     /**
@@ -387,12 +393,12 @@ public class RegisterActivity extends AppCompatActivity {
      * Create a new store at snapshot
      */
     private void createStore() {
-        Store store = new Store();
-        store.setName(mStoreName);
+        mNewStore = new Store();
+        mNewStore.setName(mStoreName);
         if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
-                && mRetailAddress != null) store.setAddress(mRetailAddress);
+                && mRetailAddress != null) mNewStore.setAddress(mRetailAddress);
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE);
-        storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
+        storeRef.setValue(mNewStore).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 // Input store data successful, show message and upload file
@@ -470,5 +476,8 @@ public class RegisterActivity extends AppCompatActivity {
         CurrentUser.setUserRole(role);
         CurrentUser.setUserEmail(mEmail);
         CurrentUser.setUserPassword(mPassword);
+        if(role == User.Role.CHEF){
+            CurrentUser.setStore(mNewStore);
+        }
     }
 }

@@ -94,7 +94,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
         }
 
         // Read current cake
-        mCake = CurrentUser.getCurrentCake();
+        mCake = CurrentUser.getCake();
         this.setTitle(mCake.getName());
         // Attach mCake info into list demonstration
         attachCakeInfo();
@@ -173,14 +173,14 @@ public class CakeDashboardActivity extends AppCompatActivity {
                 {
                     // Save mCake picture link uri in mCake database
                     final String cakeNewPictureUri = task.getResult().getDownloadUrl().toString();
-                    String currentCakeUri = CurrentUser.getCurrentCake().getImageUrl();
+                    String currentCakeUri = CurrentUser.getCake().getImageUrl();
                     DatabaseReference menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.STORE).child(Constant.MENU);
                     menuRef.child(mCake.getId()).child(Constant.CAKE_IMAGEURI).setValue(currentCakeUri + " " + cakeNewPictureUri);
                     menuRef.child(mCake.getId()).child(Constant.CAKE_PHOTO_NUM).setValue(mCake.getPhotoNum()+1);
                     menuRef.child(mCake.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            CurrentUser.setCurrentCake(dataSnapshot.getValue(Cake.class));
+                            CurrentUser.setCake(dataSnapshot.getValue(Cake.class));
                             mCakePictures.add(cakeNewPictureUri);
                             mPhotoAdapter.notifyDataSetChanged();
                             showContents();

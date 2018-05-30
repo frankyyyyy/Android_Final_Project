@@ -4,12 +4,14 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.Model.Contact;
 import com.example.frank.final_project.Model.CurrentUser;
+import com.example.frank.final_project.Model.Store;
 import com.example.frank.final_project.Model.User;
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.Service.MessageNotifier;
@@ -39,6 +42,9 @@ import butterknife.OnClick;
 
 public class MenuDashboardActivity extends AppCompatActivity {
 
+    @BindView(R.id.menu_dashboard_toolbar)
+    Toolbar toolbar;
+
     @BindView(R.id.menu_dashboard_page_menu_Rv)
     RecyclerView menuList;
 
@@ -50,12 +56,30 @@ public class MenuDashboardActivity extends AppCompatActivity {
 
     private String mUserId;
     private DatabaseReference mMenuRef;
+    private String mStoreAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_dashboard);
         ButterKnife.bind(this);
+
+        // Setup tool bar button
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+
+        // Display toolbar back button if user is a customer
+        if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
+            // Set back button function
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
 
         // Show loading progress bar
         showLoading();
@@ -74,7 +98,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
         // Bind store menu list
         attachMenu();
         // Set store name as tittle
-        this.setTitle(CurrentUser.getStoreName());
+        this.setTitle(CurrentUser.getStore().getName());
         // Start message notification service if it is not activated
         if(!messageServiceRunning()){
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
@@ -108,6 +132,11 @@ public class MenuDashboardActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
+        // Show map button if store address is not null
+        mStoreAddress = CurrentUser.getStore().getAddress();
+        if(mStoreAddress != null){
+            menu.findItem(R.id.menu_map).setVisible(true);
+        }
         return true;
     }
 
@@ -121,11 +150,25 @@ public class MenuDashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_message:
+                showLoading();
                 Intent contactIntent = new Intent(this, ContactActivity.class);
                 startActivity(contactIntent);
                 return true;
+            case R.id.menu_map:
+                showLoading();
+                Intent mapIntent = new Intent(this, MapsActivity.class);
+                startActivity(mapIntent);
+                return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showContents();
     }
 
     /**

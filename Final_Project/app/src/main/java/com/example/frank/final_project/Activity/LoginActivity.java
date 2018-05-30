@@ -119,7 +119,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 // Login failed, show error message
                 else{
-                    Toast.makeText(getApplicationContext(), getString(R.string.login_page_warning_login_fail), Toast.LENGTH_LONG).show();
+                    String errorMessage = task.getException().getMessage();
+                    Toast.makeText(getApplicationContext(), getString(R.string.login_page_login_fail) + errorMessage, Toast.LENGTH_LONG).show();
                     showContents();
                 }
             }
@@ -149,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                                 CurrentUser.setUserName(chef.getName());
                             }
                             CurrentUser.setUserRole(User.Role.CHEF);
+                            CurrentUser.setStore(chef.getStore());
                             CurrentUser.setUserEmail(email);
                             CurrentUser.setUserPassword(password);
                             // Start store dashboard

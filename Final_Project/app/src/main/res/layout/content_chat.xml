@@ -9,26 +9,17 @@
     tools:context=".Activity.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/input"
-        android:orientation="horizontal">
+        android:layout_above="@+id/input">
 
-        <LinearLayout
-            android:id="@+id/chat_page_chat_contents_progressbar_lyout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ProgressBar
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1" />
-
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/chat_page_chat_contents_progressbar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chat_page_chat_contents_Rv"
@@ -36,7 +27,7 @@
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/input"

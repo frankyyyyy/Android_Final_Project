@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">Final_Project</string>
+    <string name="app_name">Chef Legend</string>
 
     <string name="connection_issue_warning">Woooops! Connection issue happens. Please try again later.</string>
     <string name="error_info">Error occured: </string>
 
     //Menu
     <string name="message">Messages</string>
+    <string name="map">Map</string>
     <string name="setting">Settings</string>
     <string name="sign_out">Sign out</string>
 
@@ -46,6 +47,7 @@
     <string name="register_page_individual_Rb">Individual</string>
 
     <string name="register_page_retail_address">Retail Address</string>
+    <string name="register_page_retail_address_error">Store Address Required</string>
 
     <string name="register_page_certificate">Certificate: </string>
     <string name="register_page_certificate_Btn">Add certificate file here</string>
@@ -73,7 +75,7 @@
     <string name="login_page_login_Btn">Login</string>
     <string name="login_page_cancel_Btn">Cancel</string>
 
-    <string name="login_page_warning_login_fail">Authentication failed.</string>
+    <string name="login_page_login_fail">Authentication failed.</string>
     <string name="login_page_login_success">Welcome back:</string>
 
     //Dashboard
@@ -89,6 +91,7 @@
 
 
     //Cake
+    <string name="title_activity_add_cake">Create New Cake</string>
     <string name="cake_add_tittle">Please full fill following blanks to add a new cake:</string>
     <string name="cake_name_hint">Cake name</string>
 
@@ -128,5 +131,9 @@
     // Chat
     <string name="message_empty_deny">Send empty denied.</string>
 
+
+    // Map
+    <string name="title_activity_maps">Map</string>
+    <string name="map_error_warning">Can not find address. Please contact store.</string>
 
 </resources>

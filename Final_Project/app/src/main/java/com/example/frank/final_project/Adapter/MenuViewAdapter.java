@@ -2,7 +2,6 @@ package com.example.frank.final_project.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import com.example.frank.final_project.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 /**
  * Created by Frank on 2018/5/21.
@@ -50,7 +48,7 @@ public class MenuViewAdapter extends FirebaseRecyclerAdapter<Cake, MenuViewHolde
             @Override
             public void onClick(View v) {
                 Intent cakeIntent = new Intent(context, CakeDashboardActivity.class);
-                CurrentUser.setCurrentCake(cake);
+                CurrentUser.setCake(cake);
                 context.startActivity(cakeIntent);
             }
         });

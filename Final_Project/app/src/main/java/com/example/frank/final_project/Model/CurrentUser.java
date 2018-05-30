@@ -6,8 +6,8 @@ public class CurrentUser {
     private static String userName;
     private static String oppositeId;
     private static String oppositeName;
-    private static String storeName;
-    private static Cake currentCake;
+    private static Store store;
+    private static Cake cake;
     private static User.Role userRole;
     private static String userEmail;
     private static String userPassword;
@@ -64,12 +64,12 @@ public class CurrentUser {
         CurrentUser.oppositeName = oppositeName;
     }
 
-    public static Cake getCurrentCake() {
-        return currentCake;
+    public static Cake getCake() {
+        return cake;
     }
 
-    public static void setCurrentCake(Cake currentCake) {
-        CurrentUser.currentCake = currentCake;
+    public static void setCake(Cake cake) {
+        CurrentUser.cake = cake;
     }
 
     public static String getUserName() {
@@ -80,11 +80,11 @@ public class CurrentUser {
         CurrentUser.userName = userName;
     }
 
-    public static String getStoreName() {
-        return storeName;
+    public static Store getStore() {
+        return store;
     }
 
-    public static void setStoreName(String storeName) {
-        CurrentUser.storeName = storeName;
+    public static void setStore(Store store) {
+        CurrentUser.store = store;
     }
 }

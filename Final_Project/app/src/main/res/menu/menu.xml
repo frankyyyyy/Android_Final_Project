@@ -2,11 +2,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/menu_message"
+        android:id="@+id/menu_map"
         android:orderInCategory="1"
+        android:icon="@drawable/map"
+        android:title="@string/map"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_message"
+        android:orderInCategory="2"
         android:icon="@drawable/chat"
         android:title="@string/message"
         app:showAsAction="always" />
+
     <!--<item-->
         <!--android:id="@+id/menu_settings"-->
         <!--android:orderInCategory="99"-->
