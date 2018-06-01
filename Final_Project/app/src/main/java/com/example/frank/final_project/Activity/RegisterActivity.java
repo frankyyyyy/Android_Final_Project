@@ -38,6 +38,10 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
+/**
+ *  Register activity for new user
+ *  Input row with (optional) hint is not complementary
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     @BindView(R.id.register_page_register_Pb)
@@ -297,6 +301,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
         });
@@ -337,13 +342,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * Create a new chef at snapshot
+     * Create a new chef at reference
      */
     private void createChef() {
         Chef chef = new Chef();
         chef.setId(mUserId);
         if (mName != null) chef.setName(mName);
         if (mPhoneNum != null) chef.setPhone(mPhoneNum);
+        chef.setStoreStatus(true);
         DatabaseReference chefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId);
         chefRef.setValue(chef).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -356,14 +362,14 @@ public class RegisterActivity extends AppCompatActivity {
                 else{
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
-                    showContents();
+                    finish();
                 }
             }
         });
     }
 
     /**
-     * Create a new customer at snapshot
+     * Create a new customer at reference
      */
     private void createCustomer() {
         Customer customer = new Customer();
@@ -383,20 +389,21 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
-                    showContents();
+                    finish();
                 }
             }
         });
     }
 
     /**
-     * Create a new store at snapshot
+     * Create a new store at reference
      */
     private void createStore() {
         mNewStore = new Store();
         mNewStore.setName(mStoreName);
         if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
                 && mRetailAddress != null) mNewStore.setAddress(mRetailAddress);
+//        mNewStore.setStatus(true);
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE);
         storeRef.setValue(mNewStore).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -410,14 +417,14 @@ public class RegisterActivity extends AppCompatActivity {
                 else {
                     String errorMessage = task.getException().getMessage();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
-                    showContents();
+                    finish();
                 }
             }
         });
     }
 
     /**
-     * Upload certificate to database storage
+     * Upload certificate to database storage reference
      */
     private void uploadCertificate(){
         StorageReference chefRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.CERTIFICATE);
@@ -431,8 +438,8 @@ public class RegisterActivity extends AppCompatActivity {
                 // Upload certificate failed, show error message
                 else {
                     String errorMessage = task.getException().getMessage();
-                    Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_creation_fail) + errorMessage, Toast.LENGTH_LONG).show();
-                    showContents();
+                    Toast.makeText(RegisterActivity.this, getString(R.string.error_info) + errorMessage, Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
         });
@@ -467,7 +474,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * Load user info as
+     * Load user info as local
      * @param role
      */
     private void loadNewUserInfo(User.Role role){
@@ -479,5 +486,6 @@ public class RegisterActivity extends AppCompatActivity {
         if(role == User.Role.CHEF){
             CurrentUser.setStore(mNewStore);
         }
+        CurrentUser.setStoreStatus(true);
     }
 }

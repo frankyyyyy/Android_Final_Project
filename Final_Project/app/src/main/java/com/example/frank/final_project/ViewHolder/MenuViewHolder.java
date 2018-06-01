@@ -13,9 +13,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Frank on 2018/5/21.
+ *  Holding cake views
+ *  providing to menu list.
  */
-
 public class MenuViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.cake_item)

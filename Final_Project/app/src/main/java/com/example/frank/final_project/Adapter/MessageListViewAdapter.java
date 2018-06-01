@@ -13,9 +13,9 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 /**
- * Created by Frank on 2018/5/18.
+ *  Chat room message list adapter to load message info
+ *  inherited from FirebaseRecyclerAdapter.
  */
-
 public class MessageListViewAdapter extends FirebaseRecyclerAdapter<Message, MessageListViewHolder> {
     private Context context;
 

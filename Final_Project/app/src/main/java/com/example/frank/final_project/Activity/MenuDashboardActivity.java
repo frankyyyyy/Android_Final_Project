@@ -2,7 +2,10 @@ package com.example.frank.final_project.Activity;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +15,19 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.MenuViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Utils;
+import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.Model.Contact;
 import com.example.frank.final_project.Model.CurrentUser;
@@ -28,11 +37,19 @@ import com.example.frank.final_project.R;
 import com.example.frank.final_project.Service.MessageNotifier;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -40,6 +57,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ *  Show store menu to user.
+ *  Store owner chef user is allowed to edit cakes.
+ *  Customer is allowed to find store location on map
+ *  if store is in retail business style with valid address
+ */
 public class MenuDashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.menu_dashboard_toolbar)
@@ -54,7 +77,11 @@ public class MenuDashboardActivity extends AppCompatActivity {
     @BindView(R.id.menu_dashboard_page_float_Btn)
     FloatingActionButton floatBtn;
 
+    private ActionBar actionBar;
     private String mUserId;
+    private User.Role userRole;
+    private Uri photoLocalUri;
+    private String photoName;
     private DatabaseReference mMenuRef;
     private String mStoreAddress;
 
@@ -66,34 +93,23 @@ public class MenuDashboardActivity extends AppCompatActivity {
 
         // Setup tool bar button
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
-
-        // Display toolbar back button if user is a customer
-        if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
-            // Set back button function
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-        }
 
         // Show loading progress bar
         showLoading();
         // Load current user Id
         mUserId = CurrentUser.getUserId();
-        // Load menu reference in database
-        mMenuRef = (CurrentUser.getUserRole() == User.Role.CHEF) ?
-                // Current user is a chef
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE).child(Constant.MENU) :
-                // Current user is a customer
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getOppositeId()).child(Constant.STORE).child(Constant.MENU);
-        // Change button for customer user
-        if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
-            floatBtn.setImageResource(R.drawable.message_btn);
+        // Load user role
+        userRole = CurrentUser.getUserRole();
+        // Show customer demonstrations
+        if(userRole == User.Role.CUSTOMER){
+            displayWidgetToCustomer();
+            // Current user is a customer
+            mMenuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getOppositeId()).child(Constant.STORE).child(Constant.MENU);
+        }else{
+            // Current user is a chef
+            mMenuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE).child(Constant.MENU);
         }
         // Bind store menu list
         attachMenu();
@@ -104,8 +120,25 @@ public class MenuDashboardActivity extends AppCompatActivity {
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
             startService(messageNotifier);
         }
+
         // Show contents
         showContents();
+    }
+
+    /**
+     * Display customized widgets to customer user
+     */
+    private void displayWidgetToCustomer(){
+        // Set back button function
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        // Change button for customer user
+        floatBtn.setImageResource(R.drawable.message_btn);
     }
 
     /**
@@ -134,8 +167,23 @@ public class MenuDashboardActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         // Show map button if store address is not null
         mStoreAddress = CurrentUser.getStore().getAddress();
-        if(mStoreAddress != null){
-            menu.findItem(R.id.menu_map).setVisible(true);
+        // Show customer menu items
+        if(userRole == User.Role.CUSTOMER){
+            // Hide photo configuration in menu to customer
+            menu.findItem(R.id.menu_headphoto).setVisible(false);
+            // Hide store switch in menu to customer
+            menu.findItem(R.id.menu_store_switch).setVisible(false);
+            if(mStoreAddress == null){
+                menu.findItem(R.id.menu_map).setVisible(false);
+            }
+        }
+        // Show chef menu items
+        else{
+            menu.findItem(R.id.menu_map).setVisible(false);
+            menu.findItem(R.id.menu_store_switch).setTitle(
+                    (CurrentUser.getStoreStatus()) ?
+                            getString(R.string.store_close) : getString(R.string.store_open)
+            );
         }
         return true;
     }
@@ -159,10 +207,33 @@ public class MenuDashboardActivity extends AppCompatActivity {
                 Intent mapIntent = new Intent(this, MapsActivity.class);
                 startActivity(mapIntent);
                 return true;
+            case R.id.menu_headphoto:
+                showPictureWarningDialog();
+                return true;
+            case R.id.menu_store_switch:
+                switchStoreStatus();
+                item.setTitle(
+                        (CurrentUser.getStoreStatus()) ?
+                                getString(R.string.store_close) : getString(R.string.store_open)
+                );
+                return true;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     *  Switch controlling the status of store
+     */
+    private void switchStoreStatus() {
+        boolean currentStatus = CurrentUser.getStoreStatus();
+        CurrentUser.setStoreStatus(
+                (currentStatus) ? false : true
+        );
+        FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE_STATUS).setValue(
+                (currentStatus) ? false : true
+        );
     }
 
     @Override
@@ -172,13 +243,128 @@ public class MenuDashboardActivity extends AppCompatActivity {
     }
 
     /**
+     *  Samsung phone picture upload warning
+     */
+    private void showPictureWarningDialog() {
+        ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
+        confirmDialogFragment.show(getString(R.string.upload_dialog_samsung_warning_tittle), getString(R.string.upload_dialog_samsung_warning_content),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        openSystemFileSelection();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }, getFragmentManager());
+    }
+
+    /**
+     * Browse file folder and select the certificate file
+     */
+    private void openSystemFileSelection() {
+        Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        fileIntent.setType(Constant.FILE_TYPE);
+        fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(fileIntent, 1234);
+    }
+
+    /**
+     *  Receive file target for uploading purpose
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1234:
+                if (resultCode == RESULT_OK) {
+                    photoLocalUri = data.getData();
+                    photoName = photoLocalUri.getLastPathSegment();
+                    showConfirmWarningDialog();
+                }
+                break;
+        }
+    }
+
+    /**
+     *  Confirm button on click dialog
+     */
+    private void showConfirmWarningDialog() {
+        ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
+        confirmDialogFragment.show(getString(R.string.exit_tittle), getString(R.string.add_photo_warning) + photoName,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        uploadHeadPhoto();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }, getFragmentManager());
+    }
+
+    /**
+     *  Upload new photo file to user profile
+     */
+    private void uploadHeadPhoto(){
+        showLoading();
+        // Upload photo file to cloud storage
+        StorageReference photoRef = FirebaseStorage.getInstance().
+                getReference(userRole.toString().toLowerCase()).
+                child(mUserId).
+                child(Constant.HEAD_PHOTO_URI);
+        photoRef.putFile(photoLocalUri).
+                addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if(task.isSuccessful()){
+                            // Save photo info into database if photo file uploaded successfully
+                            // Get photo download uri from task
+                            Uri photoUri = task.getResult().getDownloadUrl();
+                            // Find photo reference in database
+                            DatabaseReference photoRef = FirebaseDatabase.getInstance().
+                                    getReference(Constant.CHEF).
+                                    child(mUserId).
+                                    child(Constant.HEAD_PHOTO_URI);
+                            // Save uri into reference
+                            photoRef.setValue(photoUri.toString()).
+                                    addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
+                                                showContents();
+                                            }else{
+                                                String message = task.getException().getMessage();
+                                                Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
+                                                showContents();
+                                            }
+                                        }
+                                    });
+                        }else{
+                            String message = task.getException().getMessage();
+                            Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
+                            showContents();
+                        }
+                    }
+                });
+    }
+
+    /**
      * Float button on click function
      */
     @OnClick(R.id.menu_dashboard_page_float_Btn)
     public void onClickFloatBtn(){
         // Provide chat service to customer user
-        if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
+        if(userRole == User.Role.CUSTOMER){
             showLoading();
+            CurrentUser.setChatTargetId(CurrentUser.getOppositeId());
+            CurrentUser.setChatTargetName(CurrentUser.getOppositeName());
             writeContact();
         }else{
             // Provide cake add service to chef user
@@ -195,11 +381,17 @@ public class MenuDashboardActivity extends AppCompatActivity {
         final DatabaseReference customerContactRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).child(Constant.CONTACT);
         final DatabaseReference chefContactRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getOppositeId()).child(Constant.CONTACT);
         // Find contact existence
-        FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).child(Constant.MESSAGES).child(CurrentUser.getOppositeId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        customerContactRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean contactExhausts = false;
+                for(DataSnapshot contact: dataSnapshot.getChildren()){
+                    if(contact.child(Constant.OPPOSITE_ID).getValue(String.class).equals(CurrentUser.getOppositeId())){
+                        contactExhausts = true;
+                    }
+                }
                 // Contact is not existed
-                if(dataSnapshot.getValue() == null){
+                if(!contactExhausts){
                     // Get contact key
                     final String contactKey = customerContactRef.push().getKey();
                     final Contact contact = new Contact();
@@ -210,7 +402,10 @@ public class MenuDashboardActivity extends AppCompatActivity {
                     }
                     customerContactRef.child(contactKey).setValue(contact);
                     // Write customer contact to chef
-                    FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).child(Constant.NAME).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).
+                            child(mUserId).
+                            child(Constant.NAME).
+                            addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.getValue() != null){
@@ -222,7 +417,8 @@ public class MenuDashboardActivity extends AppCompatActivity {
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            String errorMessage = databaseError.getMessage();
+                            Toast.makeText(getApplicationContext(), getString(R.string.error_info) + errorMessage, Toast.LENGTH_LONG).show();
                         }
                     });
                 }else{
@@ -233,11 +429,10 @@ public class MenuDashboardActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                String errorMessage = databaseError.getMessage();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_info) + errorMessage, Toast.LENGTH_LONG).show();
             }
         });
-
-
 
     }
 

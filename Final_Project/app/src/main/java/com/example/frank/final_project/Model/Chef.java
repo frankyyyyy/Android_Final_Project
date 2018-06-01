@@ -1,5 +1,7 @@
 package com.example.frank.final_project.Model;
 
+import android.net.Uri;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,8 @@ public class Chef extends User {
     private String Id;
     private String name;
     private String phone;
+    private String headPhotoUri;
+    private boolean storeStatus;
     private Store store;
     private String certificateUrl;
     private Contact contact;
@@ -19,8 +23,9 @@ public class Chef extends User {
 
     }
 
-    public Chef(String Id, String name, String phone, Store store, String certificateUrl, Contact contact) {
-        super(Id, name, phone);
+    public Chef(String Id, String name, String phone, String headPhotoUri, boolean storeStatus, Store store, String certificateUrl, Contact contact) {
+        super(Id, name, phone, headPhotoUri);
+        this.storeStatus = storeStatus;
         this.store = store;
         this.certificateUrl = certificateUrl;
         this.contact = contact;
@@ -72,5 +77,21 @@ public class Chef extends User {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public String getHeadPhotoUri() {
+        return headPhotoUri;
+    }
+
+    public void setHeadPhotoUri(String headPhotoUri) {
+        this.headPhotoUri = headPhotoUri;
+    }
+
+    public boolean getStoreStatus() {
+        return storeStatus;
+    }
+
+    public void setStoreStatus(boolean storeStatus) {
+        this.storeStatus = storeStatus;
     }
 }

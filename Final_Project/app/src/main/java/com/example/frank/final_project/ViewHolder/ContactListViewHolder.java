@@ -11,6 +11,10 @@ import com.example.frank.final_project.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ *  Holding contact views
+ *  providing to contact list.
+ */
 public class ContactListViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.contact_name_Tv)

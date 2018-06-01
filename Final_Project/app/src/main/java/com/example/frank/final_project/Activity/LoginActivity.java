@@ -30,6 +30,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Login activity
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.login_page_login_progress)
@@ -142,36 +145,48 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            String userName;
                             // Read chef data
                             Chef chef = dataSnapshot.getValue(Chef.class);
                             // Save chef as local user
                             CurrentUser.setUserId(mUserId);
-                            if(chef.getName() != null){
-                                CurrentUser.setUserName(chef.getName());
-                            }
                             CurrentUser.setUserRole(User.Role.CHEF);
                             CurrentUser.setStore(chef.getStore());
+                            CurrentUser.setStoreStatus(chef.getStoreStatus());
                             CurrentUser.setUserEmail(email);
                             CurrentUser.setUserPassword(password);
+                            // Set up user presented name
+                            if(chef.getName() != null){
+                                CurrentUser.setUserName(chef.getName());
+                                userName = chef.getName();
+                            }else{
+                                userName = email;
+                            }
                             // Start store dashboard
                             Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
                             startActivity(storeIntent);
                             Toast.makeText(getApplicationContext(),
-                                    getString(R.string.login_page_login_success) + email, Toast.LENGTH_LONG).show();
+                                    getString(R.string.login_page_login_success) + userName, Toast.LENGTH_LONG).show();
                             finish();
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            String message = databaseError.getMessage();
+                            Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
+                    String userName;
                     // user is a customer
                     Customer customer = dataSnapshot.getValue(Customer.class);
                     // Save customer as local user
                     CurrentUser.setUserId(mUserId);
+                    // Set up user presented name
                     if(customer.getName() != null){
                         CurrentUser.setUserName(customer.getName());
+                        userName = customer.getName();
+                    }else {
+                        userName = email;
                     }
                     CurrentUser.setUserRole(User.Role.CUSTOMER);
                     CurrentUser.setUserEmail(email);
@@ -180,14 +195,15 @@ public class LoginActivity extends AppCompatActivity {
                     Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
                     startActivity(customerIntent);
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.login_page_login_success) + email, Toast.LENGTH_LONG).show();
+                            getString(R.string.login_page_login_success) + userName, Toast.LENGTH_LONG).show();
                     finish();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                String message = databaseError.getMessage();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
             }
         });
     }

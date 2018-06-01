@@ -18,9 +18,9 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by Frank on 2018/5/21.
+ *  Store menu list adapter to load cakes info
+ *  inherited from FirebaseRecyclerAdapter.
  */
-
 public class MenuViewAdapter extends FirebaseRecyclerAdapter<Cake, MenuViewHolder> {
     private final Context context;
 

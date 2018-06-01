@@ -9,6 +9,10 @@ import com.example.frank.final_project.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ *  Holding cake picture views
+ *  providing to cake detail picture list.
+ */
 public class CakePictureViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.cake_item)
@@ -21,7 +25,7 @@ public class CakePictureViewHolder extends RecyclerView.ViewHolder {
 
     /**
      *  Return cake view to adapter
-     * @return
+     * @return cakeItem
      */
     public ImageView getCakeItem(){
         return cakeItem;

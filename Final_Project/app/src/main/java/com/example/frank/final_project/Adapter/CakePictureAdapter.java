@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ *  Cake picture adapter on loading picture uri to fulfill widget
+ */
 public class CakePictureAdapter extends RecyclerView.Adapter<CakePictureViewHolder> {
 
 

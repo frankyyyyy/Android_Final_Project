@@ -13,6 +13,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -45,19 +47,20 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Demonstrate cake details page activity
+ * Chef is allowed to add cake photo here
+ */
 public class CakeDashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.cake_dashboard_toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.cake_dashboard_name_Tv)
-    TextView cakeName;
-
     @BindView(R.id.cake_details_Lyout)
     LinearLayout cakeDetailsLayout;
 
-    @BindView(R.id.add_cake_photo)
-    FloatingActionButton addCakePhotoBtn;
+    @BindView(R.id.delete_cake)
+    FloatingActionButton deleteCake;
 
     @BindView(R.id.add_cake_Pb)
     ProgressBar progressBar;
@@ -90,7 +93,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
 
         // Customer can not add photo in mCake details
         if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
-            addCakePhotoBtn.setVisibility(View.GONE);
+            deleteCake.setVisibility(View.GONE);
         }
 
         // Read current cake
@@ -101,15 +104,95 @@ public class CakeDashboardActivity extends AppCompatActivity {
         // Attach photo from database to performance
         attachPhotos();
 
-
     }
 
     /**
      *  Open local system to choose a picture file as upload photo
      */
-    @OnClick(R.id.add_cake_photo)
-    public void addCakePhoto(){
-        openSystemFileSelection();
+    @OnClick(R.id.delete_cake)
+    public void deleteCake(){
+        showDeleteWarningDialog();
+    }
+
+    /**
+     *  Cancel button on click dialog
+     */
+    private void showDeleteWarningDialog() {
+        ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
+        confirmDialogFragment.show(getString(R.string.exit_tittle), getString(R.string.cake_delete_warning),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteCakeFromDatabase();
+                        finish();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }, getFragmentManager());
+    }
+
+    /**
+     * Delete current cake from menu list
+     */
+    private void deleteCakeFromDatabase(){
+        String cakeId = mCake.getId();
+        FirebaseDatabase.getInstance().getReference(Constant.CHEF).
+                child(CurrentUser.getUserId()).
+                child(Constant.STORE).
+                child(Constant.MENU).
+                child(cakeId).
+                removeValue();
+    }
+
+    /**
+     *
+     *  On menu created
+     * @param menu
+     * @return result
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_cake, menu);
+        return true;
+    }
+
+    /**
+     *  On menu item selected
+     * @param item
+     * @return result
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_cake_photo_add:
+                showPictureWarningDialog();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     *  Samsung phone picture upload warning
+     */
+    private void showPictureWarningDialog() {
+        ConfirmDialogFragment confirmDialogFragment = new ConfirmDialogFragment();
+        confirmDialogFragment.show(getString(R.string.upload_dialog_samsung_warning_tittle), getString(R.string.upload_dialog_samsung_warning_content),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        openSystemFileSelection();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }, getFragmentManager());
     }
 
     /**
@@ -165,7 +248,12 @@ public class CakeDashboardActivity extends AppCompatActivity {
      */
     private void savePhoto(){
         showLoading();
-        StorageReference cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.STORE).child(Constant.MENU).child(mCake.getId()).child(Constant.CAKE_PHOTO_ID + Integer.toString(mCake.getPhotoNum()+1));
+        StorageReference cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).
+                child(CurrentUser.getUserId()).
+                child(Constant.STORE).
+                child(Constant.MENU).
+                child(mCake.getId()).
+                child(Constant.CAKE_PHOTO_ID + Integer.toString(mCake.getPhotoNum()+1));
         cakePictureRef.putFile(mLocalPictureUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -174,10 +262,14 @@ public class CakeDashboardActivity extends AppCompatActivity {
                     // Save mCake picture link uri in mCake database
                     final String cakeNewPictureUri = task.getResult().getDownloadUrl().toString();
                     String currentCakeUri = CurrentUser.getCake().getImageUrl();
-                    DatabaseReference menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.STORE).child(Constant.MENU);
-                    menuRef.child(mCake.getId()).child(Constant.CAKE_IMAGEURI).setValue(currentCakeUri + " " + cakeNewPictureUri);
-                    menuRef.child(mCake.getId()).child(Constant.CAKE_PHOTO_NUM).setValue(mCake.getPhotoNum()+1);
-                    menuRef.child(mCake.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).
+                            child(CurrentUser.getUserId()).
+                            child(Constant.STORE).
+                            child(Constant.MENU).
+                            child(mCake.getId());
+                    menuRef.child(Constant.CAKE_IMAGE_URI).setValue(currentCakeUri + " " + cakeNewPictureUri);
+                    menuRef.child(Constant.CAKE_PHOTO_NUM).setValue(mCake.getPhotoNum()+1);
+                    menuRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             CurrentUser.setCake(dataSnapshot.getValue(Cake.class));
@@ -189,7 +281,9 @@ public class CakeDashboardActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            showContents();
+                            String message = databaseError.getMessage();
+                            Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -208,7 +302,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
      *  Attach mCake info into list demonstration
      */
     private void attachCakeInfo() {
-        cakeName.setText(mCake.getName());
+//        cakeName.setText(mCake.getName());
         cakeDetails.get(0).setText(mCake.getSize());
         cakeDetails.get(1).setText(Double.toString(mCake.getPrice()));
         cakeDetails.get(2).setText(mCake.getIngredients());
@@ -253,7 +347,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
      */
     private void showLoading(){
         cakeDetailsLayout.setVisibility(View.GONE);
-        addCakePhotoBtn.setVisibility(View.GONE);
+        deleteCake.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -262,7 +356,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
      */
     private void showContents(){
         cakeDetailsLayout.setVisibility(View.VISIBLE);
-        addCakePhotoBtn.setVisibility(View.VISIBLE);
+        deleteCake.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 

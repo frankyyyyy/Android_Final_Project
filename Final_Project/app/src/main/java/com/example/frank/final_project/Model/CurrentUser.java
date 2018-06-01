@@ -7,12 +7,30 @@ public class CurrentUser {
     private static String oppositeId;
     private static String oppositeName;
     private static Store store;
+    private static Boolean storeStatus;
     private static Cake cake;
     private static User.Role userRole;
     private static String userEmail;
     private static String userPassword;
 
+    private static String chatTargetId;
+    private static String chatTargetName;
+
     public CurrentUser(){
+    }
+
+    public static void clear(){
+        userId = null;
+        userName = null;
+        oppositeId = null;
+        oppositeName = null;
+        store = null;
+        cake = null;
+        userRole = null;
+        userEmail = null;
+        userPassword = null;
+        chatTargetId = null;
+        chatTargetName = null;
     }
 
 
@@ -86,5 +104,29 @@ public class CurrentUser {
 
     public static void setStore(Store store) {
         CurrentUser.store = store;
+    }
+
+    public static Boolean getStoreStatus() {
+        return storeStatus;
+    }
+
+    public static void setStoreStatus(Boolean storeStatus) {
+        CurrentUser.storeStatus = storeStatus;
+    }
+
+    public static String getChatTargetId() {
+        return chatTargetId;
+    }
+
+    public static void setChatTargetId(String chatTargetId) {
+        CurrentUser.chatTargetId = chatTargetId;
+    }
+
+    public static String getChatTargetName() {
+        return chatTargetName;
+    }
+
+    public static void setChatTargetName(String chatTargetName) {
+        CurrentUser.chatTargetName = chatTargetName;
     }
 }

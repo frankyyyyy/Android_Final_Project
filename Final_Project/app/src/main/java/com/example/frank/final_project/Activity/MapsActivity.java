@@ -26,6 +26,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ *  Map demonstration on store address location
+ */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     @BindView(R.id.map_toolbar)
@@ -62,22 +65,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     *  Create map ready for call back
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         mStoreAddress = CurrentUser.getStore().getAddress();
-
         mGeocoder = new Geocoder(this);
         try {
             List<Address> addressList = mGeocoder.getFromLocationName(mStoreAddress, 3);

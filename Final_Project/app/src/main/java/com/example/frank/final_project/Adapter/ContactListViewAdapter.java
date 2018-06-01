@@ -16,6 +16,10 @@ import com.example.frank.final_project.ViewHolder.ContactListViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
+/**
+ *  Contact list adapter to load personal contact info
+ *  inherited from FirebaseRecyclerAdapter.
+ */
 public class ContactListViewAdapter extends FirebaseRecyclerAdapter<Contact, ContactListViewHolder> {
 
 
@@ -41,9 +45,9 @@ public class ContactListViewAdapter extends FirebaseRecyclerAdapter<Contact, Con
             public void onClick(View v) {
                 Intent chatIntent = new Intent(context, ChatActivity.class);
                 // Save chatting target info
-                CurrentUser.setOppositeId(model.getOppositeId());
+                CurrentUser.setChatTargetId(model.getOppositeId());
                 if(model.getOppositeName() != null){
-                    CurrentUser.setOppositeName(model.getOppositeName());
+                    CurrentUser.setChatTargetName(model.getOppositeName());
                 }
                 context.startActivity(chatIntent);
             }

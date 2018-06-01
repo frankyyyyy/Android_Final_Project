@@ -1,5 +1,7 @@
 package com.example.frank.final_project.Model;
 
+import android.net.Uri;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,7 @@ public class Customer extends User {
     private String Id;
     private String name;
     private String phone;
+    private String headPhotoUri;
     private String postalAddress;
     private Contact contact;
 
@@ -18,8 +21,8 @@ public class Customer extends User {
 
     }
 
-    public Customer(String Id, String name, String phone, String postalAddress, Contact contact) {
-        super(Id, name, phone);
+    public Customer(String Id, String name, String phone, String headPhotoUri, String postalAddress, Contact contact) {
+        super(Id, name, phone, headPhotoUri);
         this.postalAddress = postalAddress;
         this.contact = contact;
     }
@@ -62,5 +65,13 @@ public class Customer extends User {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public String getHeadPhotoUri() {
+        return headPhotoUri;
+    }
+
+    public void setHeadPhotoUri(String headPhotoUri) {
+        this.headPhotoUri = headPhotoUri;
     }
 }

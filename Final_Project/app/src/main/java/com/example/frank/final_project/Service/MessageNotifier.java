@@ -24,13 +24,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+/**
+ *  Message notifier service
+ *  Notify new unread message when activated.
+ */
 public class MessageNotifier extends Service {
 
     private DatabaseReference mMessageRef;
     private ChildEventListener mMessageListener;
     private ChildEventListener mMessageDetailsListener;
     private String mUserId;
-    private String mOppositeId;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
 
@@ -57,7 +65,7 @@ public class MessageNotifier extends Service {
      * @param senderName
      * @param content
      */
-    public void createNotification(String senderName, String content){
+    public void createNotification(String senderName, String content, String mOppositeId){
         // Create new notification manager
         if (mNotificationManager == null) {
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -106,7 +114,6 @@ public class MessageNotifier extends Service {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 // add listener to every person
-                mOppositeId = dataSnapshot.getKey();
                 mMessageDetailsListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -119,7 +126,8 @@ public class MessageNotifier extends Service {
                         String status = newMessage.getStatus();
                         if((status != null) && status.equals(Message.Status.UnRead.toString())){
                             if((senderId != null) && !senderId.equals(mUserId)){
-                                createNotification(senderName, content);
+                                String mOppositeId = dataSnapshot.getRef().getParent().getKey();
+                                createNotification(senderName, content, mOppositeId);
                             }
                         }
                     }
@@ -144,7 +152,8 @@ public class MessageNotifier extends Service {
 
                     }
                 };
-                mMessageRef.child(mOppositeId).addChildEventListener(mMessageDetailsListener);
+                mMessageRef.child(dataSnapshot.getKey()).addChildEventListener(mMessageDetailsListener);
+//                mMessageRef.child(dataSnapshot.getKey()).removeEventListener(mMessageDetailsListener);
             }
 
             @Override
@@ -182,7 +191,7 @@ public class MessageNotifier extends Service {
 
     @Override
     public void onDestroy() {
-        // Remove listener on every chat target
+//         Remove listener on every chat target
         mMessageRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

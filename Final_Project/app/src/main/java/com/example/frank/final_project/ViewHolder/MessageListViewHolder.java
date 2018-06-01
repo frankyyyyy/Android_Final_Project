@@ -12,9 +12,9 @@ import butterknife.ButterKnife;
 import static android.support.v7.widget.RecyclerView.*;
 
 /**
- * Created by Frank on 2018/5/18.
+ *  Holding message views
+ *  providing to chat room message list.
  */
-
 public class MessageListViewHolder extends ViewHolder {
 
     @BindView(R.id.chat_page_message_container_sender_Tv)

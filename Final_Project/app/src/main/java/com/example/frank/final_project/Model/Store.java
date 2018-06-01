@@ -12,7 +12,6 @@ public class Store {
 
     private String name;
     private float rate;
-    private boolean status;
     private String saleType;
     private String address;
 
@@ -20,10 +19,9 @@ public class Store {
 
     }
 
-    public Store(String name, float rate, boolean status, String saleType, String address){
+    public Store(String name, float rate, String saleType, String address){
         this.name = name;
         this.rate = rate;
-        this.status = status;
         this.saleType = saleType;
         this.address = address;
     }
@@ -42,14 +40,6 @@ public class Store {
 
     public void setRate(float rank) {
         this.rate = rate;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     public String getSaltType() {

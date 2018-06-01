@@ -7,6 +7,12 @@
     //Menu
     <string name="message">Messages</string>
     <string name="map">Map</string>
+    <string name="headphoto">Change Head Photo</string>
+    <string name="add_photo_warning">You want to submit file:</string>
+    <string name="add_head_photo_success">Head Photo Changed</string>
+    <string name="storeSwitch">Open Store</string>
+    <string name="store_close">Close Store</string>
+    <string name="store_open">Open Store</string>
     <string name="setting">Settings</string>
     <string name="sign_out">Sign out</string>
 
@@ -31,7 +37,7 @@
     <string name="register_page_password_confirm_Et">Confirm password</string>
     <string name="register_page_password_confirm_error">Password entered twice are not same</string>
     <string name="register_page_name_Et">Name (optional)</string>
-    <string name="register_page_name_error">Only alphabets, numbers and _ allowed here </string>
+    <string name="register_page_name_error">Only alphabets, numbers and _ allowed here. 6-20 characters allowed. </string>
     <string name="register_page_phoneNum_Et">Phone (optional)</string>
     <string name="register_page_phoneNum_error">10 characters required</string>
 
@@ -83,6 +89,9 @@
     <string name="title_activity_store_dashboard">Stores</string>
     <string name="title_activity_contact">Contacts</string>
 
+    <string name="upload_dialog_samsung_warning_tittle">Picture Option Limitation</string>
+    <string name="upload_dialog_samsung_warning_content">Please choose a landscape picture if it is uploaded from a Samsung phone. Otherwise the picture might be rotated.</string>
+
     //Chat
     <string name="chat_page_send_button">Send</string>
     <string name="chat_page_input">Input</string>
@@ -127,6 +136,9 @@
     <string name="cake_add_picture_add_confirm">New photo added.</string>
 
     <string name="cake_choose_tittle">You chose file:</string>
+
+    <string name="menu_cake_photo_add">Add photo</string>
+    <string name="cake_delete_warning">You are deleting this cake.</string>
 
     // Chat
     <string name="message_empty_deny">Send empty denied.</string>

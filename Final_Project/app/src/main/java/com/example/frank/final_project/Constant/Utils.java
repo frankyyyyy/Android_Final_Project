@@ -1,5 +1,11 @@
 package com.example.frank.final_project.Constant;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +53,7 @@ public class Utils {
      * @return validity
      */
     public static boolean nameInputIsLegal(String name){
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]{0,20}$");
         Matcher matcher = pattern.matcher(name);
         return matcher.matches();
     }
@@ -62,4 +68,5 @@ public class Utils {
         Matcher matcher = pattern.matcher(phoneNum);
         return matcher.matches();
     }
+
 }

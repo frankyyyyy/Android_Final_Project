@@ -24,6 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ *  Demonstrate contact on this page activity
+ */
 public class ContactActivity extends AppCompatActivity {
 
     @BindView(R.id.contact_toolbar)
@@ -55,11 +58,7 @@ public class ContactActivity extends AppCompatActivity {
         });
 
         // Read current user role
-        if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
-            mContactRef = FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.CONTACT);
-        }else{
-            mContactRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.CONTACT);
-        }
+        mContactRef = FirebaseDatabase.getInstance().getReference(CurrentUser.getUserRole().toString().toLowerCase()).child(CurrentUser.getUserId()).child(Constant.CONTACT);
 
         // Attach contact info to demonstration list
         attachContact();

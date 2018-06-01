@@ -31,6 +31,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ *  Chat room activity
+ */
 public class ChatActivity extends AppCompatActivity {
 
     @BindView(R.id.chat_toolbar)
@@ -83,11 +86,15 @@ public class ChatActivity extends AppCompatActivity {
         showContents();
     }
 
+    /**
+     *  Set title to user name if user name exhausts,
+     *  otherwise set id as title.
+     */
     private void setTitleForChatTarget(){
-        if(CurrentUser.getOppositeName() != null){
-            this.setTitle(CurrentUser.getOppositeName());
+        if(CurrentUser.getChatTargetName() != null){
+            this.setTitle(CurrentUser.getChatTargetName());
         }else{
-            this.setTitle(CurrentUser.getOppositeId());
+            this.setTitle(CurrentUser.getChatTargetId());
         }
     }
 
@@ -100,16 +107,8 @@ public class ChatActivity extends AppCompatActivity {
         String newMessageContent = sendContent.getText().toString();
         // If input is valid, create new message and send it.
         if(newMessageContent != null){
-            // Read time from system
-            String timeStamp = getDatetime();
             // Build a new message
-            Message newMessage = new Message();
-            newMessage.setSenderId(CurrentUser.getUserId());
-            if(CurrentUser.getUserName() != null) {
-                newMessage.setSender(CurrentUser.getUserName());
-            }
-            newMessage.setContent(newMessageContent);
-            newMessage.setTime(timeStamp);
+            Message newMessage = createNewMessage(newMessageContent);
             // Push message to database regarding to snapshot reference
             String key = mOppositeMessageRef.push().getKey();
             newMessage.setStatus(Message.Status.UnRead.toString());
@@ -123,6 +122,25 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), getString(R.string.message_empty_deny), Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    /**
+     * Create a new message according to user input
+     * @param newMessageContent
+     * @return
+     */
+    private Message createNewMessage(String newMessageContent){
+        // Read time from system
+        String timeStamp = getDatetime();
+        // Create new message
+        Message newMessage = new Message();
+        newMessage.setSenderId(CurrentUser.getUserId());
+        if(CurrentUser.getUserName() != null) {
+            newMessage.setSender(CurrentUser.getUserName());
+        }
+        newMessage.setContent(newMessageContent);
+        newMessage.setTime(timeStamp);
+        return newMessage;
     }
 
     /**
@@ -141,8 +159,8 @@ public class ChatActivity extends AppCompatActivity {
      */
     private DatabaseReference oppositeMessageRef(){
         return (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getOppositeId()).child(Constant.MESSAGES).child(CurrentUser.getUserId()) :
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getOppositeId()).child(Constant.MESSAGES).child(CurrentUser.getUserId());
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getChatTargetId()).child(Constant.MESSAGES).child(CurrentUser.getUserId()) :
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getChatTargetId()).child(Constant.MESSAGES).child(CurrentUser.getUserId());
     }
 
     /**
@@ -151,8 +169,8 @@ public class ChatActivity extends AppCompatActivity {
      */
     private DatabaseReference selfMessageRef() {
         return (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getOppositeId()) :
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getOppositeId());
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getChatTargetId()) :
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getChatTargetId());
     }
 
     /**

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -12,6 +13,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ *  Main page activity
+ *  with login and register button
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -48,5 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // Clear login status
         FirebaseAuth.getInstance().signOut();
+        CurrentUser.clear();
     }
 }
