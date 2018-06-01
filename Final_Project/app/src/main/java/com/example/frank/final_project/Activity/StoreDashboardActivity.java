@@ -16,10 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.StoreListViewAdapter;
+import com.example.frank.final_project.Constant.CircleTransform;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Chef;
@@ -40,6 +42,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -53,6 +56,9 @@ public class StoreDashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.store_dashboard_toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.store_dashboard_headphoto_Iv)
+    ImageView headPhoto;
 
     @BindView(R.id.customer_dashboard_page_Pb)
     ProgressBar progressBarView;
@@ -76,6 +82,8 @@ public class StoreDashboardActivity extends AppCompatActivity {
         showLoading();
         // Read chef snapshot reference
         mChefRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF);
+        // Show head photo
+        setupHeadPhoto();
         // Attach chefs
         attachChefList();
 
@@ -88,7 +96,17 @@ public class StoreDashboardActivity extends AppCompatActivity {
         showContents();
     }
 
-
+    /**
+     *  Setup head photo from database resource
+     */
+    private void setupHeadPhoto(){
+        Picasso.with(this).
+                load(CurrentUser.getPhotoUri()).
+                placeholder(R.drawable.man_default_headphoto).
+                error(R.drawable.man_default_headphoto).
+                transform(new CircleTransform()).
+                into(headPhoto);
+    }
 
     /**
      *  Check if the message notifier service is running
@@ -241,6 +259,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+                                setupHeadPhoto();
                                 Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
                                 showContents();
                             }else{

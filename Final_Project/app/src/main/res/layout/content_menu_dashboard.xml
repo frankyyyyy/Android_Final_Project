@@ -9,14 +9,6 @@
     tools:context=".Activity.MenuDashboardActivity"
     tools:showIn="@layout/activity_menu_dashboard">
 
-    <ProgressBar
-        android:id="@+id/menu_dashboard_page_Pb"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/menu_dashboard_page_menu_Rv"
         android:layout_width="match_parent"

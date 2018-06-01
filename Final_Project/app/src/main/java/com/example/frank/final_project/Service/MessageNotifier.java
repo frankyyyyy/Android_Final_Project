@@ -153,7 +153,6 @@ public class MessageNotifier extends Service {
                     }
                 };
                 mMessageRef.child(dataSnapshot.getKey()).addChildEventListener(mMessageDetailsListener);
-//                mMessageRef.child(dataSnapshot.getKey()).removeEventListener(mMessageDetailsListener);
             }
 
             @Override

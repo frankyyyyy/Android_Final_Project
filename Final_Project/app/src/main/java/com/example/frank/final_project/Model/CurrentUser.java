@@ -4,8 +4,10 @@ public class CurrentUser {
 
     private static String userId;
     private static String userName;
+    private static String photoUri;
     private static String oppositeId;
     private static String oppositeName;
+    private static Chef chef;
     private static Store store;
     private static Boolean storeStatus;
     private static Cake cake;
@@ -22,8 +24,10 @@ public class CurrentUser {
     public static void clear(){
         userId = null;
         userName = null;
+        photoUri = null;
         oppositeId = null;
         oppositeName = null;
+        chef = null;
         store = null;
         cake = null;
         userRole = null;
@@ -128,5 +132,21 @@ public class CurrentUser {
 
     public static void setChatTargetName(String chatTargetName) {
         CurrentUser.chatTargetName = chatTargetName;
+    }
+
+    public static String getPhotoUri() {
+        return photoUri;
+    }
+
+    public static void setPhotoUri(String photoUri) {
+        CurrentUser.photoUri = photoUri;
+    }
+
+    public static Chef getChef() {
+        return chef;
+    }
+
+    public static void setChef(Chef chef) {
+        CurrentUser.chef = chef;
     }
 }

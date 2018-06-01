@@ -7,18 +7,46 @@
     tools:context=".Activity.MenuDashboardActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/menu_dashboard_appToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="160dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/menu_dashboard_toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/menu_dashboard_toolbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@+id/menu_dashboard_appToolbar">
 
+            <ImageView
+                android:id="@+id/menu_dashboard_headphoto_Iv"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="right|bottom"
+                android:layout_margin="20dp"
+                app:srcCompat="@drawable/chef_default_headphoto" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/menu_dashboard_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+    <ProgressBar
+        android:id="@+id/menu_dashboard_page_Pb"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <include layout="@layout/content_menu_dashboard" />
 

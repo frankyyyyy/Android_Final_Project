@@ -21,10 +21,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.MenuViewAdapter;
+import com.example.frank.final_project.Constant.CircleTransform;
 import com.example.frank.final_project.Constant.Constant;
 import com.example.frank.final_project.Constant.Utils;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
@@ -50,6 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -67,6 +70,9 @@ public class MenuDashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.menu_dashboard_toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.menu_dashboard_headphoto_Iv)
+    ImageView headPhoto;
 
     @BindView(R.id.menu_dashboard_page_menu_Rv)
     RecyclerView menuList;
@@ -111,10 +117,12 @@ public class MenuDashboardActivity extends AppCompatActivity {
             // Current user is a chef
             mMenuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE).child(Constant.MENU);
         }
+        // Show head photo
+        setupHeadPhoto();
         // Bind store menu list
         attachMenu();
         // Set store name as tittle
-        this.setTitle(CurrentUser.getStore().getName());
+        this.setTitle(CurrentUser.getChef().getStore().getName());
         // Start message notification service if it is not activated
         if(!messageServiceRunning()){
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
@@ -123,6 +131,20 @@ public class MenuDashboardActivity extends AppCompatActivity {
 
         // Show contents
         showContents();
+    }
+
+    /**
+     *  Setup head photo from database resource
+     */
+    private void setupHeadPhoto(){
+        String uri = (userRole == User.Role.CUSTOMER) ?
+                CurrentUser.getChef().getHeadPhotoUri() : CurrentUser.getPhotoUri();
+        Picasso.with(this).
+                load(uri).
+                placeholder(R.drawable.chef_default_headphoto).
+                error(R.drawable.chef_default_headphoto).
+                transform(new CircleTransform()).
+                into(headPhoto);
     }
 
     /**
@@ -166,7 +188,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         // Show map button if store address is not null
-        mStoreAddress = CurrentUser.getStore().getAddress();
+        mStoreAddress = CurrentUser.getChef().getStore().getAddress();
         // Show customer menu items
         if(userRole == User.Role.CUSTOMER){
             // Hide photo configuration in menu to customer
@@ -337,6 +359,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
+                                                setupHeadPhoto();
                                                 Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
                                                 showContents();
                                             }else{

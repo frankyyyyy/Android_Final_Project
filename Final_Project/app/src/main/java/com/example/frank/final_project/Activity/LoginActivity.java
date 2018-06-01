@@ -149,7 +149,11 @@ public class LoginActivity extends AppCompatActivity {
                             // Read chef data
                             Chef chef = dataSnapshot.getValue(Chef.class);
                             // Save chef as local user
+                            CurrentUser.setChef(chef);
                             CurrentUser.setUserId(mUserId);
+                            if(chef.getHeadPhotoUri() != null){
+                                CurrentUser.setPhotoUri(chef.getHeadPhotoUri());
+                            }
                             CurrentUser.setUserRole(User.Role.CHEF);
                             CurrentUser.setStore(chef.getStore());
                             CurrentUser.setStoreStatus(chef.getStoreStatus());
@@ -187,6 +191,9 @@ public class LoginActivity extends AppCompatActivity {
                         userName = customer.getName();
                     }else {
                         userName = email;
+                    }
+                    if(customer.getHeadPhotoUri() != null){
+                        CurrentUser.setPhotoUri(customer.getHeadPhotoUri());
                     }
                     CurrentUser.setUserRole(User.Role.CUSTOMER);
                     CurrentUser.setUserEmail(email);

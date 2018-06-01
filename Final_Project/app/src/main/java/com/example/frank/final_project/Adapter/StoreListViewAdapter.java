@@ -66,7 +66,8 @@ public class StoreListViewAdapter extends FirebaseRecyclerAdapter<Chef, StoreLis
                 if(chefName != null){
                     CurrentUser.setOppositeName(chefName);
                 }
-                CurrentUser.setStore(chef.getStore());
+                CurrentUser.setChef(chef);
+//                CurrentUser.setStore(chef.getStore());
                 // Go to store dashboard
                 Intent storeIntent = new Intent(context, MenuDashboardActivity.class);
                 context.startActivity(storeIntent);
