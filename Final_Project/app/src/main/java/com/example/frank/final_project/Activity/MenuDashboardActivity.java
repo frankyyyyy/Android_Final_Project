@@ -15,6 +15,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import com.example.frank.final_project.Adapter.MenuViewAdapter;
 import com.example.frank.final_project.Constant.CircleTransform;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Constant.Utils;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Cake;
@@ -96,6 +98,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_dashboard);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_CREATED);
 
         // Setup tool bar button
         setSupportActionBar(toolbar);
@@ -131,6 +134,12 @@ public class MenuDashboardActivity extends AppCompatActivity {
 
         // Show contents
         showContents();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DESTROYED);
     }
 
     /**
@@ -258,11 +267,13 @@ public class MenuDashboardActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE_STATUS).setValue(
                 (currentStatus) ? false : true
         );
+        Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_STORE_STATUS_CHANGED);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_RESUME);
         showContents();
     }
 
@@ -347,6 +358,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if(task.isSuccessful()){
+                            Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_HEAD_PHOTO_UPLOADED);
                             // Save photo info into database if photo file uploaded successfully
                             // Get photo download uri from task
                             Uri photoUri = task.getResult().getDownloadUrl();
@@ -361,6 +373,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
+                                                Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_HEAD_PHOTO_DATA_INSERTED);
                                                 setupHeadPhoto();
                                                 Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
                                                 showContents();
@@ -428,6 +441,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                         contact.setOppositeName(CurrentUser.getOppositeName());
                     }
                     customerContactRef.child(contactKey).setValue(contact);
+                    Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_NEW_CONTACT_CREATED);
                     // Write customer contact to chef
                     FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).
                             child(mUserId).
@@ -489,6 +503,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
         menuList.setLayoutManager(mLayoutManager);
         menuList.setItemAnimator(new DefaultItemAnimator());
         menuList.setAdapter(menuAdapter);
+        Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_MENU_ATTACHED);
     }
 
     /**

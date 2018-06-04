@@ -8,10 +8,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.frank.final_project.Adapter.ContactListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Model.Contact;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.User;
@@ -42,6 +44,7 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_CONTACT, Constant_Debug.CONTACT_CREATED);
 
         // Setup tool bar button
         setSupportActionBar(toolbar);
@@ -64,6 +67,12 @@ public class ContactActivity extends AppCompatActivity {
         attachContact();
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(Constant_Debug.TAG_CONTACT, Constant_Debug.CONTACT_DESTROYED);
+        super.onDestroy();
+    }
+
     /**
      *  Attach contact info to list
      */
@@ -80,5 +89,6 @@ public class ContactActivity extends AppCompatActivity {
         contactList.setLayoutManager(mLayoutManager);
         contactList.setItemAnimator(new DefaultItemAnimator());
         contactList.setAdapter(contactListViewAdapter);
+        Log.d(Constant_Debug.TAG_CONTACT, Constant_Debug.CONTACT_ATTACHED);
     }
 }

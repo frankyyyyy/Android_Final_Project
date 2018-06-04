@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.example.frank.final_project.Adapter.StoreListViewAdapter;
 import com.example.frank.final_project.Constant.CircleTransform;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.Model.CurrentUser;
@@ -75,6 +77,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store_dashboard);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_CREATED);
         setSupportActionBar(toolbar);
 
 
@@ -94,6 +97,12 @@ public class StoreDashboardActivity extends AppCompatActivity {
         }
         // Show contents
         showContents();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_DESTROYED);
     }
 
     /**
@@ -245,6 +254,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){
+                    Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_DASHBOARD_HEAD_PORTRAIT_UPLOADED);
                     // Save photo info into database if photo file uploaded successfully
                     // Get photo download uri from task
                     Uri photoUri = task.getResult().getDownloadUrl();
@@ -259,6 +269,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+                                Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_DASHBOARD_HEAD_PHOTO_DATA_INSERTED);
                                 setupHeadPhoto();
                                 Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
                                 showContents();
@@ -295,6 +306,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
         chefList.setLayoutManager(mLayoutManager);
         chefList.setItemAnimator(new DefaultItemAnimator());
         chefList.setAdapter(storeListViewAdapter);
+        Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_DASHBOARD_STORE_ATTACHED);
     }
 
     /**

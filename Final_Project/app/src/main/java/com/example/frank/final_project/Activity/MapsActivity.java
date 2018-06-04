@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,6 +45,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_MAP, Constant_Debug.MAP_CREATED);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_Fg);
@@ -65,6 +68,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant_Debug.TAG_MAP, Constant_Debug.MAP_DESTROYED);
+    }
+
     /**
      *  Create map ready for call back purpose
      */
@@ -78,6 +87,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(addressList != null && addressList.size()>0){
                 Address addressLatLng = addressList.get(0);
                 LatLng storeLocation = new LatLng(addressLatLng.getLatitude(), addressLatLng.getLongitude());
+                Log.d(Constant_Debug.TAG_MAP, Constant_Debug.MAP_LOCATION_READ);
                 mMap.addMarker(new MarkerOptions().position(storeLocation).title(mStoreAddress));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(storeLocation));
             }else{

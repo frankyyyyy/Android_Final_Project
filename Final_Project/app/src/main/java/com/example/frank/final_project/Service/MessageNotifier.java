@@ -10,8 +10,10 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.Model.User;
@@ -51,6 +53,7 @@ public class MessageNotifier extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(Constant_Debug.TAG_NOTIFICATION, Constant_Debug.SERVICE_CREATED);
         // Notification count
         count = 0;
     }
@@ -96,12 +99,15 @@ public class MessageNotifier extends Service {
         Notification notification = mBuilder.build();
         count++;
         mNotificationManager.notify(count, notification);
+        Log.d(Constant_Debug.TAG_NOTIFICATION, Constant_Debug.SERVICE_NOTIFICATION_PUBLISHED);
         // Set message status to read
         mMessageRef.child(mOppositeId).child(mNewMessageKey).child(Constant.STATUS).setValue(Message.Status.Read.toString());
+        Log.d(Constant_Debug.TAG_NOTIFICATION, Constant_Debug.SERVICE_MESSAGE_STATUS_CHANGED);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(Constant_Debug.TAG_NOTIFICATION, Constant_Debug.SERVICE_ONSTARTCOMMAND);
         // Get user id
         mUserId = CurrentUser.getUserId();
         // Get user message reference
@@ -207,5 +213,6 @@ public class MessageNotifier extends Service {
         // Remove listener on message snapshot
         mMessageRef.removeEventListener(mMessageListener);
         super.onDestroy();
+        Log.d(Constant_Debug.TAG_NOTIFICATION, Constant_Debug.SERVICE_DESTROYED);
     }
 }

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Constant.Utils;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.Model.CurrentUser;
@@ -109,6 +111,13 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_CREATED);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_DESTROYED);
     }
 
     /**
@@ -178,6 +187,7 @@ public class RegisterActivity extends AppCompatActivity {
         mStoreName = storeName.getText().toString();
         mRetailAddress = retailAddress.getText().toString();
         mPostalAddress = postalAddress.getText().toString();
+        Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_INPUTS_READ);
     }
 
     /**
@@ -294,6 +304,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Register successful, show message and go on creating user data snapshot
                 if (task.isSuccessful()) {
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_VERIFY_ACCOUNT_CREATED);
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_verify_account_creation_success), Toast.LENGTH_LONG).show();
                     mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     createUserData();
@@ -349,6 +360,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 // Input chef data successful, show message and go on input store data
                 if(task.isSuccessful()){
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_CHEF_CREATED);
                     createStore();
                 }
                 // Input chef data failed, show error message
@@ -376,6 +388,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 // Input customer data successful, show message and go to dashboard
                 if (task.isSuccessful()) {
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_CUSTOMER_CREATED);
                     openDashboard();
                 }
                 // Input customer data failed, show error message
@@ -403,6 +416,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 // Input store data successful, show message and upload file
                 if (task.isSuccessful()) {
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_STORE_CREATED);
                     uploadCertificate();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_snapshot_creation_success), Toast.LENGTH_LONG).show();
                 }
@@ -426,6 +440,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 // Upload certificate successful, open dashboard
                 if (task.isSuccessful()) {
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_CERTIFICATE_UPLOADED);
                     openDashboard();
                 }
                 // Upload certificate failed, show error message
@@ -481,6 +496,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CurrentUser.setCustomer(dataSnapshot.getValue(Customer.class));
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_LOAD_USER_ENTITY_CACHE);
                 }
 
                 @Override
@@ -495,6 +511,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CurrentUser.setChef(dataSnapshot.getValue(Chef.class));
+                    Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_LOAD_USER_ENTITY_CACHE);
                 }
 
                 @Override

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -11,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Constant.Utils;
 import com.example.frank.final_project.Model.Chef;
 import com.example.frank.final_project.Model.CurrentUser;
@@ -56,6 +58,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_CREATED);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_DESTROYED);
+        super.onDestroy();
     }
 
     /**
@@ -118,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Login successful, open dashboard for user.
                 if(task.isSuccessful()){
+                    Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_SUCCESS);
                     verifyRoleAndStartDashboard();
                 }
                 // Login failed, show error message
@@ -146,12 +156,14 @@ public class LoginActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             // Read chef data
                             Chef chef = dataSnapshot.getValue(Chef.class);
+                            Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_READ_USER_DATA);
                             // Save chef as local user
                             CurrentUser.setChef(chef);
                             CurrentUser.setUserRole(User.Role.CHEF);
                             setBasicInfoInLocal(chef.getName());
                             // Set up user presented name
                             String welcomeName = (chef.getName() == null) ? mEmail : chef.getName();
+                            Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_READ_USER_DATA);
                             // Start store dashboard
                             Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
                             startActivity(storeIntent);
@@ -174,6 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                     setBasicInfoInLocal(customer.getName());
                     // Set up user presented name
                     String welcomeName = (customer.getName() == null) ? mEmail : customer.getName();
+                    Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_READ_USER_DATA);
                     // Start customer dashboard
                     Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
                     startActivity(customerIntent);

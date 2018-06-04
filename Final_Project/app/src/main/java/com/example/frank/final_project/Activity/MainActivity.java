@@ -3,8 +3,10 @@ package com.example.frank.final_project.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(Constant_Debug.TAG_MAINPAGE, Constant_Debug.MAINPAGE_RESUME);
         // Clear login status
         FirebaseAuth.getInstance().signOut();
+        Log.d(Constant_Debug.TAG_MAINPAGE, Constant_Debug.MAINPAGE_LOGOUT);
         CurrentUser.clear();
+        Log.d(Constant_Debug.TAG_MAINPAGE, Constant_Debug.MAINPAGE_CLEAR_LOCAL);
     }
 }

@@ -102,7 +102,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.CHAT_DESTORYED);
+        Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.CHAT_DESTROYED);
         super.onDestroy();
     }
 
