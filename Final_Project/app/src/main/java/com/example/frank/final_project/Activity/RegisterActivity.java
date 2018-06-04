@@ -27,8 +27,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -100,8 +103,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String mRetailAddress;
     private String mPostalAddress;
     private Uri mCertificateUri;
-
-    private Store mNewStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -316,14 +317,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *  Show contents
-     */
-    private void showContents(){
-        registerForm.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-    }
-
-    /**
      * Create a snapshot in database to store user data
      */
     private void createUserData(){
@@ -399,13 +392,13 @@ public class RegisterActivity extends AppCompatActivity {
      * Create a new store at reference
      */
     private void createStore() {
-        mNewStore = new Store();
-        mNewStore.setName(mStoreName);
+        Store store = new Store();
+        store.setName(mStoreName);
         if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
-                && mRetailAddress != null) mNewStore.setAddress(mRetailAddress);
+                && mRetailAddress != null) store.setAddress(mRetailAddress);
 //        mNewStore.setStatus(true);
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE);
-        storeRef.setValue(mNewStore).addOnCompleteListener(new OnCompleteListener<Void>() {
+        storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 // Input store data successful, show message and upload file
@@ -480,12 +473,36 @@ public class RegisterActivity extends AppCompatActivity {
     private void loadNewUserInfo(User.Role role){
         CurrentUser.setUserId(mUserId);
         CurrentUser.setUserName(mName);
-        CurrentUser.setUserRole(role);
-        CurrentUser.setUserEmail(mEmail);
         CurrentUser.setUserPassword(mPassword);
-        if(role == User.Role.CHEF){
-            CurrentUser.setStore(mNewStore);
+        CurrentUser.setUserEmail(mEmail);
+        if(role == User.Role.CUSTOMER){
+            CurrentUser.setUserRole(User.Role.CUSTOMER);
+            FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    CurrentUser.setCustomer(dataSnapshot.getValue(Customer.class));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    String message = databaseError.getMessage();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            CurrentUser.setUserRole(User.Role.CHEF);
+            FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    CurrentUser.setChef(dataSnapshot.getValue(Chef.class));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    String message = databaseError.getMessage();
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
-        CurrentUser.setStoreStatus(true);
     }
 }

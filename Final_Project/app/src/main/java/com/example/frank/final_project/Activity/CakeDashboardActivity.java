@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.CakePictureAdapter;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.Model.CurrentUser;
@@ -73,6 +75,8 @@ public class CakeDashboardActivity extends AppCompatActivity {
 
     private ArrayList<String> mCakePictures;
     private Cake mCake;
+    private String mUserId;
+    private User.Role mUserRole;
     private Uri mLocalPictureUri;
     private String mFileName;
     private LinearLayoutManager mLayoutManager;
@@ -83,16 +87,26 @@ public class CakeDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cake_dashboard);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_CREATED);
 
         // Setup tool bar button
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
-        setBackButtonFunction();
 
+        // Set back button function for tool bar
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        mUserRole = CurrentUser.getUserRole();
+        mUserId = CurrentUser.getUserId();
         // Customer can not add photo in mCake details
-        if(CurrentUser.getUserRole() == User.Role.CUSTOMER){
+        if(mUserRole == User.Role.CUSTOMER){
             deleteCake.setVisibility(View.GONE);
         }
 
@@ -104,6 +118,12 @@ public class CakeDashboardActivity extends AppCompatActivity {
         // Attach photo from database to performance
         attachPhotos();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_DESTORYED);
+        super.onDestroy();
     }
 
     /**
@@ -139,11 +159,12 @@ public class CakeDashboardActivity extends AppCompatActivity {
     private void deleteCakeFromDatabase(){
         String cakeId = mCake.getId();
         FirebaseDatabase.getInstance().getReference(Constant.CHEF).
-                child(CurrentUser.getUserId()).
+                child(mUserId).
                 child(Constant.STORE).
                 child(Constant.MENU).
                 child(cakeId).
                 removeValue();
+        Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_CAKE_DELETED);
     }
 
     /**
@@ -249,7 +270,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
     private void savePhoto(){
         showLoading();
         StorageReference cakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).
-                child(CurrentUser.getUserId()).
+                child(mUserId).
                 child(Constant.STORE).
                 child(Constant.MENU).
                 child(mCake.getId()).
@@ -259,11 +280,12 @@ public class CakeDashboardActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful())
                 {
+                    Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_CAKE_PHOTO_UPLOADED);
                     // Save mCake picture link uri in mCake database
                     final String cakeNewPictureUri = task.getResult().getDownloadUrl().toString();
                     String currentCakeUri = CurrentUser.getCake().getImageUrl();
                     DatabaseReference menuRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).
-                            child(CurrentUser.getUserId()).
+                            child(mUserId).
                             child(Constant.STORE).
                             child(Constant.MENU).
                             child(mCake.getId());
@@ -275,6 +297,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
                             CurrentUser.setCake(dataSnapshot.getValue(Cake.class));
                             mCakePictures.add(cakeNewPictureUri);
                             mPhotoAdapter.notifyDataSetChanged();
+                            Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_CAKE_PHOTO_DATA_INSERT);
                             showContents();
                             Toast.makeText(getApplicationContext(), getString(R.string.cake_add_picture_add_confirm), Toast.LENGTH_LONG).show();
                         }
@@ -302,23 +325,11 @@ public class CakeDashboardActivity extends AppCompatActivity {
      *  Attach mCake info into list demonstration
      */
     private void attachCakeInfo() {
-//        cakeName.setText(mCake.getName());
         cakeDetails.get(0).setText(mCake.getSize());
         cakeDetails.get(1).setText(Double.toString(mCake.getPrice()));
         cakeDetails.get(2).setText(mCake.getIngredients());
         cakeDetails.get(3).setText(mCake.getDescription());
-    }
-
-    /**
-     * Set back button function for tool bar
-     */
-    private void setBackButtonFunction(){
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_CAKE_INFO_ATTACHED);
     }
 
     /**
@@ -335,11 +346,11 @@ public class CakeDashboardActivity extends AppCompatActivity {
             mPhotoAdapter = new CakePictureAdapter(mCakePictures, this);
             cakePicturesList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
             mLayoutManager = new LinearLayoutManager(getApplicationContext());
-            mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
             cakePicturesList.setLayoutManager(mLayoutManager);
             cakePicturesList.setItemAnimator(new DefaultItemAnimator());
             cakePicturesList.setAdapter(mPhotoAdapter);
         }
+        Log.d(Constant_Debug.TAG_CAKE_DASHBOARD, Constant_Debug.CAKE_DASHBOARD_CAKE_PHOTO_ATTACHED);
     }
 
     /**
@@ -349,6 +360,7 @@ public class CakeDashboardActivity extends AppCompatActivity {
         cakeDetailsLayout.setVisibility(View.GONE);
         deleteCake.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+
     }
 
     /**

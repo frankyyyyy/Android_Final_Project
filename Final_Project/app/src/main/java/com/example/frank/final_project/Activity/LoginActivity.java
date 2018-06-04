@@ -48,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText password;
 
     private String mUserId;
+    private String mEmail;
+    private String mPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +68,12 @@ public class LoginActivity extends AppCompatActivity {
             // Open login page
             case R.id.login_page_sign_in_Btn:
                 // Read input from front end
-                String email = this.email.getText().toString();
-                String password = this.password.getText().toString();
+                mEmail = this.email.getText().toString();
+                mPassword = this.password.getText().toString();
                 // Check inputs validation
-                if(allInputsAreValid(email, password)) {
+                if(allInputsAreValid(mEmail, mPassword)) {
                     // Attempt to login
-                    loginAttempt(email, password);
+                    loginAttempt();
                 }
                 break;
             // Go back to main page
@@ -106,19 +108,17 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      *  Verify identity with database
-     * @param email input
-     * @param password input
      */
-    private void loginAttempt(final String email, final String password){
+    private void loginAttempt(){
         // Show progressbar.
         showLoading();
         // Log in attempt with email and password input.
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Login successful, open dashboard for user.
                 if(task.isSuccessful()){
-                    verifyRoleAndStartDashboard(email, password);
+                    verifyRoleAndStartDashboard();
                 }
                 // Login failed, show error message
                 else{
@@ -132,9 +132,8 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      *  Verify the current user role and go to corresponding dashboard
-     * @param email
      */
-    private void verifyRoleAndStartDashboard(final String email, final String password){
+    private void verifyRoleAndStartDashboard(){
         // Read user id;
         mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -145,32 +144,19 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            String userName;
                             // Read chef data
                             Chef chef = dataSnapshot.getValue(Chef.class);
                             // Save chef as local user
                             CurrentUser.setChef(chef);
-                            CurrentUser.setUserId(mUserId);
-                            if(chef.getHeadPhotoUri() != null){
-                                CurrentUser.setPhotoUri(chef.getHeadPhotoUri());
-                            }
                             CurrentUser.setUserRole(User.Role.CHEF);
-                            CurrentUser.setStore(chef.getStore());
-                            CurrentUser.setStoreStatus(chef.getStoreStatus());
-                            CurrentUser.setUserEmail(email);
-                            CurrentUser.setUserPassword(password);
+                            setBasicInfoInLocal(chef.getName());
                             // Set up user presented name
-                            if(chef.getName() != null){
-                                CurrentUser.setUserName(chef.getName());
-                                userName = chef.getName();
-                            }else{
-                                userName = email;
-                            }
+                            String welcomeName = (chef.getName() == null) ? mEmail : chef.getName();
                             // Start store dashboard
                             Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
                             startActivity(storeIntent);
                             Toast.makeText(getApplicationContext(),
-                                    getString(R.string.login_page_login_success) + userName, Toast.LENGTH_LONG).show();
+                                    getString(R.string.login_page_login_success) + welcomeName, Toast.LENGTH_LONG).show();
                             finish();
                         }
                         @Override
@@ -180,29 +166,19 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    String userName;
                     // user is a customer
                     Customer customer = dataSnapshot.getValue(Customer.class);
                     // Save customer as local user
-                    CurrentUser.setUserId(mUserId);
-                    // Set up user presented name
-                    if(customer.getName() != null){
-                        CurrentUser.setUserName(customer.getName());
-                        userName = customer.getName();
-                    }else {
-                        userName = email;
-                    }
-                    if(customer.getHeadPhotoUri() != null){
-                        CurrentUser.setPhotoUri(customer.getHeadPhotoUri());
-                    }
+                    CurrentUser.setCustomer(customer);
                     CurrentUser.setUserRole(User.Role.CUSTOMER);
-                    CurrentUser.setUserEmail(email);
-                    CurrentUser.setUserPassword(password);
+                    setBasicInfoInLocal(customer.getName());
+                    // Set up user presented name
+                    String welcomeName = (customer.getName() == null) ? mEmail : customer.getName();
                     // Start customer dashboard
                     Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
                     startActivity(customerIntent);
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.login_page_login_success) + userName, Toast.LENGTH_LONG).show();
+                            getString(R.string.login_page_login_success) + welcomeName, Toast.LENGTH_LONG).show();
                     finish();
                 }
             }
@@ -213,6 +189,17 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_info) + message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Save login user info as local
+     * @param userName
+     */
+    private void setBasicInfoInLocal(String userName){
+        CurrentUser.setUserId(mUserId);
+        CurrentUser.setUserName(userName);
+        CurrentUser.setUserEmail(mEmail);
+        CurrentUser.setUserPassword(mPassword);
     }
 
     /**

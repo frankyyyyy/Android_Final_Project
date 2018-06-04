@@ -101,7 +101,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
      */
     private void setupHeadPhoto(){
         Picasso.with(this).
-                load(CurrentUser.getPhotoUri()).
+                load(CurrentUser.getCustomer().getHeadPhotoUri()).
                 placeholder(R.drawable.man_default_headphoto).
                 error(R.drawable.man_default_headphoto).
                 transform(new CircleTransform()).

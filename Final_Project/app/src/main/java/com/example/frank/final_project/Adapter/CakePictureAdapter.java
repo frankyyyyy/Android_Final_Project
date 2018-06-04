@@ -1,24 +1,19 @@
 package com.example.frank.final_project.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 
 import com.example.frank.final_project.R;
 import com.example.frank.final_project.ViewHolder.CakePictureViewHolder;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  *  Cake picture adapter on loading picture uri to fulfill widget
@@ -45,7 +40,11 @@ public class CakePictureAdapter extends RecyclerView.Adapter<CakePictureViewHold
 
     @Override
     public void onBindViewHolder(@NonNull CakePictureViewHolder holder, int position) {
-        Picasso.with(context).load(pictureUris.get(position)).placeholder(R.drawable.loading).error(R.drawable.loading_error_404).into(holder.getCakeItem());
+        Picasso.with(context).
+                load(pictureUris.get(position)).
+                placeholder(R.drawable.loading).
+                error(R.drawable.loading_error_404).
+                into(holder.getCakeItem());
     }
 
     @Override

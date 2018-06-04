@@ -1,19 +1,23 @@
 package com.example.frank.final_project.Model;
 
+/**
+ *  For current user info temp cache purpose
+ */
 public class CurrentUser {
 
     private static String userId;
     private static String userName;
-    private static String photoUri;
-    private static String oppositeId;
-    private static String oppositeName;
-    private static Chef chef;
-    private static Store store;
-    private static Boolean storeStatus;
-    private static Cake cake;
-    private static User.Role userRole;
     private static String userEmail;
     private static String userPassword;
+
+    private static String oppositeId;
+    private static String oppositeName;
+
+    private static User.Role userRole;
+
+    private static Customer customer;
+    private static Chef chef;
+    private static Cake cake;
 
     private static String chatTargetId;
     private static String chatTargetName;
@@ -21,14 +25,15 @@ public class CurrentUser {
     public CurrentUser(){
     }
 
+    /**
+     *  Empty all attributes when user log out
+     */
     public static void clear(){
         userId = null;
         userName = null;
-        photoUri = null;
         oppositeId = null;
         oppositeName = null;
         chef = null;
-        store = null;
         cake = null;
         userRole = null;
         userEmail = null;
@@ -102,22 +107,6 @@ public class CurrentUser {
         CurrentUser.userName = userName;
     }
 
-    public static Store getStore() {
-        return store;
-    }
-
-    public static void setStore(Store store) {
-        CurrentUser.store = store;
-    }
-
-    public static Boolean getStoreStatus() {
-        return storeStatus;
-    }
-
-    public static void setStoreStatus(Boolean storeStatus) {
-        CurrentUser.storeStatus = storeStatus;
-    }
-
     public static String getChatTargetId() {
         return chatTargetId;
     }
@@ -134,19 +123,19 @@ public class CurrentUser {
         CurrentUser.chatTargetName = chatTargetName;
     }
 
-    public static String getPhotoUri() {
-        return photoUri;
-    }
-
-    public static void setPhotoUri(String photoUri) {
-        CurrentUser.photoUri = photoUri;
-    }
-
     public static Chef getChef() {
         return chef;
     }
 
     public static void setChef(Chef chef) {
         CurrentUser.chef = chef;
+    }
+
+    public static Customer getCustomer() {
+        return customer;
+    }
+
+    public static void setCustomer(Customer customer) {
+        CurrentUser.customer = customer;
     }
 }

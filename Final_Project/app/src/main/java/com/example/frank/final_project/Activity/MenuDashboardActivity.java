@@ -137,8 +137,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
      *  Setup head photo from database resource
      */
     private void setupHeadPhoto(){
-        String uri = (userRole == User.Role.CUSTOMER) ?
-                CurrentUser.getChef().getHeadPhotoUri() : CurrentUser.getPhotoUri();
+        String uri = CurrentUser.getChef().getHeadPhotoUri();
         Picasso.with(this).
                 load(uri).
                 placeholder(R.drawable.chef_default_headphoto).
@@ -191,10 +190,13 @@ public class MenuDashboardActivity extends AppCompatActivity {
         mStoreAddress = CurrentUser.getChef().getStore().getAddress();
         // Show customer menu items
         if(userRole == User.Role.CUSTOMER){
+            // Hide message in menu to customer
+            menu.findItem(R.id.menu_message).setVisible(false);
             // Hide photo configuration in menu to customer
             menu.findItem(R.id.menu_headphoto).setVisible(false);
             // Hide store switch in menu to customer
             menu.findItem(R.id.menu_store_switch).setVisible(false);
+            // Show address map button if store has a valid address
             if(mStoreAddress == null){
                 menu.findItem(R.id.menu_map).setVisible(false);
             }
@@ -203,7 +205,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
         else{
             menu.findItem(R.id.menu_map).setVisible(false);
             menu.findItem(R.id.menu_store_switch).setTitle(
-                    (CurrentUser.getStoreStatus()) ?
+                    (CurrentUser.getChef().getStoreStatus()) ?
                             getString(R.string.store_close) : getString(R.string.store_open)
             );
         }
@@ -235,7 +237,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
             case R.id.menu_store_switch:
                 switchStoreStatus();
                 item.setTitle(
-                        (CurrentUser.getStoreStatus()) ?
+                        (CurrentUser.getChef().getStoreStatus()) ?
                                 getString(R.string.store_close) : getString(R.string.store_open)
                 );
                 return true;
@@ -249,8 +251,8 @@ public class MenuDashboardActivity extends AppCompatActivity {
      *  Switch controlling the status of store
      */
     private void switchStoreStatus() {
-        boolean currentStatus = CurrentUser.getStoreStatus();
-        CurrentUser.setStoreStatus(
+        boolean currentStatus = CurrentUser.getChef().getStoreStatus();
+        CurrentUser.getChef().setStoreStatus(
                 (currentStatus) ? false : true
         );
         FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE_STATUS).setValue(
@@ -387,7 +389,9 @@ public class MenuDashboardActivity extends AppCompatActivity {
         if(userRole == User.Role.CUSTOMER){
             showLoading();
             CurrentUser.setChatTargetId(CurrentUser.getOppositeId());
-            CurrentUser.setChatTargetName(CurrentUser.getOppositeName());
+            if(CurrentUser.getOppositeName() != null){
+                CurrentUser.setChatTargetName(CurrentUser.getOppositeName());
+            }
             writeContact();
         }else{
             // Provide cake add service to chef user
@@ -440,6 +444,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            showContents();
                             String errorMessage = databaseError.getMessage();
                             Toast.makeText(getApplicationContext(), getString(R.string.error_info) + errorMessage, Toast.LENGTH_LONG).show();
                         }

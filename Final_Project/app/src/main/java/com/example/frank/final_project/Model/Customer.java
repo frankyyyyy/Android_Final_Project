@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Customer extends User {
 
-    private String Id;
+    private String id;
     private String name;
     private String phone;
     private String headPhotoUri;
@@ -21,8 +21,8 @@ public class Customer extends User {
 
     }
 
-    public Customer(String Id, String name, String phone, String headPhotoUri, String postalAddress, Contact contact) {
-        super(Id, name, phone, headPhotoUri);
+    public Customer(String id, String name, String phone, String headPhotoUri, String postalAddress, Contact contact) {
+        super(id, name, phone, headPhotoUri);
         this.postalAddress = postalAddress;
         this.contact = contact;
     }
@@ -36,11 +36,11 @@ public class Customer extends User {
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {

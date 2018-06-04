@@ -1,16 +1,12 @@
 package com.example.frank.final_project.Model;
 
-import android.net.Uri;
-
-import java.util.List;
-
 /**
  * Created by Frank on 2018/4/12.
  */
 
 public class Chef extends User {
 
-    private String Id;
+    private String id;
     private String name;
     private String phone;
     private String headPhotoUri;
@@ -23,8 +19,8 @@ public class Chef extends User {
 
     }
 
-    public Chef(String Id, String name, String phone, String headPhotoUri, boolean storeStatus, Store store, String certificateUrl, Contact contact) {
-        super(Id, name, phone, headPhotoUri);
+    public Chef(String id, String name, String phone, String headPhotoUri, boolean storeStatus, Store store, String certificateUrl, Contact contact) {
+        super(id, name, phone, headPhotoUri);
         this.storeStatus = storeStatus;
         this.store = store;
         this.certificateUrl = certificateUrl;
@@ -32,11 +28,11 @@ public class Chef extends User {
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {

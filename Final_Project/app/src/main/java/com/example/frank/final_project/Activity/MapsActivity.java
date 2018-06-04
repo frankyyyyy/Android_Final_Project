@@ -66,12 +66,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *  Create map ready for call back
+     *  Create map ready for call back purpose
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mStoreAddress = CurrentUser.getStore().getAddress();
+        mStoreAddress = CurrentUser.getChef().getStore().getAddress();
         mGeocoder = new Geocoder(this);
         try {
             List<Address> addressList = mGeocoder.getFromLocationName(mStoreAddress, 3);

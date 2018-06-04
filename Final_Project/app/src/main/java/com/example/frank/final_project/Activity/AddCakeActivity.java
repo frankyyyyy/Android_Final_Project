@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Fragment.ConfirmDialogFragment;
 import com.example.frank.final_project.Model.Cake;
 import com.example.frank.final_project.R;
@@ -81,10 +83,16 @@ public class AddCakeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cake);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_CREATED);
         // Read current user id
         mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_DESTORYED);
+        super.onDestroy();
+    }
 
     /**
      * Choose a picture file from system and upload
@@ -135,6 +143,7 @@ public class AddCakeActivity extends AppCompatActivity {
             case 666:
                 if (resultCode == RESULT_OK) {
                     mLocalPictureUri = data.getData();
+                    Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_FILE_CHOSEN);
                 }
                 break;
         }
@@ -218,6 +227,7 @@ public class AddCakeActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful())
                     {
+                        Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_DATABASE_INSERT);
                         // Upload cake picture.
                         mCakePictureRef = FirebaseStorage.getInstance().getReference(Constant.CHEF).
                                 child(mUserId).
@@ -230,6 +240,7 @@ public class AddCakeActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if(task.isSuccessful())
                                 {
+                                    Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_PHOTO_FILE_UPLOAD);
                                     // Save cake picture link uri in cake database
                                     mCakePictureUri = task.getResult().getDownloadUrl().toString();
                                     mMenuRef.child(cakeId).child(Constant.CAKE_IMAGE_URI).setValue(mCakePictureUri).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -276,6 +287,7 @@ public class AddCakeActivity extends AppCompatActivity {
         mCakePrice = Double.parseDouble(cakePrice.getText().toString());
         mCakeSize = cakeSize.getText().toString() + sizeUnit.getSelectedItem().toString();
         mCakeDescription = cakeDescription.getText().toString();
+        Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_READ_INPUTS);
     }
 
     /**
@@ -290,6 +302,7 @@ public class AddCakeActivity extends AppCompatActivity {
         newCake.setSize(mCakeSize);
         newCake.setPrice(mCakePrice);
         newCake.setDescription(mCakeDescription);
+        Log.d(Constant_Debug.TAG_ADD_CAKE, Constant_Debug.ADD_CAKE_NEW_CAKE_CREATED);
         return newCake;
     }
 

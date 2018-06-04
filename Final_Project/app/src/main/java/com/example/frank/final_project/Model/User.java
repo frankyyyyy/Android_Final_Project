@@ -13,7 +13,7 @@ public abstract class User implements Serializable {
 
     public enum Role {CHEF, CUSTOMER}
 
-    private String Id;
+    private String id;
     private String name;
     private String phone;
     private String headPhotoUri;
@@ -22,8 +22,8 @@ public abstract class User implements Serializable {
 
     }
 
-    public User(String Id, String name, String phone, String headPhotoUri){
-        this.Id = Id;
+    public User(String id, String name, String phone, String headPhotoUri){
+        this.id = id;
         this.name = name;
         this.phone = phone;
         this.headPhotoUri = headPhotoUri;

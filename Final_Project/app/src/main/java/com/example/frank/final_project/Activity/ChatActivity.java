@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.frank.final_project.Adapter.MessageListViewAdapter;
 import com.example.frank.final_project.Constant.Constant;
+import com.example.frank.final_project.Constant.Constant_Debug;
 import com.example.frank.final_project.Model.CurrentUser;
 import com.example.frank.final_project.Model.Message;
 import com.example.frank.final_project.Model.User;
@@ -48,6 +50,11 @@ public class ChatActivity extends AppCompatActivity {
     @BindView(R.id.chat_page_send_contents_Et)
     EditText sendContent;
 
+    private String mUserId;
+    private String mUserName;
+    private User.Role userRole;
+    private String mChatTargetId;
+    private String mChatTargetName;
     private DatabaseReference mSelfMessageRef;
     private DatabaseReference mOppositeMessageRef;
     private FirebaseRecyclerAdapter mMessageListAdapter;
@@ -57,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.CHAT_CREATED);
 
         // Setup tool bar button
         setSupportActionBar(toolbar);
@@ -74,6 +82,12 @@ public class ChatActivity extends AppCompatActivity {
 
         // Show loading
         showLoading();
+        // Load user info
+        mUserId = CurrentUser.getUserId();
+        mUserName = CurrentUser.getUserName();
+        userRole = CurrentUser.getUserRole();
+        mChatTargetId = CurrentUser.getChatTargetId();
+        mChatTargetName = CurrentUser.getChatTargetName();
         // Read self message snapshot reference
         mSelfMessageRef = selfMessageRef();
         // Read opposite message snapshot reference
@@ -86,15 +100,21 @@ public class ChatActivity extends AppCompatActivity {
         showContents();
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.CHAT_DESTORYED);
+        super.onDestroy();
+    }
+
     /**
      *  Set title to user name if user name exhausts,
      *  otherwise set id as title.
      */
     private void setTitleForChatTarget(){
-        if(CurrentUser.getChatTargetName() != null){
-            this.setTitle(CurrentUser.getChatTargetName());
+        if(mChatTargetName != null){
+            this.setTitle(mChatTargetName);
         }else{
-            this.setTitle(CurrentUser.getChatTargetId());
+            this.setTitle(mChatTargetId);
         }
     }
 
@@ -115,6 +135,7 @@ public class ChatActivity extends AppCompatActivity {
             mOppositeMessageRef.child(key).setValue(newMessage);
             newMessage.setStatus(Message.Status.Read.toString());
             mSelfMessageRef.child(key).setValue(newMessage);
+            Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.NEW_MESSAGE_SENT);
             // Clear input line
             sendContent.setText("");
         }else{
@@ -134,12 +155,13 @@ public class ChatActivity extends AppCompatActivity {
         String timeStamp = getDatetime();
         // Create new message
         Message newMessage = new Message();
-        newMessage.setSenderId(CurrentUser.getUserId());
-        if(CurrentUser.getUserName() != null) {
-            newMessage.setSender(CurrentUser.getUserName());
+        newMessage.setSenderId(mUserId);
+        if(mUserName != null) {
+            newMessage.setSender(mUserName);
         }
         newMessage.setContent(newMessageContent);
         newMessage.setTime(timeStamp);
+        Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.NEW_MESSAGE_CREATED);
         return newMessage;
     }
 
@@ -158,9 +180,9 @@ public class ChatActivity extends AppCompatActivity {
      * @return opposite regarded message reference
      */
     private DatabaseReference oppositeMessageRef(){
-        return (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getChatTargetId()).child(Constant.MESSAGES).child(CurrentUser.getUserId()) :
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getChatTargetId()).child(Constant.MESSAGES).child(CurrentUser.getUserId());
+        return (userRole == User.Role.CUSTOMER) ?
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mChatTargetId).child(Constant.MESSAGES).child(mUserId) :
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mChatTargetId).child(Constant.MESSAGES).child(mUserId);
     }
 
     /**
@@ -168,9 +190,9 @@ public class ChatActivity extends AppCompatActivity {
      * @return self regarded message reference
      */
     private DatabaseReference selfMessageRef() {
-        return (CurrentUser.getUserRole() == User.Role.CUSTOMER) ?
-                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getChatTargetId()) :
-                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(CurrentUser.getUserId()).child(Constant.MESSAGES).child(CurrentUser.getChatTargetId());
+        return (userRole == User.Role.CUSTOMER) ?
+                FirebaseDatabase.getInstance().getReference(Constant.CUSTOMER).child(mUserId).child(Constant.MESSAGES).child(mChatTargetId) :
+                FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.MESSAGES).child(mChatTargetId);
     }
 
     /**
@@ -189,6 +211,7 @@ public class ChatActivity extends AppCompatActivity {
         messageList.setLayoutManager(mLayoutManager);
         messageList.setItemAnimator(new DefaultItemAnimator());
         messageList.setAdapter(mMessageListAdapter);
+        Log.d(Constant_Debug.TAG_CHAT, Constant_Debug.MESSAGE_ATTACHED);
     }
 
     /**
