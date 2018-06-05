@@ -19,7 +19,6 @@ public class CurrentUser {
 
     private static Customer customer;
     private static Chef chef;
-    private static Store store;
     private static Cake cake;
 
     private static String chatTargetId;
@@ -39,7 +38,6 @@ public class CurrentUser {
         oppositeName = null;
         oppositePhotoUri = null;
         chef = null;
-        store = null;
         cake = null;
         userRole = null;
         userEmail = null;
@@ -159,13 +157,5 @@ public class CurrentUser {
 
     public static void setOppositePhotoUri(String oppositePhotoUri) {
         CurrentUser.oppositePhotoUri = oppositePhotoUri;
-    }
-
-    public static Store getStore() {
-        return store;
-    }
-
-    public static void setStore(Store store) {
-        CurrentUser.store = store;
     }
 }

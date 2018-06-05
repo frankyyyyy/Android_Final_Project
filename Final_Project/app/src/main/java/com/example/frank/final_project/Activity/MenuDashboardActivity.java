@@ -125,8 +125,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
         // Bind store menu list
         attachMenu();
         // Set store name as tittle
-        this.setTitle((CurrentUser.getChef().getStore() == null) ?
-                CurrentUser.getStore().getName() : CurrentUser.getChef().getStore().getName());
+        this.setTitle(CurrentUser.getChef().getStore().getName());
         // Start message notification service if it is not activated
         if(!messageServiceRunning()){
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
@@ -197,7 +196,6 @@ public class MenuDashboardActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
-        // Show map button if store address is not null
         mStoreAddress = CurrentUser.getChef().getStore().getAddress();
         // Show customer menu items
         if(userRole == User.Role.CUSTOMER){

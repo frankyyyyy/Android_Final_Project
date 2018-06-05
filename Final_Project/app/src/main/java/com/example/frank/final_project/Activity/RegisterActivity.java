@@ -1,5 +1,6 @@
 package com.example.frank.final_project.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -416,7 +417,6 @@ public class RegisterActivity extends AppCompatActivity {
                 // Input store data successful, show message and upload file
                 if (task.isSuccessful()) {
                     Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_STORE_CREATED);
-                    CurrentUser.setStore(store);
                     uploadCertificate();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_snapshot_creation_success), Toast.LENGTH_LONG).show();
                 }
@@ -463,20 +463,10 @@ public class RegisterActivity extends AppCompatActivity {
             // Go to store dashboard
             case R.id.register_page_chef_Rb:
                 loadNewUserInfo(User.Role.CHEF);
-                Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
-                startActivity(storeIntent);
-                finish();
-                // Show welcome message
-                Toast.makeText(getApplicationContext(), getString(R.string.register_page_register_success), Toast.LENGTH_LONG).show();
                 break;
             // Go to customer dashboard
             case R.id.register_page_customer_Rb:
                 loadNewUserInfo(User.Role.CUSTOMER);
-                Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
-                startActivity(customerIntent);
-                finish();
-                // Show welcome message
-                Toast.makeText(getApplicationContext(), getString(R.string.register_page_register_success), Toast.LENGTH_LONG).show();
                 break;
             default:
                 break;
@@ -499,6 +489,7 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CurrentUser.setCustomer(dataSnapshot.getValue(Customer.class));
                     Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_LOAD_USER_ENTITY_CACHE);
+                    startStoreDashboard();
                 }
 
                 @Override
@@ -514,6 +505,7 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CurrentUser.setChef(dataSnapshot.getValue(Chef.class));
                     Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_LOAD_USER_ENTITY_CACHE);
+                    startMenuDashboard();
                 }
 
                 @Override
@@ -523,5 +515,27 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    /**
+     *  Start store menu dashboard to chef
+     */
+    private void startMenuDashboard(){
+        Intent storeIntent = new Intent(getApplicationContext(), MenuDashboardActivity.class);
+        startActivity(storeIntent);
+        finish();
+        // Show welcome message
+        Toast.makeText(getApplicationContext(), getString(R.string.register_page_register_success), Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     *  Start store dashboard to customer
+     */
+    private void startStoreDashboard(){
+        Intent customerIntent = new Intent(getApplicationContext(), StoreDashboardActivity.class);
+        startActivity(customerIntent);
+        finish();
+        // Show welcome message
+        Toast.makeText(getApplicationContext(), getString(R.string.register_page_register_success), Toast.LENGTH_LONG).show();
     }
 }

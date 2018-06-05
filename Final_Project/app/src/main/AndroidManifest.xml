@@ -8,9 +8,9 @@
         android:icon="@drawable/main_page_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="portrait">
-        <activity android:name=".Activity.MainActivity">
+        android:theme="@style/AppTheme">
+        <activity android:name=".Activity.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,35 +20,43 @@
 
         <activity
             android:name=".Activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/login_page_tittle" />
 
         <activity
             android:name=".Activity.RegisterActivity"
+            android:screenOrientation="portrait"
             android:label="@string/register_page_tittle" />
 
         <service
             android:name=".Service.MessageNotifier"
+            android:screenOrientation="portrait"
             android:enabled="true"
             android:exported="true" />
 
         <activity android:name=".Activity.AddCakeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_add_cake"/>
 
         <activity
             android:name=".Activity.CakeDashboardActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Activity.ChatActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Activity.ContactActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_contact"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Activity.StoreDashboardActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_store_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -58,11 +66,13 @@
 
         <activity
             android:name=".Activity.MapsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Activity.MenuDashboardActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_menu_dashboard"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
