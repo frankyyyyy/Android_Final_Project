@@ -16,6 +16,7 @@ public class Constant {
     public static final String CHEF = "chef";
     public static final String STORE_STATUS = "storeStatus";
     public static final String CERTIFICATE = "certificate";
+    public static final String CERTIFICATE_URI = "certificateUri";
     public static final String CONTACT = "contact";
 
     //Customer

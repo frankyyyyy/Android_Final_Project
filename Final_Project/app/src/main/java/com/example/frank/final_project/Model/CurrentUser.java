@@ -7,16 +7,19 @@ public class CurrentUser {
 
     private static String userId;
     private static String userName;
+    private static String userHeadPhotoUri;
     private static String userEmail;
     private static String userPassword;
 
     private static String oppositeId;
     private static String oppositeName;
+    private static String oppositePhotoUri;
 
     private static User.Role userRole;
 
     private static Customer customer;
     private static Chef chef;
+    private static Store store;
     private static Cake cake;
 
     private static String chatTargetId;
@@ -31,9 +34,12 @@ public class CurrentUser {
     public static void clear(){
         userId = null;
         userName = null;
+        userHeadPhotoUri = null;
         oppositeId = null;
         oppositeName = null;
+        oppositePhotoUri = null;
         chef = null;
+        store = null;
         cake = null;
         userRole = null;
         userEmail = null;
@@ -137,5 +143,29 @@ public class CurrentUser {
 
     public static void setCustomer(Customer customer) {
         CurrentUser.customer = customer;
+    }
+
+    public static String getUserHeadPhotoUri() {
+        return userHeadPhotoUri;
+    }
+
+    public static void setUserHeadPhotoUri(String userHeadPhotoUri) {
+        CurrentUser.userHeadPhotoUri = userHeadPhotoUri;
+    }
+
+    public static String getOppositePhotoUri() {
+        return oppositePhotoUri;
+    }
+
+    public static void setOppositePhotoUri(String oppositePhotoUri) {
+        CurrentUser.oppositePhotoUri = oppositePhotoUri;
+    }
+
+    public static Store getStore() {
+        return store;
+    }
+
+    public static void setStore(Store store) {
+        CurrentUser.store = store;
     }
 }

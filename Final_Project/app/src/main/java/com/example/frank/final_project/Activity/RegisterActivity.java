@@ -405,11 +405,10 @@ public class RegisterActivity extends AppCompatActivity {
      * Create a new store at reference
      */
     private void createStore() {
-        Store store = new Store();
+        final Store store = new Store();
         store.setName(mStoreName);
         if (businessStyleSelection.getCheckedRadioButtonId() == R.id.register_page_retail_Rb
                 && mRetailAddress != null) store.setAddress(mRetailAddress);
-//        mNewStore.setStatus(true);
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.STORE);
         storeRef.setValue(store).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -417,6 +416,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // Input store data successful, show message and upload file
                 if (task.isSuccessful()) {
                     Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_STORE_CREATED);
+                    CurrentUser.setStore(store);
                     uploadCertificate();
                     Toast.makeText(RegisterActivity.this, getString(R.string.register_page_account_snapshot_creation_success), Toast.LENGTH_LONG).show();
                 }
@@ -441,6 +441,8 @@ public class RegisterActivity extends AppCompatActivity {
                 // Upload certificate successful, open dashboard
                 if (task.isSuccessful()) {
                     Log.d(Constant_Debug.TAG_REGISTER, Constant_Debug.REGISTER_CERTIFICATE_UPLOADED);
+                    String certificateUri = task.getResult().getDownloadUrl().toString();
+                    FirebaseDatabase.getInstance().getReference(Constant.CHEF).child(mUserId).child(Constant.CERTIFICATE_URI).setValue(certificateUri);
                     openDashboard();
                 }
                 // Upload certificate failed, show error message

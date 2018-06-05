@@ -12,18 +12,18 @@ public class Chef extends User {
     private String headPhotoUri;
     private boolean storeStatus;
     private Store store;
-    private String certificateUrl;
+    private String certificateUri;
     private Contact contact;
 
     public Chef(){
 
     }
 
-    public Chef(String id, String name, String phone, String headPhotoUri, boolean storeStatus, Store store, String certificateUrl, Contact contact) {
+    public Chef(String id, String name, String phone, String headPhotoUri, boolean storeStatus, Store store, String certificateUri, Contact contact) {
         super(id, name, phone, headPhotoUri);
         this.storeStatus = storeStatus;
         this.store = store;
-        this.certificateUrl = certificateUrl;
+        this.certificateUri = certificateUri;
         this.contact = contact;
     }
 
@@ -59,12 +59,12 @@ public class Chef extends User {
         this.store = store;
     }
 
-    public String getCertificateUrl() {
-        return certificateUrl;
+    public String getCertificateUri() {
+        return certificateUri;
     }
 
-    public void setCertificateUrl(String certificateUrl) {
-        this.certificateUrl = certificateUrl;
+    public void setCertificateUri(String certificateUri) {
+        this.certificateUri = certificateUri;
     }
 
     public Contact getContact() {

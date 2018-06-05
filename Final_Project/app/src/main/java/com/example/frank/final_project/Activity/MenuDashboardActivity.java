@@ -125,7 +125,8 @@ public class MenuDashboardActivity extends AppCompatActivity {
         // Bind store menu list
         attachMenu();
         // Set store name as tittle
-        this.setTitle(CurrentUser.getChef().getStore().getName());
+        this.setTitle((CurrentUser.getChef().getStore() == null) ?
+                CurrentUser.getStore().getName() : CurrentUser.getChef().getStore().getName());
         // Start message notification service if it is not activated
         if(!messageServiceRunning()){
             Intent messageNotifier = new Intent(this, MessageNotifier.class);
@@ -146,7 +147,8 @@ public class MenuDashboardActivity extends AppCompatActivity {
      *  Setup head photo from database resource
      */
     private void setupHeadPhoto(){
-        String uri = CurrentUser.getChef().getHeadPhotoUri();
+        String uri = (userRole == User.Role.CUSTOMER) ?
+                CurrentUser.getOppositePhotoUri() : CurrentUser.getUserHeadPhotoUri();
         Picasso.with(this).
                 load(uri).
                 placeholder(R.drawable.chef_default_headphoto).
@@ -209,6 +211,8 @@ public class MenuDashboardActivity extends AppCompatActivity {
             if(mStoreAddress == null){
                 menu.findItem(R.id.menu_map).setVisible(false);
             }
+            // Hide sign out button in menu to customer
+            menu.findItem(R.id.menu_sign_out).setVisible(false);
         }
         // Show chef menu items
         else{
@@ -249,6 +253,9 @@ public class MenuDashboardActivity extends AppCompatActivity {
                         (CurrentUser.getChef().getStoreStatus()) ?
                                 getString(R.string.store_close) : getString(R.string.store_open)
                 );
+                return true;
+            case R.id.menu_sign_out:
+                finish();
                 return true;
             default:
                 break;
@@ -361,7 +368,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                             Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_HEAD_PHOTO_UPLOADED);
                             // Save photo info into database if photo file uploaded successfully
                             // Get photo download uri from task
-                            Uri photoUri = task.getResult().getDownloadUrl();
+                            final Uri photoUri = task.getResult().getDownloadUrl();
                             // Find photo reference in database
                             DatabaseReference photoRef = FirebaseDatabase.getInstance().
                                     getReference(Constant.CHEF).
@@ -374,6 +381,7 @@ public class MenuDashboardActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
                                                 Log.d(Constant_Debug.TAG_MENU, Constant_Debug.MENU_DASHBOARD_HEAD_PHOTO_DATA_INSERTED);
+                                                CurrentUser.setUserHeadPhotoUri(photoUri.toString());
                                                 setupHeadPhoto();
                                                 Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
                                                 showContents();

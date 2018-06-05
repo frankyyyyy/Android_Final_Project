@@ -110,7 +110,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
      */
     private void setupHeadPhoto(){
         Picasso.with(this).
-                load(CurrentUser.getCustomer().getHeadPhotoUri()).
+                load(CurrentUser.getUserHeadPhotoUri()).
                 placeholder(R.drawable.man_default_headphoto).
                 error(R.drawable.man_default_headphoto).
                 transform(new CircleTransform()).
@@ -164,6 +164,9 @@ public class StoreDashboardActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_headphoto:
                 showPictureWarningDialog();
+                return true;
+            case R.id.menu_sign_out:
+                finish();
                 return true;
             default:
                 break;
@@ -257,7 +260,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
                     Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_DASHBOARD_HEAD_PORTRAIT_UPLOADED);
                     // Save photo info into database if photo file uploaded successfully
                     // Get photo download uri from task
-                    Uri photoUri = task.getResult().getDownloadUrl();
+                    final Uri photoUri = task.getResult().getDownloadUrl();
                     // Find photo reference in database
                     DatabaseReference photoRef = FirebaseDatabase.getInstance().
                             getReference(Constant.CUSTOMER).
@@ -270,6 +273,7 @@ public class StoreDashboardActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 Log.d(Constant_Debug.TAG_STORE, Constant_Debug.STORE_DASHBOARD_HEAD_PHOTO_DATA_INSERTED);
+                                CurrentUser.setUserHeadPhotoUri(photoUri.toString());
                                 setupHeadPhoto();
                                 Toast.makeText(getApplicationContext(), getString(R.string.add_head_photo_success), Toast.LENGTH_SHORT).show();
                                 showContents();

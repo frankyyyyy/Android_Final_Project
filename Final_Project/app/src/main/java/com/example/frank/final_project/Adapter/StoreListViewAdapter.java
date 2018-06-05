@@ -67,6 +67,7 @@ public class StoreListViewAdapter extends FirebaseRecyclerAdapter<Chef, StoreLis
                     CurrentUser.setOppositeName(chefName);
                 }
                 CurrentUser.setChef(chef);
+                CurrentUser.setOppositePhotoUri(chef.getHeadPhotoUri());
                 // Go to store dashboard
                 Intent storeIntent = new Intent(context, MenuDashboardActivity.class);
                 context.startActivity(storeIntent);

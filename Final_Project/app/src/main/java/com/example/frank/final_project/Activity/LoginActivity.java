@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Save chef as local user
                             CurrentUser.setChef(chef);
                             CurrentUser.setUserRole(User.Role.CHEF);
-                            setBasicInfoInLocal(chef.getName());
+                            setBasicInfoInLocal(chef.getName(), chef.getHeadPhotoUri());
                             // Set up user presented name
                             String welcomeName = (chef.getName() == null) ? mEmail : chef.getName();
                             Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_READ_USER_DATA);
@@ -183,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Save customer as local user
                     CurrentUser.setCustomer(customer);
                     CurrentUser.setUserRole(User.Role.CUSTOMER);
-                    setBasicInfoInLocal(customer.getName());
+                    setBasicInfoInLocal(customer.getName(), customer.getHeadPhotoUri());
                     // Set up user presented name
                     String welcomeName = (customer.getName() == null) ? mEmail : customer.getName();
                     Log.d(Constant_Debug.TAG_LOGIN, Constant_Debug.LOGIN_READ_USER_DATA);
@@ -208,9 +208,10 @@ public class LoginActivity extends AppCompatActivity {
      * Save login user info as local
      * @param userName
      */
-    private void setBasicInfoInLocal(String userName){
+    private void setBasicInfoInLocal(String userName, String photoUri){
         CurrentUser.setUserId(mUserId);
         CurrentUser.setUserName(userName);
+        CurrentUser.setUserHeadPhotoUri(photoUri);
         CurrentUser.setUserEmail(mEmail);
         CurrentUser.setUserPassword(mPassword);
     }
