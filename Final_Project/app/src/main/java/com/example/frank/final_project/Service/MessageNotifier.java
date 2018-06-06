@@ -125,15 +125,18 @@ public class MessageNotifier extends Service {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         // add listener to every message
                         Message newMessage = dataSnapshot.getValue(Message.class);
-                        mNewMessageKey = dataSnapshot.getKey();
-                        String senderId = newMessage.getSenderId();
-                        String senderName = newMessage.getSender();
-                        String content = newMessage.getContent();
-                        String status = newMessage.getStatus();
-                        if((status != null) && status.equals(Message.Status.UnRead.toString())){
-                            if((senderId != null) && !senderId.equals(mUserId)){
-                                String mOppositeId = dataSnapshot.getRef().getParent().getKey();
-                                createNotification(senderName, content, mOppositeId);
+                        String temp = dataSnapshot.getKey();
+                        if(mNewMessageKey != temp){
+                            mNewMessageKey = temp;
+                            String senderId = newMessage.getSenderId();
+                            String senderName = newMessage.getSender();
+                            String content = newMessage.getContent();
+                            String status = newMessage.getStatus();
+                            if((status != null) && status.equals(Message.Status.UnRead.toString())){
+                                if((senderId != null) && !senderId.equals(mUserId)){
+                                    String mOppositeId = dataSnapshot.getRef().getParent().getKey();
+                                    createNotification(senderName, content, mOppositeId);
+                                }
                             }
                         }
                     }
