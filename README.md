@@ -2,6 +2,7 @@
 
 This is an online trade platform, based on Android application ecosystem, providing two-way information service towards business owners and personal users at same time.
 
+
 Service provided: 
 1. Business owner
 - Virtual store management service
@@ -17,6 +18,7 @@ Service provided:
 - Contact list editting service
 - User profile editting service
 - Store address directing service
+  
   
 Technologies & API implemented:
 - Google Firebase Authorization
